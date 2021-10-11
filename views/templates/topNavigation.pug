@@ -1,0 +1,58 @@
+div(class="navbar-custom topnav-navbar topnav-navbar-dark")
+    div(class="container-fluid")
+        <!-- LOGO -->
+        a(href="./" class="topnav-logo")
+            span(class="topnav-logo-lg")
+                img(src="images/logo-light.png" alt="" height="16")
+            span(class="topnav-logo-sm")
+                img(src="images/logo_sm.png" alt="" height="16")
+        ul(class="list-unstyled topbar-menu float-end mb-0")
+            li(class="dropdown notification-list")
+                a(class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false")
+                    i(class="dripicons-bell noti-icon")
+                    span(class="noti-icon-badge")
+                div(class="dropdown-menu dropdown-menu-end dropdown-menu-animated dropdown-lg" aria-labelledby="topbar-notifydrop")
+                    <!-- item-->
+                    div(class="dropdown-item noti-title")
+                        h5(class="m-0")
+                            span(class="float-end")
+                                a(href="javascript: void(0);" class="text-dark")
+                                    small Clear All
+                            | Notification
+                    div(style="max-height: 230px;" data-simplebar)
+                        <!-- item-->
+                        a(href="javascript:void(0);" class="dropdown-item notify-item")
+                            div(class="notify-icon bg-primary")
+                                i(class="mdi mdi-comment-account-outline")
+                            p(class="notify-details") Caleb Flakelar commented on Admin
+                                small(class="text-muted") 1 min ago
+
+                        <!-- item-->
+                        a(href="javascript:void(0);" class="dropdown-item notify-item")
+                            div(class="notify-icon bg-info")
+                                i(class="mdi mdi-account-plus")
+                            p(class="notify-details") New user registered.
+                                small(class="text-muted") 5 hours ago
+
+                    a(href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all") View All
+
+            li(class="dropdown notification-list")
+                a(class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false")
+                    span(class="account-user-avatar")
+                        img(src="images/users/avatar-1.jpg" alt="user-image" class="rounded-circle")
+                    span
+                        span(class="account-user-name") Dominic Keller
+                        span(class="account-position") Founder
+                div(class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown" aria-labelledby="topbar-userdrop")
+                    <!-- item-->
+                    div(class=" dropdown-header noti-title")
+                        h6(class="text-overflow m-0") Welcome!
+                    a(href="javascript:void(0);" class="dropdown-item notify-item")
+                        i(class="mdi mdi-logout me-1")
+                        span Logout
+
+        a(class="button-menu-mobile disable-btn")
+            div(class="lines")
+                span
+                span
+                span
