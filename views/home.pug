@@ -10,7 +10,7 @@
                             i.mdi.mdi-calendar-range.font-13
                     a.btn.btn-primary.ms-2(href='javascript: void(0);')
                         i.mdi.mdi-autorenew
-            h4.page-title Dashboard
+            h4.page-title 상황판
 // end page title
 .row
     .col-xl-5.col-lg-6
@@ -35,7 +35,7 @@
                     .card-body
                         .float-end
                             i.mdi.mdi-cart-plus.widget-icon.bg-success-lighten.text-success
-                        h5.text-muted.fw-normal.mt-0(title='Number of Orders') 오늘의 주문수
+                        h5.text-muted.fw-normal.mt-0(title='Number of Orders') 주문수
                         h3.mt-3.mb-3 5,543
                         p.mb-0.text-muted
                             span.text-danger.me-2
@@ -52,7 +52,7 @@
                     .card-body
                         .float-end
                             i.mdi.mdi-currency-usd.widget-icon.bg-success-lighten.text-success
-                        h5.text-muted.fw-normal.mt-0(title='Average Revenue') 오늘의 수익
+                        h5.text-muted.fw-normal.mt-0(title='Average Revenue') 수익
                         h3.mt-3.mb-3 ₩20,000,000
                         p.mb-0.text-muted
                             span.text-danger.me-2
@@ -87,91 +87,7 @@
     // end col
 // end row
 .row
-    .col-lg-8
-        .card
-            .card-body
-                .dropdown.float-end
-                    a.dropdown-toggle.arrow-none.card-drop(href='#' data-bs-toggle='dropdown' aria-expanded='false')
-                        i.mdi.mdi-dots-vertical
-                    .dropdown-menu.dropdown-menu-end
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Sales Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Export Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Profit
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Action
-                h4.header-title.mb-3 Revenue
-                .chart-content-bg
-                    .row.text-center
-                        .col-md-6
-                            p.text-muted.mb-0.mt-3 Current Week
-                            h2.fw-normal.mb-3
-                                small.mdi.mdi-checkbox-blank-circle.text-primary.align-middle.me-1
-                                span $58,254
-                        .col-md-6
-                            p.text-muted.mb-0.mt-3 Previous Week
-                            h2.fw-normal.mb-3
-                                small.mdi.mdi-checkbox-blank-circle.text-success.align-middle.me-1
-                                span $69,524
-                .dash-item-overlay.d-none.d-md-block(dir='ltr')
-                    h5 Today&apos;s Earning: $2,562.30
-                    p.text-muted.font-13.mb-3.mt-2
-                        | Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui.
-                        | Etiam rhoncus...
-                    a.btn.btn-outline-primary(href='javascript: void(0);')
-                        | View Statements
-                        i.mdi.mdi-arrow-right.ms-2
-                div(dir='ltr')
-                    #revenue-chart.apex-charts.mt-3(data-colors='#536de6,#10c469')
-            // end card-body
-        // end card
-    // end col
-    .col-lg-4
-        .card
-            .card-body
-                .dropdown.float-end
-                    a.dropdown-toggle.arrow-none.card-drop(href='#' data-bs-toggle='dropdown' aria-expanded='false')
-                        i.mdi.mdi-dots-vertical
-                    .dropdown-menu.dropdown-menu-end
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Sales Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Export Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Profit
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Action
-                h4.header-title Revenue By Location
-                .mb-4.mt-4
-                    #world-map-markers(style='height: 224px')
-                h5.mb-1.mt-0.fw-normal New York
-                .progress-w-percent
-                    span.progress-value.fw-bold 72k
-                    .progress.progress-sm
-                        .progress-bar(role='progressbar' style='width: 72%;' aria-valuenow='72' aria-valuemin='0' aria-valuemax='100')
-                h5.mb-1.mt-0.fw-normal San Francisco
-                .progress-w-percent
-                    span.progress-value.fw-bold 39k
-                    .progress.progress-sm
-                        .progress-bar(role='progressbar' style='width: 39%;' aria-valuenow='39' aria-valuemin='0' aria-valuemax='100')
-                h5.mb-1.mt-0.fw-normal Sydney
-                .progress-w-percent
-                    span.progress-value.fw-bold 25k
-                    .progress.progress-sm
-                        .progress-bar(role='progressbar' style='width: 39%;' aria-valuenow='39' aria-valuemin='0' aria-valuemax='100')
-                h5.mb-1.mt-0.fw-normal Singapore
-                .progress-w-percent.mb-0
-                    span.progress-value.fw-bold 61k
-                    .progress.progress-sm
-                        .progress-bar(role='progressbar' style='width: 61%;' aria-valuenow='61' aria-valuemin='0' aria-valuemax='100')
-            // end card-body
-        // end card
-    // end col
-// end row
-.row
-    .col-xl-6.col-lg-12.order-lg-2.order-xl-1
+    .col-xl-9.col-lg-12.order-lg-2.order-xl-1
         .card
             .card-body
                 a.btn.btn-sm.btn-link.float-end(href='')
@@ -284,88 +200,6 @@
                         i.mdi.mdi-square.text-warning
                         |  E-mail
                         span.float-end $154.02
-            // end card-body
-        // end card
-    // end col
-    .col-xl-3.col-lg-6.order-lg-1
-        .card
-            .card-body
-                .dropdown.float-end
-                    a.dropdown-toggle.arrow-none.card-drop(href='#' data-bs-toggle='dropdown' aria-expanded='false')
-                        i.mdi.mdi-dots-vertical
-                    .dropdown-menu.dropdown-menu-end
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Sales Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Export Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Profit
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Action
-                h4.header-title.mb-2 Recent Activity
-                div(data-simplebar='' style='max-height: 419px;')
-                    .timeline-alt.pb-0
-                        .timeline-item
-                            i.mdi.mdi-upload.bg-info-lighten.text-info.timeline-icon
-                            .timeline-item-info
-                                a.text-info.fw-bold.mb-1.d-block(href='#') You sold an item
-                                small Paul Burgess just purchased &ldquo;Hyper - Admin Dashboard&rdquo;!
-                                p.mb-0.pb-2
-                                    small.text-muted 5 minutes ago
-                        .timeline-item
-                            i.mdi.mdi-airplane.bg-primary-lighten.text-primary.timeline-icon
-                            .timeline-item-info
-                                a.text-primary.fw-bold.mb-1.d-block(href='#') Product on the Bootstrap Market
-                                small
-                                    | Dave Gamache added
-                                    span.fw-bold Admin Dashboard
-                                p.mb-0.pb-2
-                                    small.text-muted 30 minutes ago
-                        .timeline-item
-                            i.mdi.mdi-microphone.bg-info-lighten.text-info.timeline-icon
-                            .timeline-item-info
-                                a.text-info.fw-bold.mb-1.d-block(href='#') Robert Delaney
-                                small
-                                    | Send you message
-                                    span.fw-bold &quot;Are you there?&quot;
-                                p.mb-0.pb-2
-                                    small.text-muted 2 hours ago
-                        .timeline-item
-                            i.mdi.mdi-upload.bg-primary-lighten.text-primary.timeline-icon
-                            .timeline-item-info
-                                a.text-primary.fw-bold.mb-1.d-block(href='#') Audrey Tobey
-                                small
-                                    | Uploaded a photo
-                                    span.fw-bold &quot;Error.jpg&quot;
-                                p.mb-0.pb-2
-                                    small.text-muted 14 hours ago
-                        .timeline-item
-                            i.mdi.mdi-upload.bg-info-lighten.text-info.timeline-icon
-                            .timeline-item-info
-                                a.text-info.fw-bold.mb-1.d-block(href='#') You sold an item
-                                small Paul Burgess just purchased &ldquo;Hyper - Admin Dashboard&rdquo;!
-                                p.mb-0.pb-2
-                                    small.text-muted 16 hours ago
-                        .timeline-item
-                            i.mdi.mdi-airplane.bg-primary-lighten.text-primary.timeline-icon
-                            .timeline-item-info
-                                a.text-primary.fw-bold.mb-1.d-block(href='#') Product on the Bootstrap Market
-                                small
-                                    | Dave Gamache added
-                                    span.fw-bold Admin Dashboard
-                                p.mb-0.pb-2
-                                    small.text-muted 22 hours ago
-                        .timeline-item
-                            i.mdi.mdi-microphone.bg-info-lighten.text-info.timeline-icon
-                            .timeline-item-info
-                                a.text-info.fw-bold.mb-1.d-block(href='#') Robert Delaney
-                                small
-                                    | Send you message
-                                    span.fw-bold &quot;Are you there?&quot;
-                                p.mb-0.pb-2
-                                    small.text-muted 2 days ago
-                    // end timeline
-                // end slimscroll
             // end card-body
         // end card
     // end col
