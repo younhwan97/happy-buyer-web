@@ -12,7 +12,9 @@ html(lang='kr')
                 .content-page
                     .content
                         if (page === "home")
-                            include home
+                            include ./navigation/home
                         else if (page === "products")
-                            include products
+                            include ./navigation/products
+                        else if (page === "orders")
+                            include ./navigation/orders
         include ./templates/footer

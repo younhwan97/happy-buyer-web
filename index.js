@@ -22,6 +22,15 @@ app.get('/products', (req, res) => {
     )
 })
 
+app.get('/orders', (req, res) => {
+    res.render('index',
+        {
+            page: "orders",
+
+        }
+    )
+})
+
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
