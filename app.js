@@ -14,8 +14,9 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
+/* routing */
 app.get('/', (req, res) => {
-    res.render('index',
+    res.render('app',
         {
             page: "home",
 
@@ -24,7 +25,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/products', (req, res) => {
-    res.render('index',
+    res.render('app',
         {
             page: "products",
 
@@ -33,7 +34,7 @@ app.get('/products', (req, res) => {
 })
 
 app.get('/addproduct', (req, res) => {
-    res.render('index',
+    res.render('app',
         {
             page: "addproduct",
 
@@ -43,7 +44,7 @@ app.get('/addproduct', (req, res) => {
 
 
 app.get('/orders', (req, res) => {
-    res.render('index',
+    res.render('app',
         {
             page: "orders",
 

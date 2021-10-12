@@ -2,23 +2,25 @@ doctype html
 html(lang='kr')
     head
         include ./templates/head
-    body(class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": true}')
+    body(class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}')
         include ./templates/topNavigation
 
         <!-- Start Content-->
         div(class="container-fluid")
             div(class="wrapper")
                 include ./templates/leftSideBar
+
                 .content-page
                     .content
                         <!-- Navigation -->
                         if (page === "home")
                             include ./navigation/home
                         else if (page === "products")
-                            include ./navigation/products
+                            include ./navigation/products/products
                         else if (page === "addproduct")
-                            include ./addproduct
+                            include ./navigation/products/addproduct
                         else if (page === "orders")
                             include ./navigation/orders
+
                         include ./templates/footer
-        include templates/script
+        include ./templates/script
