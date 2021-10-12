@@ -32,6 +32,16 @@ app.get('/products', (req, res) => {
     )
 })
 
+app.get('/addproduct', (req, res) => {
+    res.render('index',
+        {
+            page: "addproduct",
+
+        }
+    )
+})
+
+
 app.get('/orders', (req, res) => {
     res.render('index',
         {

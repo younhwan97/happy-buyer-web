@@ -11,10 +11,14 @@ html(lang='kr')
                 include ./templates/leftSideBar
                 .content-page
                     .content
+                        <!-- Navigation -->
                         if (page === "home")
                             include ./navigation/home
                         else if (page === "products")
                             include ./navigation/products
+                        else if (page === "addproduct")
+                            include ./addproduct
                         else if (page === "orders")
                             include ./navigation/orders
-        include ./templates/footer
+                        include ./templates/footer
+        include templates/script

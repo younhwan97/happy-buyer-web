@@ -1,0 +1,64 @@
+// start page title
+.row
+    .col-12
+        .page-title-box
+            .page-title-right
+                ol.breadcrumb.m-0
+                    li.breadcrumb-item
+                        a(href='./products') 상품목록
+                    li.breadcrumb-item.active 상품 추가
+            h4.page-title Add Product
+.row
+    .col-12
+        .card
+            .card-body
+                .row.mb-1
+                    .col-sm-6
+                        div(class="mb-3")
+                            label(for="product-name" class="form-label") 이름
+                            input(type="text" id="product-name" class="form-control" placeholder="상품의 이름을 입력하세요.")
+                        div(class="mb-3")
+                            label(for="product-price" class="form-label") 가격
+                            input(type="text" id="product-price" class="form-control" placeholder="상품의 가격을 입력하세요.")
+                        div(class="mb-3")
+                            label(for="product-category" class="form-label") 분류
+                            // Multiple Select
+                            select#product-category.select2.form-control.select2-multiple(data-toggle='select2' multiple='multiple' data-placeholder='선택')
+                                    option(value='fruit') 과일
+                                    option(value='vegetable') 채소
+                        div(class="mb-3")
+                            label(for="product-image" class="form-label") 이미지
+                            // Single Select
+                            select#product-image.form-control.select2(data-toggle='select2')
+                                option 선택
+                                optgroup(label='과일')
+                                    option(value='AK') 사과
+                                    option(value='HI') 바나나
+                                optgroup(label='채소')
+                                    option(value='NV') 상추
+                                    option(value='OR') 오이
+
+                    .col-sm-6
+                        div(class="mb-3")
+                            label(for="simplemde1" class="form-label") 설명
+                            textarea#simplemde1(placeholder="상품의 설명을 입력하세요.")
+                .row
+                    .col-sm-6.offset-sm-3
+                        // Static Backdrop modal
+                        .row
+                            button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop')
+                                | 상품 추가
+                            // Modal
+                            #staticBackdrop.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+                                .modal-dialog
+                                    .modal-content
+                                        .modal-header
+                                            h5#staticBackdropLabel.modal-title 상품 추가
+                                            button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                                        // end modal header
+                                        .modal-body
+                                            | 정말 상품을 추가하시겠습니까?
+                                        .modal-footer
+                                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
+                                            button.btn.btn-primary(type='button') 추가 👍
+

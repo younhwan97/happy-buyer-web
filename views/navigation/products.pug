@@ -3,447 +3,75 @@
     .col-12
         .page-title-box
             .page-title-right
-                ol.breadcrumb.m-0
-                    li.breadcrumb-item
-                        a(href='./') Home
-                    li.breadcrumb-item.active Products
-            h4.page-title Products
+                button.btn.btn-outline-info(type='button' data-bs-toggle='modal' data-bs-target='#info-header-modal') 설명서
+                #info-header-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='info-header-modalLabel' aria-hidden='true')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header.modal-colored-header.bg-info
+                                h4#info-header-modalLabel.modal-title 설명서 😆
+                                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                            .modal-body
+                                | 1. 좌측 상단의 숫자를 조절해서 한번에 보일 상품의 개수를 조절할 수 있어요! <br><br>
+                                | 2. 검색기능을 이용해서 상품을 검색할 수 있어요. 상품의 이름, 분류, 가격으로 검색이 가능해요 <br><br>
+                                | 3. 상품 목록 제일 위를 보면 검은색 배경에 상품, 분류, 가격 글씨가 보이시죠? 글씨를 클릭하면 상품들을 정렬할 수 있어요<br><br>
+                                | 4. 만약 상품의 재고가 없어서 배달이 불가능하면 재고를 있음->품절 으로 변경해 주세요 <br><br>
+                                | 분류 목록: 과일, 정육, 채소, 수산/건해산, 쌀/잡곡, 생수/음료, 커피/차, 과자/빙과, 장/양념, 라면/즉석식품, 우유/유제품, 세탁/청소, 제지/위생, 주방, 반려동물
+
+                            .modal-footer
+                                button.btn.btn-light(type='button' data-bs-dismiss='modal') 닫기
+            h4.page-title 상품목록
 // end page title
 .row
     .col-12
         .card
             .card-body
-                .row.mb-2
-                    .col-sm-4
-                        a.btn.btn-danger.mb-2(href='javascript:void(0);')
-                            i.mdi.mdi-plus-circle.me-2
-                            |  Add Products
-                    .col-sm-8
+                .row.mb-1
+                    .col-sm-5
+                    .col-sm-7
                         .text-sm-end
-                            button.btn.btn-success.mb-2.me-1(type='button')
-                                i.mdi.mdi-cog-outline
-                            button.btn.btn-light.mb-2.me-1(type='button') Import
-                            button.btn.btn-light.mb-2(type='button') Export
+                            a.btn.btn-success.mb-2(href='./addproduct')
+                                i.mdi.mdi-plus-circle.me-2
+                                |  상품 추가
                     // end col
                 .table-responsive
-                    table#products-datatable.table.table-centered.w-100.dt-responsive.nowrap
-                        thead.table-light
+                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap.table-striped.table-bordered
+                        thead.table-dark
                             tr
-                                th.all(style='width: 20px;')
-                                    .form-check
-                                        input#customCheck1.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck1') &nbsp;
-                                th.all Product
-                                th Category
-                                th Added Date
-                                th Price
-                                th Quantity
-                                th Status
-                                th(style='width: 85px;') Action
+                                th 상품
+                                th 분류
+                                th 가격
+                                th 재고
+                                th(style='width: 70px;') 수정/삭제
                         tbody
                             tr
                                 td
-                                    .form-check
-                                        input#customCheck2.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck2') &nbsp;
-                                td
                                     img.rounded.me-3(src='images/products/product-1.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Amazing Modern Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
+                                    p.m-0.d-inline-block.align-middle.font-16 신라면
                                 td
-                                    | Aeron Chairs
+                                    | 라면
                                 td
-                                    | 09/12/2018
+                                    | 14000
                                 td
-                                    | $148.66
-                                td
-                                    | 254
-                                td
-                                    span.badge.bg-success Active
+                                    input(type="checkbox" id="switch1" checked data-switch="success")
+                                    label(for="switch1" data-on-label="있음" data-off-label="품절")
                                 td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-square-edit-outline
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-delete
                             tr
-                                td
-                                    .form-check
-                                        input#customCheck3.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck3') &nbsp;
                                 td
                                     img.rounded.me-3(src='images/products/product-4.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Biblio Plastic Armchair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
+                                    p.m-0.d-inline-block.align-middle.font-16 서울우유 500ml
                                 td
-                                    | Wooden Chairs
+                                    | 유제품
                                 td
-                                    | 09/08/2018
+                                    | 7000
                                 td
-                                    | $8.99
-                                td
-                                    | 1,874
-                                td
-                                    span.badge.bg-success Active
+                                    input(type="checkbox" id="switch2" checked data-switch="success")
+                                    label(for="switch2" data-on-label="있음" data-off-label="품절")
                                 td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-square-edit-outline
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck4.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck4') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-3.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Branded Wooden Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-outline
-                                td
-                                    | Dining Chairs
-                                td
-                                    | 09/05/2018
-                                td
-                                    | $68.32
-                                td
-                                    | 2,541
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck5.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck5') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-4.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Designer Awesome Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                        span.text-warning.mdi.mdi-star-outline
-                                td
-                                    | Baby Chairs
-                                td
-                                    | 08/23/2018
-                                td
-                                    | $112.00
-                                td
-                                    | 3,540
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck6.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck6') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-5.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Cardan Armchair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                td
-                                    | Plastic Armchair
-                                td
-                                    | 08/02/2018
-                                td
-                                    | $59.69
-                                td
-                                    | 26
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck7.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck7') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-3.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Bootecos Plastic Armchair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                td
-                                    | Wing Chairs
-                                td
-                                    | 07/15/2018
-                                td
-                                    | $148.66
-                                td
-                                    | 485
-                                td
-                                    span.badge.bg-danger Deactive
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck8.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck8') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-6.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Adirondack Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                td
-                                    | Aeron Chairs
-                                td
-                                    | 07/07/2018
-                                td
-                                    | $65.94
-                                td
-                                    | 652
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck9.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck9') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-2.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Bean Bag Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                td
-                                    | Wooden Chairs
-                                td
-                                    | 06/30/2018
-                                td
-                                    | $99
-                                td
-                                    | 1,021
-                                td
-                                    span.badge.bg-danger Deactive
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck10.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck10') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-3.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') The butterfly chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                td
-                                    | Dining Chairs
-                                td
-                                    | 06/19/2018
-                                td
-                                    | $58
-                                td
-                                    | 874
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck11.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck11') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-4.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Eames Lounge Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                td
-                                    | Baby Chairs
-                                td
-                                    | 05/06/2018
-                                td
-                                    | $39.5
-                                td
-                                    | 1,254
-                                td
-                                    span.badge.bg-success Active
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck12.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck12') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-5.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Farthingale Chair
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                td
-                                    | Plastic Armchair
-                                td
-                                    | 04/09/2018
-                                td
-                                    | $78.66
-                                td
-                                    | 524
-                                td
-                                    span.badge.bg-danger Deactive
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck13.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck13') &nbsp;
-                                td
-                                    img.rounded.me-3(src='images/products/product-6.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16
-                                        a.text-body(href='apps-ecommerce-products-details.html') Unpowered aircraft
-                                        br
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star
-                                        span.text-warning.mdi.mdi-star-half
-                                td
-                                    | Wing Chairs
-                                td
-                                    | 03/24/2018
-                                td
-                                    | $49
-                                td
-                                    | 204
-                                td
-                                    span.badge.bg-danger Deactive
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-            // end card-body
-        // end card
-    // end col
-// end row
-// End Content
-// Footer Start
-footer.footer
-    .container-fluid
-        .row
-            .col-md-6
-                script.
-                    document.write(new Date().getFullYear())
-                |  &copy; Hyper - Coderthemes.com
-            .col-md-6
-                .text-md-end.footer-links.d-none.d-md-block
-                    a(href='javascript: void(0);') About
-                    a(href='javascript: void(0);') Support
-                    a(href='javascript: void(0);') Contact Us
-// end Footer
-// content-page
-// end wrapper
-// END Container
