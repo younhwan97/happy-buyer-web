@@ -7,7 +7,7 @@
                     li.breadcrumb-item
                         a(href='./products') 상품 관리
                     li.breadcrumb-item.active 상품 추가
-            h4.page-title Add Product
+            h4.page-title 상품 추가
 .row
     .col-12
         .card
@@ -15,35 +15,26 @@
                 .row.mb-1
                     .col-sm-6
                         div(class="mb-3")
-                            label(for="product-name" class="form-label") 이름
+                            label(for="product-name" class="form-label") 상품 이름
                             input(type="text" id="product-name" class="form-control" placeholder="상품의 이름을 입력하세요.")
                         div(class="mb-3")
-                            label(for="product-price" class="form-label") 가격
+                            label(for="product-price" class="form-label") 상품 가격
                             input(type="text" id="product-price" class="form-control" placeholder="상품의 가격을 입력하세요.")
                         div(class="mb-3")
                             label(for="product-category" class="form-label") 분류
-                            // Multiple Select
-                            select#product-category.select2.form-control.select2-multiple(data-toggle='select2' multiple='multiple' data-placeholder='선택')
-                                    option(value='fruit') 과일
-                                    option(value='vegetable') 채소
+                            select#product-category.select2.form-control(data-toggle='select2' onchange="selectedCategory()")
+                                    option(selected disabled) 선택
+                                    option(value='Fruit') 과일
+                                    option(value='Vegetable') 채소
                         div(class="mb-3")
-                            label(for="product-image" class="form-label") 이미지
-                            // Single Select
+                            label(for="product-image" class="form-label") 사진
                             select#product-image.form-control.select2(data-toggle='select2')
-                                option 선택
-                                optgroup(label='과일')
-                                    option(value='AK') 사과
-                                    option(value='HI') 바나나
-                                optgroup(label='채소')
-                                    option(value='NV') 상추
-                                    option(value='OR') 오이
-
                     .col-sm-6
                         div(class="mb-3")
-                            label(for="simplemde1" class="form-label") 설명
+                            label(for="simplemde1" class="form-label") 상품 설명
                             textarea#simplemde1(placeholder="상품의 설명을 입력하세요.")
                 .row
-                    .col-sm-6.offset-sm-3
+                    .col-sm-4.offset-sm-4
                         // Static Backdrop modal
                         .row
                             button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop')
