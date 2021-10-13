@@ -19,41 +19,51 @@
 
                             .modal-footer
                                 button.btn.btn-light(type='button' data-bs-dismiss='modal') 닫기
+                a.btn.btn-danger.m-1(href='./addproduct')
+                    i.mdi.mdi-plus-circle.me-2
+                    |  상품 추가
             h4.page-title 상품 관리
 // end page title
 .row
     .col-12
         .card
             .card-body
-                .row.mb-1
-                    .col-sm-5
-                    .col-sm-7
-                        .text-sm-end
-                            a.btn.btn-success.mb-2(href='./addproduct')
-                                i.mdi.mdi-plus-circle.me-2
-                                |  상품 추가
-                    // end col
+                .row.mb-2#product-filter-container
+                    .col-sm-12
+                        .col-sm-12
+                            h6 상품 상태
+                            button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1" onclick="clickedProductStatus(this)") 전체 보기
+                            button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 판매중
+                            button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 품절
+                        .col-sm-12
+                            h6 상품 분류
+                            span#product-category-container
+                            script(type='text/javascript').
+                                let category = ['과일', '정육', '채소', '수산/건해산', '쌀/잡곡', '생수/음료', '커피/차', '과자/빙과', '장/양념', '라면/즉석식품', '우유/유제품', '세탁/청소', '제지/위생', '주방', '반려동물']
+                                let new_button = ""
+                                for (let i=0 ; i<category.length;i++){
+                                    new_button += `<button type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductCategory(this)"> ${category[i]} </button>`
+                                }
+                                document.querySelector('#product-category-container').innerHTML = new_button
+
                 .table-responsive
-                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap.table-striped.table-bordered
+                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap.table-bordered.table-hover
                         thead.table-dark
                             tr
-                                th 상품
+                                th(style='width: 70px;') 상태
                                 th 분류
+                                th 상품
                                 th 가격
-                                th 재고
                                 th(style='width: 70px;') 수정/삭제
                         tbody
                             tr
                                 td
+                                    span.badge.bg-success.rounded-pill.font-14 판매중
+                                td 라면
+                                td
                                     img.rounded.me-3(src='images/products/product-1.jpg' alt='contact-img' title='contact-img' height='48')
                                     p.m-0.d-inline-block.align-middle.font-16 신라면
-                                td
-                                    | 라면
-                                td
-                                    | 14000
-                                td
-                                    input(type="checkbox" id="switch1" checked data-switch="success")
-                                    label(for="switch1" data-on-label="있음" data-off-label="품절")
+                                td 14000
                                 td.table-action
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-square-edit-outline
@@ -61,15 +71,12 @@
                                         i.mdi.mdi-delete
                             tr
                                 td
+                                    span.badge.bg-danger.rounded-pill.font-14 품절
+                                td 유제품
+                                td
                                     img.rounded.me-3(src='images/products/product-4.jpg' alt='contact-img' title='contact-img' height='48')
                                     p.m-0.d-inline-block.align-middle.font-16 서울우유 500ml
-                                td
-                                    | 유제품
-                                td
-                                    | 7000
-                                td
-                                    input(type="checkbox" id="switch2" checked data-switch="success")
-                                    label(for="switch2" data-on-label="있음" data-off-label="품절")
+                                td 7000
                                 td.table-action
                                     a.action-icon(href='javascript:void(0);')
                                         i.mdi.mdi-square-edit-outline

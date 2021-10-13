@@ -9,47 +9,88 @@
                     li.breadcrumb-item.active 상품 추가
             h4.page-title 상품 추가
 .row
-    .col-12
+    .col-8.offset-2
         .card
             .card-body
                 .row.mb-1
-                    .col-sm-6
-                        div(class="mb-3")
-                            label(for="product-name" class="form-label") 상품 이름
-                            input(type="text" id="product-name" class="form-control" placeholder="상품의 이름을 입력하세요.")
-                        div(class="mb-3")
-                            label(for="product-price" class="form-label") 상품 가격
-                            input(type="text" id="product-price" class="form-control" placeholder="상품의 가격을 입력하세요.")
-                        div(class="mb-3")
+                    .col-sm-12
+                        div.mb-3.col-8
                             label(for="product-category" class="form-label") 분류
                             select#product-category.select2.form-control(data-toggle='select2' onchange="selectedCategory()")
-                                    option(selected disabled) 선택
-                                    option(value='Fruit') 과일
-                                    option(value='Vegetable') 채소
-                        div(class="mb-3")
-                            label(for="product-image" class="form-label") 사진
-                            select#product-image.form-control.select2(data-toggle='select2')
-                    .col-sm-6
-                        div(class="mb-3")
-                            label(for="simplemde1" class="form-label") 상품 설명
+                                option(selected disabled) 상품을 분류해 주세요
+                                option(value='Fruit') 과일
+                                option(value='Meat') 정육
+                                option(value='Vegetable') 채소
+                                option(value='Seafood') 수산/건해산
+                                option(value='Rice') 쌀/잡곡
+                                option(value='Water') 생수/음료
+                                option(value='Coffee') 커피/차
+                                option(value='Chips') 과자/빙과
+                                option(value='Seasoning') 장/양념
+                                option(value='Ramen') 라면/즉석식품
+                                option(value='Milk') 우유/유제품
+                                option(value='Wash') 세탁/청소
+                                option(value='Tissue') 제지/위생
+                                option(value='Kitchen') 주방
+                                option(value='Pets') 반려동물
+                        div.mb-3.col-8
+                            label(for="product-name" class="form-label") 이름
+                            input(type="text" id="product-name" class="form-control" placeholder="상품의 이름을 입력하세요.")
+                        div.mb-3.col-8
+                            label(for="product-price" class="form-label") 가격
+                            input(type="text" id="product-price" class="form-control" placeholder="상품의 가격을 입력하세요.")
+                        div.mb-3
+                            label(for="simplemde1" class="form-label") 설명
                             textarea#simplemde1(placeholder="상품의 설명을 입력하세요.")
-                .row
-                    .col-sm-4.offset-sm-4
-                        // Static Backdrop modal
-                        .row
-                            button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop')
-                                | 상품 추가
-                            // Modal
-                            #staticBackdrop.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-                                .modal-dialog
-                                    .modal-content
-                                        .modal-header
-                                            h5#staticBackdropLabel.modal-title 상품 추가
-                                            button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                                        // end modal header
-                                        .modal-body
-                                            | 정말 상품을 추가하시겠습니까?
-                                        .modal-footer
-                                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                                            button.btn.btn-primary(type='button') 추가 👍
+                        hr
+                        div(class="mb-3")
+                            label(for="product-image" class="form-label") 대표 이미지
+                            select#product-image.form-control.select2(data-toggle='select2' onchange="selectedBasicImage()")
+                                option(selected disabled) 선택
+                        // File Upload
+                        form#myAwesomeDropzone.dropzone(action='/' method='post' data-plugin='dropzone' data-previews-container='#file-previews' data-upload-preview-template='#uploadPreviewTemplate')
+                            .fallback
+                                input(name='file' type='file' multiple='')
+                            .dz-message.needsclick
+                                i.h1.text-muted.dripicons-cloud-upload
+                                h3 이미지 직접 추가하기
+                                span.text-muted.font-13
+                                    | (This is just a demo dropzone. Selected files are
+                                    strong not
+                                    |  actually uploaded.)
+                        // Preview
+                        #file-previews.dropzone-previews.mt-3
+                        // file preview template
+                        #uploadPreviewTemplate.d-none
+                            .card.mt-1.mb-0.shadow-none.border
+                                .p-2
+                                    .row.align-items-center
+                                        .col-auto
+                                            img.avatar-sm.rounded.bg-light(data-dz-thumbnail='' src='#' alt='')
+                                        .col.ps-0
+                                            a.text-muted.fw-bold(href='javascript:void(0);' data-dz-name='')
+                                            p.mb-0(data-dz-size='')
+                                        .col-auto
+                                            // Button
+                                            a.btn.btn-link.btn-lg.text-muted(href='' data-dz-remove='')
+                                                i.dripicons-cross
 
+                //.row
+                //    .col-sm-4.offset-sm-4
+                //        // Static Backdrop modal
+                //        .row
+                //            button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop')
+                //                | 상품 추가
+                //            // Modal
+                //            #staticBackdrop.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+                //                .modal-dialog
+                //                    .modal-content
+                //                        .modal-header
+                //                            h5#staticBackdropLabel.modal-title 상품 추가
+                //                            button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                //                        // end modal header
+                //                        .modal-body
+                //                            | 정말 상품을 추가하시겠습니까?
+                //                        .modal-footer
+                //                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
+                //                            button.btn.btn-primary(type='button') 추가 👍

@@ -8,8 +8,10 @@ $(document).ready(function () {
         },
         lengthMenu:[10,20,30,40,50,100],
         displayLength: 20,
-        info: false
+        info: false,
     });
+
+
     var a = $("#datatable-buttons").DataTable({
         lengthChange: !1,
         buttons: ["copy", "print"],
@@ -24,7 +26,8 @@ $(document).ready(function () {
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
         }
-    }), a.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)"), $("#alternative-page-datatable").DataTable({
+    }),
+        a.buttons().container().appendTo("#datatable-buttons_wrapper .col-md-6:eq(0)"), $("#alternative-page-datatable").DataTable({
         pagingType: "full_numbers",
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
