@@ -1,0 +1,23 @@
+/* 상품 추가 */
+#search-in-modal {
+    border-radius: 14px;
+    border-width: 2px;
+}
+
+#search-in-modal:focus {
+    border-color: black;
+    border-width: 2px;
+}
+
+.existed-product-image-container{
+    position: relative;
+    top: 0;
+    transition: top ease 0.5s;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    -webkit-box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    overflow: hidden;
+}
+.existed-product-image-container:hover {
+    top: -10px;
+}

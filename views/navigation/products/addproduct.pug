@@ -4,10 +4,10 @@
         .page-title-box
             .page-title-right
                 a.btn.btn-danger.m-1(type='button' href="./products") 취소
-                button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target='#confirmCreateProduct')
+                button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-create-product')
                     | 완료
                 // Modal
-                #confirmCreateProduct.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+                #confirm-to-create-product.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
                     .modal-dialog.modal-dialog-centered
                         .modal-content
                             .modal-header
@@ -28,18 +28,18 @@
                 .row
                     .col-sm-12
                         .mb-3.col-8
-                            label(for="product-category" class="form-label") 상태
+                            label(class="form-label") 상태
                             .mt-2
                                 .form-check.form-check-inline
-                                    input#productStatus1.form-check-input(type='radio' name='customRadio1' checked)
-                                    label.form-check-label(for='productStatus1') 판매중
+                                    input#product-status1.form-check-input(type='radio' name='customRadio1' checked)
+                                    label.form-check-label(for='product-status1') 판매중
                                 .form-check.form-check-inline
-                                    input#productStatus2.form-check-input(type='radio' name='customRadio1')
-                                    label.form-check-label(for='productStatus2') 품절
+                                    input#product-status2.form-check-input(type='radio' name='customRadio1')
+                                    label.form-check-label(for='product-status2') 품절
 
                         .mb-3.col-8
                             label(for="product-category" class="form-label") 분류
-                            select#product-category.select2.form-control(data-toggle='select2' onchange="selectedCategory()")
+                            select#product-category.select2.form-control(data-toggle='select2')
                                 option(selected disabled) 상품을 분류해 주세요
                                 option(value='Fruit') 과일
                                 option(value='Meat') 정육
@@ -62,7 +62,65 @@
                         .mb-3.col-8
                             label(for="product-price" class="form-label") 가격
                             input(type="text" id="product-price" class="form-control" placeholder="상품의 가격을 입력해주세요.")
-                        .mb-3
-                            label(for="snow-editor" class="form-label") 설명
-                            // HTML
-                            #snow-editor(style='height: 300px;')
+                        .mb-3.col-12
+                            .col-4
+                                label.form-label.d-block 상품 정면 사진
+                                button#exec-product-image-modal-btn.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#product-image-modal')
+                                    i.me-1.dripicons-search
+                                    span 사진 찾아보기
+                                // Modal
+                                #product-image-modal.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+                                    .modal-dialog.modal-dialog-centered.modal-lg.modal-dialog-scrollable
+                                        .modal-content.h-100
+                                            .modal-header
+                                                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                                            .modal-header.pb-0
+                                                ul.nav.nav-pills.bg-nav-pills.nav-justified.col-12
+                                                    li.nav-item
+                                                        a#link-to-images-on-server.nav-link.rounded-0.active(href='#images-on-server' data-bs-toggle='tab' aria-expanded='true')
+                                                            i.mdi.mdi-home-variant.d-md-none.d-block
+                                                            span.d-none.d-md-block 저장된 사진 찾아보기
+                                                    li.nav-item
+                                                        a#link-to-images-on-client.nav-link.rounded-0(href='#images-on-client' data-bs-toggle='tab' aria-expanded='false')
+                                                            i.mdi.mdi-account-circle.d-md-none.d-block
+                                                            span.d-none.d-md-block 사진 직접 올리기
+                                            .modal-header
+                                                .col-12
+                                                    .col-7.m-0
+                                                        input#search-in-modal.form-control.col-12(type='text' placeholder='상품의 이름을 입력하고 엔터키를 눌러주세요!')
+                                            .modal-body
+                                                .tab-content
+                                                    #images-on-server.tab-pane.show.active
+                                                        .row
+                                                            // 서버에 있는 이미지가 이곳에 추가 된다.
+                                                            .col-3.p-1
+                                                            .col-3.p-1
+                                                            .col-3.p-1
+                                                            .col-3.p-1
+                                                    #images-on-client.tab-pane
+                                                        form#myAwesomeDropzone.dropzone(action='/' method='post' data-plugin='dropzone' data-previews-container='#file-previews' data-upload-preview-template='#uploadPreviewTemplate')
+                                                            .fallback
+                                                                input(name='file' type='file' multiple='')
+                                                            .dz-message.needsclick
+                                                                i.h1.text-muted.dripicons-cloud-upload
+                                                                h3 사진을 이곳에 올리세요.
+                                                                span.text-muted.font-13
+                                                                    | (This is just a demo dropzone. Selected files are
+                                                                    strong not
+
+                                // Preview
+                                #file-previews.dropzone-previews.mt-3
+                                // file preview template
+                                #uploadPreviewTemplate.d-none
+                                    .card.mt-1.mb-0.shadow-none.border
+                                        .p-2
+                                            .row.align-items-center
+                                                .col-auto
+                                                    img.avatar-xl.rounded.bg-light(data-dz-thumbnail='' src='#' alt='')
+                                                .col.ps-0
+                                                    a.text-muted.fw-bold(href='javascript:void(0);' data-dz-name='')
+                                                    p.mb-0(data-dz-size='')
+                                                .col-auto
+                                                    // Button
+                                                    a.btn.btn-link.btn-lg.text-muted(href='' data-dz-remove='')
+                                                        i.dripicons-cross
