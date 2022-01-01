@@ -3,7 +3,7 @@
     .col-12
         .page-title-box
             .page-title-right
-                button.btn.btn-outline-info(type='button' data-bs-toggle='modal' data-bs-target='#info-header-modal') 설명서
+                button.btn.btn-outline-info.m-1(type='button' data-bs-toggle='modal' data-bs-target='#info-header-modal') 설명서
                 #info-header-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='info-header-modalLabel' aria-hidden='true')
                     .modal-dialog
                         .modal-content
@@ -19,7 +19,7 @@
 
                             .modal-footer
                                 button.btn.btn-light(type='button' data-bs-dismiss='modal') 닫기
-                a.btn.btn-danger.m-1(href='./addproduct')
+                a.btn.btn-danger(href='./addproduct')
                     i.mdi.mdi-plus-circle.me-2
                     |  상품 추가
             h4.page-title 상품 관리
