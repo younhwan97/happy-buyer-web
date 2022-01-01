@@ -44,53 +44,18 @@
                             textarea#simplemde1(placeholder="상품의 설명을 입력하세요.")
                         hr
                         div(class="mb-3")
-                            label(for="product-image" class="form-label") 대표 이미지
+                            label.d-block(for="product-image" class="form-label") 대표 이미지
+                            // Large modal
+                            button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#bs-example-modal-lg') 이미지 찾아보기
+                            #bs-example-modal-lg.modal.fade(tabindex='-1' role='dialog' aria-labelledby='myLargeModalLabel' aria-hidden='true')
+                                .modal-dialog.modal-lg
+                                    .modal-content
+                                        .modal-header
+                                            h4#findToImage.modal-title 이미지 찾아보기
+                                            button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                                        .modal-body
+
+                        div(class="mb-3")
+
                             select#product-image.form-control.select2(data-toggle='select2' onchange="selectedBasicImage()")
                                 option(selected disabled) 선택
-                        // File Upload
-                        form#myAwesomeDropzone.dropzone(action='/' method='post' data-plugin='dropzone' data-previews-container='#file-previews' data-upload-preview-template='#uploadPreviewTemplate')
-                            .fallback
-                                input(name='file' type='file' multiple='')
-                            .dz-message.needsclick
-                                i.h1.text-muted.dripicons-cloud-upload
-                                h3 이미지 직접 추가하기
-                                span.text-muted.font-13
-                                    | (This is just a demo dropzone. Selected files are
-                                    strong not
-                                    |  actually uploaded.)
-                        // Preview
-                        #file-previews.dropzone-previews.mt-3
-                        // file preview template
-                        #uploadPreviewTemplate.d-none
-                            .card.mt-1.mb-0.shadow-none.border
-                                .p-2
-                                    .row.align-items-center
-                                        .col-auto
-                                            img.avatar-sm.rounded.bg-light(data-dz-thumbnail='' src='#' alt='')
-                                        .col.ps-0
-                                            a.text-muted.fw-bold(href='javascript:void(0);' data-dz-name='')
-                                            p.mb-0(data-dz-size='')
-                                        .col-auto
-                                            // Button
-                                            a.btn.btn-link.btn-lg.text-muted(href='' data-dz-remove='')
-                                                i.dripicons-cross
-
-                //.row
-                //    .col-sm-4.offset-sm-4
-                //        // Static Backdrop modal
-                //        .row
-                //            button.btn.btn-info(type='button' data-bs-toggle='modal' data-bs-target='#staticBackdrop')
-                //                | 상품 추가
-                //            // Modal
-                //            #staticBackdrop.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-                //                .modal-dialog
-                //                    .modal-content
-                //                        .modal-header
-                //                            h5#staticBackdropLabel.modal-title 상품 추가
-                //                            button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                //                        // end modal header
-                //                        .modal-body
-                //                            | 정말 상품을 추가하시겠습니까?
-                //                        .modal-footer
-                //                            button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                //                            button.btn.btn-primary(type='button') 추가 👍

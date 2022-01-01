@@ -75,6 +75,8 @@ function selectedCategory() {
     /* 선택된 카테고리를 가져온다. */
     let productCategory = document.querySelector('#product-category');
     const selectedValue = productCategory.options[productCategory.selectedIndex].value;
+    document.querySelector("#findToImage").innerHTML = `${selectedValue} 이미지 찾기`
+
 
     /* 선택된 카테고리를 확인한다. */
     if (selectedValue === "Fruit") data = datasets.Fruit
