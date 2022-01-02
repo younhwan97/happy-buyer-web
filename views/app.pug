@@ -19,8 +19,9 @@ html(lang='kr')
                             include ./navigation/products/products
                         else if (page === "addproduct")
                             include ./navigation/products/addproduct
-                        else if (page === "orders")
-                            include ./navigation/orders
+                        else if (page === "dashboard")
+                            include navigation/dashboard
 
                         include ./templates/footer
         include ./templates/script
+//body(class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}')

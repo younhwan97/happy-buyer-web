@@ -2,201 +2,80 @@
 .row
     .col-12
         .page-title-box
-            .page-title-right
-                form.d-flex
-                    .input-group
-                        input#dash-daterange.form-control.form-control-light(type='text')
-                        span.input-group-text.bg-primary.border-primary.text-white
-                            i.mdi.mdi-calendar-range.font-13
-                    a.btn.btn-primary.ms-2(href='javascript: void(0);')
-                        i.mdi.mdi-autorenew
-            h4.page-title 한눈에 보기
+            h4.page-title 주문/배달 조회
 // end page title
 .row
-    .col-xl-5.col-lg-6
-        .row
-            .col-lg-6
-                .card.widget-flat
-                    .card-body
-                        .float-end
-                            i.mdi.mdi-account-multiple.widget-icon
-                        h5.text-muted.fw-normal.mt-0(title='Number of Customers') 고객수
-                        h3.mt-3.mb-3 36,254
-                        p.mb-0.text-muted
-                            span.text-success.me-2
-                                i.mdi.mdi-arrow-up-bold
-                                |  5.27%
-                            span.text-nowrap Since last month
-                    // end card-body
-                // end card
-            // end col
-            .col-lg-6
-                .card.widget-flat
-                    .card-body
-                        .float-end
-                            i.mdi.mdi-cart-plus.widget-icon.bg-success-lighten.text-success
-                        h5.text-muted.fw-normal.mt-0(title='Number of Orders') 주문수
-                        h3.mt-3.mb-3 5,543
-                        p.mb-0.text-muted
-                            span.text-danger.me-2
-                                i.mdi.mdi-arrow-down-bold
-                                |  1.08%
-                            span.text-nowrap Since last month
-                    // end card-body
-                // end card
-            // end col
-        // end row
-        .row
-            .col-lg-12
-                .card.widget-flat
-                    .card-body
-                        .float-end
-                            i.mdi.mdi-currency-usd.widget-icon.bg-success-lighten.text-success
-                        h5.text-muted.fw-normal.mt-0(title='Average Revenue') 수익
-                        h3.mt-3.mb-3 ₩20,000,000
-                        p.mb-0.text-muted
-                            span.text-danger.me-2
-                                i.mdi.mdi-arrow-down-bold
-                                |  7.00%
-                            span.text-nowrap Since last month
-                    // end card-body
-                // end card
-            // end col
-        // end row
-    // end col
-    .col-xl-7.col-lg-6
-        .card.card-h-100
-            .card-body
-                .dropdown.float-end
-                    a.dropdown-toggle.arrow-none.card-drop(href='#' data-bs-toggle='dropdown' aria-expanded='false')
-                        i.mdi.mdi-dots-vertical
-                    .dropdown-menu.dropdown-menu-end
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Sales Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Export Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Profit
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Action
-                h4.header-title.mb-3 Projections Vs Actuals
-                div(dir='ltr')
-                    #high-performing-product.apex-charts(data-colors='#536de6,#e3eaef')
-            // end card-body
-        // end card
-    // end col
-// end row
-.row
-    .col-xl-9.col-lg-12.order-lg-2.order-xl-1
+    .col-12
         .card
             .card-body
-                a.btn.btn-sm.btn-link.float-end(href='')
-                    | Export
-                    i.mdi.mdi-download.ms-1
-                h4.header-title.mt-2.mb-3 Top Selling Products
+                .row.mb-2
+                    .col-sm-12
+                        h6 배달 상태
+                        button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1" onclick="clickedProductStatus(this)") 배달 준비
+                        button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 배달 완료
+                        button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 전체 보기
+                    //.col-xl-8
+                    //    form.row.gy-2.gx-2.align-items-center.justify-content-xl-start.justify-content-between
+                    //        .col-auto
+                    //            label.visually-hidden(for='inputPassword2') Search
+                    //            input#inputPassword2.form-control(type='search' placeholder='Search...')
+                    //        .col-auto
+                    //            .d-flex.align-items-center
+                    //                label.me-2(for='status-select') Status
+                    //                select#status-select.form-select
+                    //                    option(selected='') Choose...
+                    //                    option(value='1') Paid
+                    //                    option(value='2') Awaiting Authorization
+                    //                    option(value='3') Payment failed
+                    //                    option(value='4') Cash On Delivery
+                    //                    option(value='5') Fulfilled
+                    //                    option(value='6') Unfulfilled
+                    //.col-xl-4
+                    //    .text-xl-end.mt-xl-0.mt-2
+                    //        button.btn.btn-danger.mb-2.me-2(type='button')
+                    //            i.mdi.mdi-basket.me-1
+                    //            |  Add New Order
+                    //        button.btn.btn-light.mb-2(type='button') Export
+                    // end col
                 .table-responsive
-                    table.table.table-centered.table-nowrap.table-hover.mb-0
+                    table.table.table-centered.mb-0
+                        thead.table-light
+                            tr
+                                th(style='width: 20px;')
+                                    .form-check
+                                        input#customCheck1.form-check-input(type='checkbox')
+                                        label.form-check-label(for='customCheck1') &nbsp;
+                                th 주문 번호
+                                th 날짜
+                                th 결제 방법
+                                th 금액
+                                th 배달 상태
+                                th(style='width: 125px;') Action
                         tbody
                             tr
                                 td
-                                    h5.font-14.my-1.fw-normal ASOS Ridley High Waist
-                                    span.text-muted.font-13 07 April 2018
+                                    .form-check
+                                        input#customCheck2.form-check-input(type='checkbox')
+                                        label.form-check-label(for='customCheck2') &nbsp;
                                 td
-                                    h5.font-14.my-1.fw-normal $79.49
-                                    span.text-muted.font-13 Price
+                                    a.text-body.fw-bold(href='apps-ecommerce-orders-details.html') #BM9708
                                 td
-                                    h5.font-14.my-1.fw-normal 82
-                                    span.text-muted.font-13 Quantity
+                                    | August 05 2018
+                                    small.text-muted 10:29 PM
                                 td
-                                    h5.font-14.my-1.fw-normal $6,518.18
-                                    span.text-muted.font-13 Amount
-                            tr
+                                    h5
+                                        span.badge.badge-success-lighten
+                                            i.mdi.mdi-bitcoin
+                                            |  Paid
                                 td
-                                    h5.font-14.my-1.fw-normal Marco Lightweight Shirt
-                                    span.text-muted.font-13 25 March 2018
+                                    | $176.41
                                 td
-                                    h5.font-14.my-1.fw-normal $128.50
-                                    span.text-muted.font-13 Price
+                                    h5
+                                        span.badge.badge-info-lighten 배달 완료
                                 td
-                                    h5.font-14.my-1.fw-normal 37
-                                    span.text-muted.font-13 Quantity
-                                td
-                                    h5.font-14.my-1.fw-normal $4,754.50
-                                    span.text-muted.font-13 Amount
-                            tr
-                                td
-                                    h5.font-14.my-1.fw-normal Half Sleeve Shirt
-                                    span.text-muted.font-13 17 March 2018
-                                td
-                                    h5.font-14.my-1.fw-normal $39.99
-                                    span.text-muted.font-13 Price
-                                td
-                                    h5.font-14.my-1.fw-normal 64
-                                    span.text-muted.font-13 Quantity
-                                td
-                                    h5.font-14.my-1.fw-normal $2,559.36
-                                    span.text-muted.font-13 Amount
-                            tr
-                                td
-                                    h5.font-14.my-1.fw-normal Lightweight Jacket
-                                    span.text-muted.font-13 12 March 2018
-                                td
-                                    h5.font-14.my-1.fw-normal $20.00
-                                    span.text-muted.font-13 Price
-                                td
-                                    h5.font-14.my-1.fw-normal 184
-                                    span.text-muted.font-13 Quantity
-                                td
-                                    h5.font-14.my-1.fw-normal $3,680.00
-                                    span.text-muted.font-13 Amount
-                            tr
-                                td
-                                    h5.font-14.my-1.fw-normal Marco Shoes
-                                    span.text-muted.font-13 05 March 2018
-                                td
-                                    h5.font-14.my-1.fw-normal $28.49
-                                    span.text-muted.font-13 Price
-                                td
-                                    h5.font-14.my-1.fw-normal 69
-                                    span.text-muted.font-13 Quantity
-                                td
-                                    h5.font-14.my-1.fw-normal $1,965.81
-                                    span.text-muted.font-13 Amount
-                // end table-responsive
-            // end card-body
-        // end card
-    // end col
-    .col-xl-3.col-lg-6.order-lg-1
-        .card
-            .card-body
-                .dropdown.float-end
-                    a.dropdown-toggle.arrow-none.card-drop(href='#' data-bs-toggle='dropdown' aria-expanded='false')
-                        i.mdi.mdi-dots-vertical
-                    .dropdown-menu.dropdown-menu-end
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Sales Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Export Report
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Profit
-                        // item
-                        a.dropdown-item(href='javascript:void(0);') Action
-                h4.header-title Total Sales
-                #average-sales.apex-charts.mb-4.mt-4(data-colors='#536de6,#10c469,#ff5b5b,#f9c851')
-                .chart-widget-list
-                    p
-                        i.mdi.mdi-square.text-primary
-                        |  Direct
-                        span.float-end $300.56
-                    p
-                        i.mdi.mdi-square.text-danger
-                        |  Affilliate
-                        span.float-end $135.18
-                    p
-                        i.mdi.mdi-square.text-success
-                        |  Sponsored
-                        span.float-end $48.96
-                    p.mb-0
-                        i.mdi.mdi-square.text-warning
-                        |  E-mail
-                        span.float-end $154.02
+                                    a.action-icon(href='javascript:void(0);')
+                                        i.mdi.mdi-eye
+                                    a.action-icon(href='javascript:void(0);')
+                                        i.mdi.mdi-square-edit-outline
+                                    a.action-icon(href='javascript:void(0);')
+                                        i.mdi.mdi-delete
