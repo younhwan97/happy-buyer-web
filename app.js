@@ -1,9 +1,7 @@
+const fs = require('fs')
 const express = require('express')
 const app = express()
 const port = 80 /* web server port */
-app.use(express.static('assets'));
-app.set('view engine', 'pug'); /* template engine */
-
 /* AWS SDK s*/
 var AWS = require("aws-sdk");
 AWS.config.region = 'ap-northeast-2'
@@ -16,9 +14,26 @@ AWS.config.getCredentials(function(err) {
     }
 });
 
+/* AWS RDS */
+const data = fs.readFileSync('./config/database.json');
+const conf = JSON.parse(data);
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+    host: conf.host,
+    user: conf.user,
+    password: conf.password,
+    port: conf.port,
+    database: conf.database
+});
+connection.connect();
+
+app.use(express.static('assets'));
+app.set('view engine', 'pug'); /* template engine */
+
 
 /* routing */
 app.get('/', (req, res) => {
+    console.log(connection)
 
     res.render('app',
         {
