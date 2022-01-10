@@ -1,31 +1,17 @@
 const fs = require('fs')
 const express = require('express')
 const app = express()
-const port = 80 /* web server port */
-/* AWS SDK s*/
-var AWS = require("aws-sdk");
-AWS.config.region = 'ap-northeast-2'
 
-AWS.config.getCredentials(function(err) {
-    if (err) console.log(err.stack);
-    // credentials not loaded
-    else {
-        console.log("Access key:", AWS.config.credentials.accessKeyId);
-    }
-});
-
-/* AWS RDS */
-const data = fs.readFileSync('./config/database.json');
-const conf = JSON.parse(data);
+/* Connect to AWS RDS */
 const mysql = require('mysql');
+const conf = JSON.parse(fs.readFileSync('./config/database.json', 'utf-8')); /* read db config file in server */
 const connection = mysql.createConnection({
     host: conf.host,
     user: conf.user,
     password: conf.password,
     port: conf.port,
     database: conf.database
-});
-connection.connect();
+}).connect();
 
 app.use(express.static('assets'));
 app.set('view engine', 'pug'); /* template engine */
@@ -33,8 +19,6 @@ app.set('view engine', 'pug'); /* template engine */
 
 /* routing */
 app.get('/', (req, res) => {
-    console.log(connection)
-
     res.render('app',
         {
             page: "home",
@@ -70,6 +54,6 @@ app.get('/dashboard', (req, res) => {
 })
 
 
-app.listen(port, () => {
-    console.log(`Connected ${port} port`);
+app.listen(80, () => {
+    console.log(`Connected 80 port`);
 })
