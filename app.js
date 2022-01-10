@@ -11,7 +11,8 @@ const connection = mysql.createConnection({
     password: conf.password,
     port: conf.port,
     database: conf.database
-}).connect();
+});
+connection.connect();
 
 app.use(express.static('assets'));
 app.set('view engine', 'pug'); /* template engine */
@@ -19,11 +20,26 @@ app.set('view engine', 'pug'); /* template engine */
 
 /* routing */
 app.get('/', (req, res) => {
-    res.render('app',
-        {
-            page: "home",
+    const sql = 'SELECT * FROM (order_history);'
+
+    connection.query(sql, (err, results, fields)=>{
+        if (err) throw err;
+
+        let order_history = []; /* 주문 목록 */
+
+        if(results.length !== 0){
+            for(let i = 0; i < results.length; i++){
+                order_history.push(results[i])
+            }
         }
-    )
+
+        res.render('app',
+            {
+                page: "home",
+                order_history: order_history,
+            }
+        )
+    })
 })
 
 app.get('/products', (req, res) => {

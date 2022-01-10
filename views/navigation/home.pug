@@ -52,30 +52,31 @@
                                 th 배달 상태
                                 th(style='width: 125px;') Action
                         tbody
-                            tr
-                                td
-                                    .form-check
-                                        input#customCheck2.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck2') &nbsp;
-                                td
-                                    a.text-body.fw-bold(href='apps-ecommerce-orders-details.html') #BM9708
-                                td
-                                    | August 05 2018
-                                    small.text-muted 10:29 PM
-                                td
-                                    h5
-                                        span.badge.badge-success-lighten
-                                            i.mdi.mdi-bitcoin
-                                            |  Paid
-                                td
-                                    | $176.41
-                                td
-                                    h5
-                                        span.badge.badge-info-lighten 배달 완료
-                                td
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-eye
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
+                            each order in order_history
+                                tr
+                                    td
+                                        .form-check
+                                            input#customCheck2.form-check-input(type='checkbox')
+                                            label.form-check-label(for='customCheck2') &nbsp;
+                                    td
+                                        a.text-body.fw-bold(href='apps-ecommerce-orders-details.html') #BM9708
+                                    td
+                                        | August 05 2018
+                                        small.text-muted 10:29 PM
+                                    td
+                                        h5
+                                            span.badge.badge-success-lighten
+                                                i.mdi.mdi-bitcoin
+                                                |  Paid
+                                    td
+                                        | $176.41
+                                    td
+                                        h5
+                                            span.badge.badge-info-lighten 배달 완료
+                                    td
+                                        a.action-icon(href='javascript:void(0);')
+                                            i.mdi.mdi-eye
+                                        a.action-icon(href='javascript:void(0);')
+                                            i.mdi.mdi-square-edit-outline
+                                        a.action-icon(href='javascript:void(0);')
+                                            i.mdi.mdi-delete
