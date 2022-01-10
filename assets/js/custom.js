@@ -125,93 +125,91 @@ $('#link-to-images-on-server, #link-to-images-on-client').on('click', () => {
 
 })
 
-$('#search-in-modal').on("change", (e) => {
-    /* 검색 기능 */
-    let items = $('.existed-product-image-container')
-    let inputValue = $(e.target).val()
-    if (inputValue) {
-        for (let i = 0; i < items.length; i++) {
-            let itemName = $(items[i]).find('.existed-product-image-label').text()
-
-<<<<<<< HEAD
+// $('#search-in-modal').on("change", (e) => {
+//     /* 검색 기능 */
+//     let items = $('.existed-product-image-container')
+//     let inputValue = $(e.target).val()
+//     if (inputValue) {
+//         for (let i = 0; i < items.length; i++) {
+//             let itemName = $(items[i]).find('.existed-product-image-label').text()
+//
+//         }}
 /* 상품 추가 */
-function selectedCategory() {
-    /* 이미지 select 에 새롭게 추가할 option 들을 정의한다. */
-    let data = null
-    let imgOptions = `<option selected disabled>선택</option>`;
+// function selectedCategory() {
+//     /* 이미지 select 에 새롭게 추가할 option 들을 정의한다. */
+//     let data = null
+//     let imgOptions = `<option selected disabled>선택</option>`;
+//
+//     /* 선택된 카테고리를 가져온다. */
+//     let productCategory = document.querySelector('#product-category');
+//     const selectedValue = productCategory.options[productCategory.selectedIndex].value;
+//     document.querySelector("#findToImage").innerHTML = `${selectedValue} 이미지 찾기`
+//
+//
+//     /* 선택된 카테고리를 확인한다. */
+//     if (selectedValue === "Fruit") data = datasets.Fruit
+//     else if (selectedValue === "Meat") data = datasets.Meat
+//     else if (selectedValue === "Vegetable") data = datasets.Vegetable
+//     else if (selectedValue === "Seafood") data = datasets.Seafood
+//     else if (selectedValue === "Rice") data = datasets.Rice
+//     else if (selectedValue === "Water") data = datasets.Water
+//     else if (selectedValue === "Coffee") data = datasets.Coffee
+//     else if (selectedValue === "Chips") data = datasets.Chips
+//     else if (selectedValue === "Seasoning") data = datasets.Seasoning
+//     else if (selectedValue === "Ramen") data = datasets.Ramen
+//     else if (selectedValue === "Milk") data = datasets.Milk
+//     else if (selectedValue === "Wash") data = datasets.Wash
+//     else if (selectedValue === "Tissue") data = datasets.Tissue
+//     else if (selectedValue === "Kitchen") data = datasets.Kitchen
+//     else if (selectedValue === "Pets") data = datasets.Pets
+//     else data = datasets.Fruit
+//
+//     for (let i = 0; i < data.length; i++)
+//         imgOptions += `<option value=${data[i].eng}>${data[i].kr}</option>`
+//
+//     document.querySelector('#product-image').innerHTML = imgOptions
+//             if (itemName.match(inputValue))
+//                 $(items[i]).fadeIn()
+//             else
+//                 $(items[i]).fadeOut()
+//         }
+//     } else {
+//         for (let i = 0; i < items.length; i++)
+//             $(items[i]).fadeIn()
+//     }
+// });
 
-    /* 선택된 카테고리를 가져온다. */
-    let productCategory = document.querySelector('#product-category');
-    const selectedValue = productCategory.options[productCategory.selectedIndex].value;
-    document.querySelector("#findToImage").innerHTML = `${selectedValue} 이미지 찾기`
-
-
-    /* 선택된 카테고리를 확인한다. */
-    if (selectedValue === "Fruit") data = datasets.Fruit
-    else if (selectedValue === "Meat") data = datasets.Meat
-    else if (selectedValue === "Vegetable") data = datasets.Vegetable
-    else if (selectedValue === "Seafood") data = datasets.Seafood
-    else if (selectedValue === "Rice") data = datasets.Rice
-    else if (selectedValue === "Water") data = datasets.Water
-    else if (selectedValue === "Coffee") data = datasets.Coffee
-    else if (selectedValue === "Chips") data = datasets.Chips
-    else if (selectedValue === "Seasoning") data = datasets.Seasoning
-    else if (selectedValue === "Ramen") data = datasets.Ramen
-    else if (selectedValue === "Milk") data = datasets.Milk
-    else if (selectedValue === "Wash") data = datasets.Wash
-    else if (selectedValue === "Tissue") data = datasets.Tissue
-    else if (selectedValue === "Kitchen") data = datasets.Kitchen
-    else if (selectedValue === "Pets") data = datasets.Pets
-    else data = datasets.Fruit
-
-    for (let i = 0; i < data.length; i++)
-        imgOptions += `<option value=${data[i].eng}>${data[i].kr}</option>`
-
-    document.querySelector('#product-image').innerHTML = imgOptions
-=======
-            if (itemName.match(inputValue))
-                $(items[i]).fadeIn()
-            else
-                $(items[i]).fadeOut()
-        }
-    } else {
-        for (let i = 0; i < items.length; i++)
-            $(items[i]).fadeIn()
-    }
-});
-
-function clickedExistedImage(self) {
-    let containers = $('.existed-product-image-container')
-    for (let i = 0; i < containers.length; i++) {
-        if ($(containers[i]).has('border-secondary'))
-            $(containers[i]).removeClass('border-secondary').addClass('border-light')
-    }
-    $(self).addClass('border-secondary').removeClass('border-light')
-}
-
-function dbClickedExistedImage(self) {
-    let preview = $('#file-previews')
-    let data = {
-        src : $(self).children('.card-img-top').attr('src'),
-        alt : $(self).children('.card-img-top').attr('alt'),
-        kr: $(self).find('.existed-product-image-label').text(),
-
-    }
-    let file = `
-        <!-- file preview template -->
-        <div id="uploadPreviewTemplate">
-            <div class="card mt-1 mb-0 shadow-none border">
-                <img src="${data.src}" alt="${data.alt}">
-                <div class="card-body">
-                    <h5 class="card-title">${data.kr}</h5>
-                </div>
-            </div>
-        </div>
-    `;
-
-    $(preview).html(file)
->>>>>>> b6fce0ad9b09b50facd13ec411858686b82a75e4
-}
+// function clickedExistedImage(self) {
+//     let containers = $('.existed-product-image-container')
+//     for (let i = 0; i < containers.length; i++) {
+//         if ($(containers[i]).has('border-secondary'))
+//             $(containers[i]).removeClass('border-secondary').addClass('border-light')
+//     }
+//     $(self).addClass('border-secondary').removeClass('border-light')
+// }
+//
+// function dbClickedExistedImage(self) {
+//     let preview = $('#file-previews')
+//     let data = {
+//         src : $(self).children('.card-img-top').attr('src'),
+//         alt : $(self).children('.card-img-top').attr('alt'),
+//         kr: $(self).find('.existed-product-image-label').text(),
+//
+//     }
+//     let file = `
+//         <!-- file preview template -->
+//         <div id="uploadPreviewTemplate">
+//             <div class="card mt-1 mb-0 shadow-none border">
+//                 <img src="${data.src}" alt="${data.alt}">
+//                 <div class="card-body">
+//                     <h5 class="card-title">${data.kr}</h5>
+//                 </div>
+//             </div>
+//         </div>
+//     `;
+//
+//     $(preview).html(file)
+// }
 
 // <div className="p-2">
 //     <div className="row align-items-center">
@@ -238,35 +236,35 @@ function dbClickedExistedImage(self) {
 
 /*********************************************************/
 /* **********************DataSets********************** */
-const datasets = {
-    Fruit: [
-        {eng: 'Apple', kr: '사과', src: './images/products/fruit/apple.jpg'},
-        {eng: 'Banana', kr: '바나나', src: './images/products/fruit/banana.jpg'},
-        {eng: 'Kiwi', kr: '키위', src: './images/products/fruit/kiwi.jpg'},
-        {eng: 'Cherry', kr: '체리', src: './images/products/fruit/cherry.jpg'},
-        {eng: 'Strawberry', kr: '딸기', src: './images/products/fruit/strawberries.jpg'},
-        {eng: 'Mandarin', kr: '귤', src: './images/products/fruit/mandarin.jpg'},
-        {eng: 'Melon', kr: '멜론', src: './images/products/fruit/melon.jpg'},
-        {eng: 'Grape', kr: '포도', src: './images/products/fruit/grapes.jpg'},
-
-    ],
-    Meat: [],
-    Vegetable: [
-        {eng: 'Lettuce', kr: '상추', src: ''},
-        {eng: 'NapaCabbage', kr: '배추', src: ''},
-    ],
-    Seafood: [],
-    Rice: [],
-    Water: [],
-    Coffee: [],
-    Chips: [],
-    Seasoning: [],
-    Ramen: [],
-    Milk: [],
-    Wash: [],
-    Tissue: [],
-    Kitchen: [],
-    Pets: []
-}
+// const datasets = {
+//     Fruit: [
+//         {eng: 'Apple', kr: '사과', src: './images/products/fruit/apple.jpg'},
+//         {eng: 'Banana', kr: '바나나', src: './images/products/fruit/banana.jpg'},
+//         {eng: 'Kiwi', kr: '키위', src: './images/products/fruit/kiwi.jpg'},
+//         {eng: 'Cherry', kr: '체리', src: './images/products/fruit/cherry.jpg'},
+//         {eng: 'Strawberry', kr: '딸기', src: './images/products/fruit/strawberries.jpg'},
+//         {eng: 'Mandarin', kr: '귤', src: './images/products/fruit/mandarin.jpg'},
+//         {eng: 'Melon', kr: '멜론', src: './images/products/fruit/melon.jpg'},
+//         {eng: 'Grape', kr: '포도', src: './images/products/fruit/grapes.jpg'},
+//
+//     ],
+//     Meat: [],
+//     Vegetable: [
+//         {eng: 'Lettuce', kr: '상추', src: ''},
+//         {eng: 'NapaCabbage', kr: '배추', src: ''},
+//     ],
+//     Seafood: [],
+//     Rice: [],
+//     Water: [],
+//     Coffee: [],
+//     Chips: [],
+//     Seasoning: [],
+//     Ramen: [],
+//     Milk: [],
+//     Wash: [],
+//     Tissue: [],
+//     Kitchen: [],
+//     Pets: []
+// }
 /*********************************************************/
 /*********************************************************/

@@ -11,9 +11,12 @@
                 .row.mb-2
                     .col-sm-12
                         h6 배달 상태
-                        button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1" onclick="clickedProductStatus(this)") 배달 준비
-                        button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 배달 완료
-                        button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 전체 보기
+                        a(href="/")
+                            button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1") 배달 준비
+                        a(href="/?ds=completed")
+                            button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1") 배달 완료
+                        a(href="/?ds=all")
+                            button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1") 전체
                     //.col-xl-8
                     //    form.row.gy-2.gx-2.align-items-center.justify-content-xl-start.justify-content-between
                     //        .col-auto
@@ -53,27 +56,31 @@
                                 th(style='width: 125px;') Action
                         tbody
                             each order in orders
+                                - let price = order.price
+                                - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                                - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+                                - let date = new Date(order.date - timezoneOffset)
+                                - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+
                                 tr
                                     td
                                         .form-check
                                             input#customCheck2.form-check-input(type='checkbox')
                                             label.form-check-label(for='customCheck2') &nbsp;
                                     td
-                                        a.text-body.fw-bold(href='apps-ecommerce-orders-details.html') #{order.order_id}
+                                        a.text-body.fw-bold(href) #{order.order_id}
                                     td
-                                        #{order.date}
-                                        small.text-muted 10:29 PM
-                                    td
-                                        h5
-                                            span.badge.badge-success-lighten
-                                                i.mdi.mdi-bitcoin #{order.payment}
-                                    td #{order.price}
+                                        small.text-muted #{date}
                                     td
                                         h5
-                                            if order.delivery_status
-                                                span.badge.badge-info-lighten 배달 준비
+                                            span.badge.badge-success-lighten.font-16 #{order.payment}
+                                    td #{price}원
+                                    td
+                                        h5
+                                            if !order.delivery_status
+                                                span.badge.badge-info-lighten.font-16 배달 준비
                                             else
-                                                span.badge.badge-info-lighten 배달 완료
+                                                span.badge.badge-secondary-lighten.font-16 배달 완료
                                     td
                                         a.action-icon(href='javascript:void(0);')
                                             i.mdi.mdi-eye
