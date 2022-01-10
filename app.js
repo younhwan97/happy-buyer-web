@@ -36,7 +36,7 @@ app.get('/', (req, res) => {
         res.render('app',
             {
                 page: "home",
-                order_history: order_history,
+                orders: order_history,
             }
         )
     })

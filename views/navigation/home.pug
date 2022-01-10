@@ -52,7 +52,7 @@
                                 th 배달 상태
                                 th(style='width: 125px;') Action
                         tbody
-                            each order in order_history
+                            each order in orders
                                 tr
                                     td
                                         .form-check
@@ -61,18 +61,19 @@
                                     td
                                         a.text-body.fw-bold(href='apps-ecommerce-orders-details.html') #{order.order_id}
                                     td
-                                        order.date
+                                        #{order.date}
                                         small.text-muted 10:29 PM
                                     td
                                         h5
                                             span.badge.badge-success-lighten
-                                                i.mdi.mdi-bitcoin
-                                                |  Paid
-                                    td
-                                        | $176.41
+                                                i.mdi.mdi-bitcoin #{order.payment}
+                                    td #{order.price}
                                     td
                                         h5
-                                            span.badge.badge-info-lighten 배달 완료
+                                            if order.delivery_status
+                                                span.badge.badge-info-lighten 배달 준비
+                                            else
+                                                span.badge.badge-info-lighten 배달 완료
                                     td
                                         a.action-icon(href='javascript:void(0);')
                                             i.mdi.mdi-eye
