@@ -11,35 +11,28 @@
                 .row.mb-2
                     .col-sm-12
                         h6 배달 상태
+                        - let temp = "light"
                         a(href="/")
-                            button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1") 배달 준비
+                            if options.ds === "ready"
+                                - temp = "success"
+                            else
+                                - temp = "light"
+                            button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
+                                | 배달 준비
                         a(href="/?ds=completed")
-                            button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1") 배달 완료
+                            if options.ds === "completed"
+                                - temp = "success"
+                            else
+                                - temp = "light"
+                            button(id="product-status-filter-option-2" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
+                                | 배달 완료
                         a(href="/?ds=all")
-                            button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1") 전체
-                    //.col-xl-8
-                    //    form.row.gy-2.gx-2.align-items-center.justify-content-xl-start.justify-content-between
-                    //        .col-auto
-                    //            label.visually-hidden(for='inputPassword2') Search
-                    //            input#inputPassword2.form-control(type='search' placeholder='Search...')
-                    //        .col-auto
-                    //            .d-flex.align-items-center
-                    //                label.me-2(for='status-select') Status
-                    //                select#status-select.form-select
-                    //                    option(selected='') Choose...
-                    //                    option(value='1') Paid
-                    //                    option(value='2') Awaiting Authorization
-                    //                    option(value='3') Payment failed
-                    //                    option(value='4') Cash On Delivery
-                    //                    option(value='5') Fulfilled
-                    //                    option(value='6') Unfulfilled
-                    //.col-xl-4
-                    //    .text-xl-end.mt-xl-0.mt-2
-                    //        button.btn.btn-danger.mb-2.me-2(type='button')
-                    //            i.mdi.mdi-basket.me-1
-                    //            |  Add New Order
-                    //        button.btn.btn-light.mb-2(type='button') Export
-                    // end col
+                            if options.ds === "all"
+                                - temp = "success"
+                            else
+                                - temp = "light"
+                            button(id="product-status-filter-option-3" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
+                                | 전체
                 .table-responsive
                     table.table.table-centered.mb-0
                         thead.table-light
@@ -53,7 +46,7 @@
                                 th 결제 방법
                                 th 금액
                                 th 배달 상태
-                                th(style='width: 125px;') Action
+                                th(style='width: 120px;') 주문 상세
                         tbody
                             each order in orders
                                 - let price = order.price
@@ -67,24 +60,28 @@
                                         .form-check
                                             input#customCheck2.form-check-input(type='checkbox')
                                             label.form-check-label(for='customCheck2') &nbsp;
-                                    td
-                                        a.text-body.fw-bold(href) #{order.order_id}
+                                    td #{order.order_id}
                                     td
                                         small.text-muted #{date}
-                                    td
-                                        h5
-                                            span.badge.badge-success-lighten.font-16 #{order.payment}
+                                    td #{order.payment}
                                     td #{price}원
                                     td
-                                        h5
-                                            if !order.delivery_status
-                                                span.badge.badge-info-lighten.font-16 배달 준비
-                                            else
-                                                span.badge.badge-secondary-lighten.font-16 배달 완료
+                                        i.mdi.mdi-circle.text-success
+                                        if !order.delivery_status
+                                            |  배달 준비
+                                        else
+                                            |  배달 완료
                                     td
-                                        a.action-icon(href='javascript:void(0);')
-                                            i.mdi.mdi-eye
-                                        a.action-icon(href='javascript:void(0);')
-                                            i.mdi.mdi-square-edit-outline
-                                        a.action-icon(href='javascript:void(0);')
-                                            i.mdi.mdi-delete
+                                        button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#order-detail') 주문 상세
+                // order detail modal
+                #order-detail.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
+                    .modal-dialog
+                        .modal-content
+                            .modal-header
+                                h4#standard-modalLabel.modal-title 주문 번호:
+                                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+                            .modal-body
+                                | ...
+                            .modal-footer
+                                button.btn.btn-light(type='button' data-bs-dismiss='modal') Close
+                                button.btn.btn-primary(type='button') Save changes

@@ -20,13 +20,14 @@ app.set('view engine', 'pug'); /* template engine */
 
 /* routing */
 app.get('/', (req, res) => {
-    const ds = req.query.ds;
+    let ds = req.query.ds;
+    if (ds === undefined || ds === null) ds = "ready";
 
     /* ds(delivery status) 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 생성 */
     let query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ?;'
     let status = null;
 
-    if (ds === undefined || ds === null) // 배달 준비 상태의 데이터 조회
+    if (ds === "ready") // 배달 준비 상태의 데이터 조회
         status = [false, false];
     else if (ds === "completed") // 배달 완료 상태의 데이터 조회
         status = [true, true];
@@ -48,6 +49,9 @@ app.get('/', (req, res) => {
         res.render('app',
             {
                 page: "home",
+                options: {
+                    ds : ds
+                },
                 orders: order_history,
             }
         )
