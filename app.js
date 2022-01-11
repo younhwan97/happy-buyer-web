@@ -24,15 +24,18 @@ app.get('/', (req, res) => {
     if (ds === undefined || ds === null) ds = "ready";
 
     /* ds(delivery status) 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 생성 */
-    const query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ?;'
+    // delivery_status = received  -> 배달 접수
+    // delivery_status = confirmed -> 배달 준비
+    // delivery_status = delivered -> 배달 완료
+    const query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ? OR delivery_status = ?;'
     let status = null;
 
-    if (ds === "ready") // 배달 준비 상태의 데이터 조회
-        status = [false, false];
-    else if (ds === "completed") // 배달 완료 상태의 데이터 조회
-        status = [true, true];
+    if (ds === "ready") // 배달 접수, 배달 준비 상태의 데이터 조회
+        status = ["received", "confirmed", "confirmed"];
+    else if (ds === "delivered") // 배달 완료 상태의 데이터 조회
+        status = ["delivered", "delivered", "delivered"];
     else if(ds === "all") // 모든 상태의 데이터 조회
-        status = [true, false];
+        status = ["received", "confirmed", "delivered"];
 
     /* order_history table 조회 */
     connection.query(query, status, (err, results, fields)=>{
@@ -62,28 +65,42 @@ app.get('/api/order', (req, res) => {
     const orderId = req.query.id
 
     if(orderId){
-        /* 주문 목록의 order ID 를 이용해 product ID 를 구한다. */
-        let query = 'SELECT product_id FROM (order_product_mapping) WHERE order_id = ?'
+        /* order ID 를 이용해 주문 정보를 확인한다. */
+        let query = 'SELECT * FROM (order_history) WHERE order_id = ?'
         connection.query(query, orderId, (err, results, fields) => {
-            if (err) throw err;
-
-            let productId = []
-            query = 'SELECT * FROM (product) WHERE'
-
-            for(let i = 0; i < results.length; i++)
-                productId.push(results[i].product_id)
-
-            for(let i= 0; i < productId.length; i++){
-                query = query+ ' product_id = ?'
-                if (i !== productId.length - 1){
-                    query += ' OR'
-                }
+            const user = {
+                'name' : results[0].name || "-",
+                'shippingAddress': results[0].shipping_adress,
+                'pointNumber': results[0].point_number || "-",
             }
 
-            connection.query(query, productId, (err, results, fields) => {
-                res.json({
-                    status: 'success',
-                    data: results
+
+            /* order ID 를 이용해 product ID 를 구한다. */
+            query = 'SELECT product_id FROM (order_product_mapping) WHERE order_id = ?'
+            connection.query(query, orderId, (err, results, fields) => {
+                if (err) throw err;
+
+                let productId = []
+
+                for(let i = 0; i < results.length; i++)
+                    productId.push(results[i].product_id)
+
+                /* product ID 를 이용해 상품 정보를 확인한다. */
+                query = 'SELECT * FROM (product) WHERE'
+
+                for(let i= 0; i < productId.length; i++){
+                    query = query+ ' product_id = ?'
+                    if (i !== productId.length - 1){
+                        query += ' OR'
+                    }
+                }
+
+                connection.query(query, productId, (err, results, fields) => {
+                    res.json({
+                        status: 'success',
+                        data: results,
+                        user: user
+                    })
                 })
             })
         })

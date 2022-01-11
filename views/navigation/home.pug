@@ -18,9 +18,9 @@
                             else
                                 - temp = "light"
                             button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
-                                | 배달 준비
-                        a(href="/?ds=completed")
-                            if options.ds === "completed"
+                                | 주문 접수 및 배달 준비
+                        a(href="/?ds=delivered")
+                            if options.ds === "delivered"
                                 - temp = "success"
                             else
                                 - temp = "light"
@@ -37,14 +37,10 @@
                     table.table.table-centered.mb-0
                         thead.table-light
                             tr
-                                th(style='width: 20px;')
-                                    .form-check
-                                        input#customCheck1.form-check-input(type='checkbox')
-                                        label.form-check-label(for='customCheck1') &nbsp;
                                 th 주문 번호
                                 th 날짜
+                                th 배달 주소
                                 th 결제 방법
-                                th 금액
                                 th 배달 상태
                                 th(style='width: 120px;') 주문 상세
                         tbody
@@ -56,21 +52,21 @@
                                 - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
                                 - let orderId = order.order_id
                                 tr
-                                    td
-                                        .form-check
-                                            input#customCheck2.form-check-input(type='checkbox')
-                                            label.form-check-label(for='customCheck2') &nbsp;
                                     td #{orderId}
                                     td
                                         small.text-muted #{date}
+                                    td #{order.shipping_adress}
                                     td #{order.payment}
-                                    td #{price}원
                                     td
-                                        i.mdi.mdi-circle.text-success
-                                        if !order.delivery_status
+                                        if order.delivery_status === 'received'
+                                            i.mdi.mdi-circle.text-success
+                                            |  배달 접수
+                                        else if order.delivery_status === 'confirmed'
+                                            i.mdi.mdi-circle.text-info
                                             |  배달 준비
-                                        else
-                                            |  배달 완료
+                                        else if order.delivery_status === 'delivered'
+                                            i.mdi.mdi-circle.text-secondary
+                                            |  배달 준비
                                     td
                                         button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
                 // order detail modal
@@ -84,5 +80,12 @@
                                 .d-flex.justify-content-center
                                     .spinner-border.avatar-md(role='status')
                             .modal-footer
-                                button.btn.btn-light(type='button' data-bs-dismiss='modal') Close
-                                button.btn.btn-primary(type='button') Save changes
+                                button.btn.btn-danger(type='button' data-bs-dismiss='modal') 주문 취소
+                                .btn-group
+                                    button.btn.btn-success.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
+                                        | 주문 상태 변경
+                                        span.caret
+                                    .dropdown-menu
+                                        a.dropdown-item(href='/') 배달 완료
+                                        a.dropdown-item(href='/') 배달 준비
+
