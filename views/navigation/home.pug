@@ -54,13 +54,13 @@
                                 - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
                                 - let date = new Date(order.date - timezoneOffset)
                                 - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
-
+                                - let orderId = order.order_id
                                 tr
                                     td
                                         .form-check
                                             input#customCheck2.form-check-input(type='checkbox')
                                             label.form-check-label(for='customCheck2') &nbsp;
-                                    td #{order.order_id}
+                                    td #{orderId}
                                     td
                                         small.text-muted #{date}
                                     td #{order.payment}
@@ -72,16 +72,17 @@
                                         else
                                             |  배달 완료
                                     td
-                                        button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#order-detail') 주문 상세
+                                        button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
                 // order detail modal
-                #order-detail.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
+                #orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
                     .modal-dialog
                         .modal-content
                             .modal-header
-                                h4#standard-modalLabel.modal-title 주문 번호:
+                                h4#orderDetail-modalLabel.modal-title 주문 번호:
                                 button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                            .modal-body
-                                | ...
+                            .modal-body#orderDetail-modalBody
+                                .d-flex.justify-content-center
+                                    .spinner-border.avatar-md(role='status')
                             .modal-footer
                                 button.btn.btn-light(type='button' data-bs-dismiss='modal') Close
                                 button.btn.btn-primary(type='button') Save changes
