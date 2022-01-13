@@ -20,22 +20,19 @@ app.set('view engine', 'pug'); /* template engine */
 
 /* routing */
 app.get('/', (req, res) => {
-    let ds = req.query.ds;
-    if (ds === undefined || ds === null) ds = "ready";
+    let ds = req.query.ds || "ready";
 
     /* ds(delivery status) 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 생성 */
-    // delivery_status = received  -> 배달 접수
+    // delivery_status = received  -> 주문 접수
     // delivery_status = confirmed -> 배달 준비
     // delivery_status = delivered -> 배달 완료
-    const query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ? OR delivery_status = ?;'
+    const query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ? ORDER BY order_id DESC;'
     let status = null;
 
     if (ds === "ready") // 배달 접수, 배달 준비 상태의 데이터 조회
-        status = ["received", "confirmed", "confirmed"];
+        status = ["received", "confirmed"];
     else if (ds === "delivered") // 배달 완료 상태의 데이터 조회
-        status = ["delivered", "delivered", "delivered"];
-    else if(ds === "all") // 모든 상태의 데이터 조회
-        status = ["received", "confirmed", "delivered"];
+        status = ["delivered", "delivered"];
 
     /* order_history table 조회 */
     connection.query(query, status, (err, results, fields)=>{
@@ -72,8 +69,8 @@ app.get('/api/order', (req, res) => {
                 'name' : results[0].name || "-",
                 'shippingAddress': results[0].shipping_adress,
                 'pointNumber': results[0].point_number || "-",
+                'ds': results[0].delivery_status
             }
-
 
             /* order ID 를 이용해 product ID 를 구한다. */
             query = 'SELECT product_id FROM (order_product_mapping) WHERE order_id = ?'

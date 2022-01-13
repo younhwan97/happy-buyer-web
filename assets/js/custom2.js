@@ -4,9 +4,9 @@ function openOrderDetailModal(id){
 
     /* Modal label */
     let label = document.querySelector('#orderDetail-modalLabel');
-    label.innerHTML = `주문 번호: ${orderId}`
+    label.innerHTML = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderId}</span>`
 
-    /* Modal body */
+    /* Modal body and footer */
     fetch(`/api/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
@@ -16,8 +16,8 @@ function openOrderDetailModal(id){
             createOrderDetailView(json.data, json.user) // view 생성
         });
 
-
     function createOrderDetailView(data, user){
+        /* create body view */
         let view  = `<h5>주문 목록</h5><ul class="list-group list-group-flush">`
         let totalPrice = 0
         for(let i= 0; i< data.length; i++){
@@ -58,5 +58,25 @@ function openOrderDetailModal(id){
 
         let body = document.querySelector("#orderDetail-modalBody")
         body.innerHTML = view
+
+        /* create footer view */
+        view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal">주문 취소</Button>`
+        view += `<div class="p-0 m-0">`
+
+        if (user.ds === "delivered")
+            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal" disabled>배달 완료</Button>`
+        else
+            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 완료</Button>`
+
+
+        if (user.ds === "confirmed")
+            view += `<Button class="btn btn-light" type="button" data-bs-dismiss="modal" disabled>배달 준비</Button>`
+        else
+            view += `<Button class="btn btn-light" type="button" data-bs-dismiss="modal">배달 준비</Button>`
+
+        view += `</div>`
+        let footer = document.querySelector("#orderDetail-modalFooter")
+        footer.innerHTML = view
     }
+
 }

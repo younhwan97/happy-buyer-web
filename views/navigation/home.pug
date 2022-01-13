@@ -26,13 +26,6 @@
                                 - temp = "light"
                             button(id="product-status-filter-option-2" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
                                 | 배달 완료
-                        a(href="/?ds=all")
-                            if options.ds === "all"
-                                - temp = "success"
-                            else
-                                - temp = "light"
-                            button(id="product-status-filter-option-3" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
-                                | 전체
                 .table-responsive
                     table.table.table-centered.mb-0
                         thead.table-light
@@ -40,27 +33,28 @@
                                 th 주문 번호
                                 th 날짜
                                 th 배달 주소
-                                th 결제 방법
+                                th 이름
                                 th 배달 상태
-                                th(style='width: 120px;') 주문 상세
+                                th(style='width: 125px;') 주문 상세
                         tbody
                             each order in orders
                                 - let price = order.price
                                 - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                                 - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
                                 - let date = new Date(order.date - timezoneOffset)
-                                - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '')
+                                - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
                                 - let orderId = order.order_id
+                                - let name = order.name || "-"
                                 tr
                                     td #{orderId}
                                     td
                                         small.text-muted #{date}
                                     td #{order.shipping_adress}
-                                    td #{order.payment}
+                                    td #{name}
                                     td
                                         if order.delivery_status === 'received'
                                             i.mdi.mdi-circle.text-success
-                                            |  배달 접수
+                                            |  주문 접수
                                         else if order.delivery_status === 'confirmed'
                                             i.mdi.mdi-circle.text-info
                                             |  배달 준비
@@ -79,13 +73,4 @@
                             .modal-body#orderDetail-modalBody
                                 .d-flex.justify-content-center
                                     .spinner-border.avatar-md(role='status')
-                            .modal-footer
-                                button.btn.btn-danger(type='button' data-bs-dismiss='modal') 주문 취소
-                                .btn-group
-                                    button.btn.btn-success.dropdown-toggle(type='button' data-bs-toggle='dropdown' aria-expanded='false')
-                                        | 주문 상태 변경
-                                        span.caret
-                                    .dropdown-menu
-                                        a.dropdown-item(href='/') 배달 완료
-                                        a.dropdown-item(href='/') 배달 준비
-
+                            .modal-footer.justify-content-between#orderDetail-modalFooter
