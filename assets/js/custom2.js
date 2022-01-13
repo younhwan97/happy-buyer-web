@@ -2,21 +2,23 @@
 function openOrderDetailModal(id){
     const orderId = id
 
-    /* Modal label */
-    let label = document.querySelector('#orderDetail-modalLabel');
-    label.innerHTML = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderId}</span>`
-
-    /* Modal body and footer */
+    /* Create Modal view */
     fetch(`/api/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            console.log(json)
             createOrderDetailView(json.data, json.user) // view 생성
         });
 
     function createOrderDetailView(data, user){
+        /* create label view */
+        let label = document.querySelector('#orderDetail-modalLabel')
+        let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        let date = new Date(new Date(user.date) - timezoneOffset);
+        date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
+        label.innerHTML = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderId} (${date})</span>`
+
         /* create body view */
         let view  = `<h5>주문 목록</h5><ul class="list-group list-group-flush">`
         let totalPrice = 0

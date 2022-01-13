@@ -69,8 +69,10 @@ app.get('/api/order', (req, res) => {
                 'name' : results[0].name || "-",
                 'shippingAddress': results[0].shipping_adress,
                 'pointNumber': results[0].point_number || "-",
-                'ds': results[0].delivery_status
+                'ds': results[0].delivery_status,
+                'date': results[0].date
             }
+
 
             /* order ID 를 이용해 product ID 를 구한다. */
             query = 'SELECT product_id FROM (order_product_mapping) WHERE order_id = ?'

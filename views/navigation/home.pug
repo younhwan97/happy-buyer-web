@@ -41,7 +41,7 @@
                                 - let price = order.price
                                 - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                                 - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
-                                - let date = new Date(order.date - timezoneOffset)
+                                - let date = new Date(new Date(order.date) - timezoneOffset)
                                 - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
                                 - let orderId = order.order_id
                                 - let name = order.name || "-"
