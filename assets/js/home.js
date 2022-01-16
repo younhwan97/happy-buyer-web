@@ -2,12 +2,13 @@
 function openOrderDetailModal(id){
     const orderId = id
 
-    /* Create Modal view */
+    /* Get Data from server */
     fetch(`/api/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
+            /* Create detail view */
             createOrderDetailView(json.data, json.user) // view 생성
         });
 
@@ -80,5 +81,4 @@ function openOrderDetailModal(id){
         let footer = document.querySelector("#orderDetail-modalFooter")
         footer.innerHTML = view
     }
-
 }
