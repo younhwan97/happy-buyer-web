@@ -29,8 +29,33 @@ function checkProductStatusOption(option){
 }
 
 /* add product */
-function addProduct(){
+function uploadFile(){
+    const image = document.querySelector('#product-image').files[0]
+
+    const fd = new FormData()
+    fd.append('imageFile', image)
+
+    // send `POST` request
+    fetch('/api/upload', {
+        method: 'POST',
+        body: fd
+    })
+        .then(res => res.json())
+        .then(json => {
+            if(json.status === 'success'){
+                let url
+                // addProduct(url)
+            } else {
+                console.log("fail")
+            }
+        })
+        .catch(err => console.error(err));
+}
+
+function addProduct(u){
     let status = 1
+
+    // get product data
     if($('#product-status-1').is(':checked'))
         status = 1
     else
@@ -38,7 +63,9 @@ function addProduct(){
     const category = $("#product-category option:selected").val()
     const name = $('#product-name').val()
     const price = $('#product-price').val()
+    const url = u
 
+    // send `POST` request
     fetch(`/api/addproduct`, {
         method : 'POST',
         headers : {
@@ -46,9 +73,9 @@ function addProduct(){
         },
         body: JSON.stringify({
             status: status || 1,
-            category: category,
+            category: category || 'not',
             name: name || "-",
-            price: price || 0,
+            price: price || 0
         })
     })
         .then((res) => {
@@ -58,22 +85,8 @@ function addProduct(){
             if(json.status === "success"){
                 location.href = '/products'
             }
-        });
-
-
-    //
-    // $.NotificationApp.send(
-    //     "성공!",
-    //     "상품이 성공적으로 추가되었습니다.",
-    //     "top-right",
-    //     "#9EC600",
-    //     "Icon",
-    //     hideAfter = '1000'
-    // )
-    //
-    // setTimeout(()=>{
-    //     location.href = '/products'
-    // }, 1000)
+        })
+        .catch(err => console.error(err));
 
 }
 

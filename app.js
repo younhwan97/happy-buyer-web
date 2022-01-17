@@ -1,6 +1,9 @@
 const fs = require('fs')
 const express = require('express')
+const fileUpload = require('express-fileupload');
 const AWS = require('aws-sdk')
+AWS.config.update({region: 'ap-northeast-2'});
+const s3 = new AWS.S3()
 const app = express()
 
 /* Connect to AWS RDS */
@@ -23,6 +26,11 @@ app.set('view engine', 'pug');
 /* Body parser */
 app.use(express.json())
 
+/* File Upload */
+app.use(fileUpload({
+    useTempFiles: true,
+    tempFileDir: '/tmp/'
+}));
 
 /* routing */
 app.get('/', (req, res) => {
@@ -152,16 +160,48 @@ app.post('/api/addproduct', (req, res) => {
     const query = 'INSERT INTO product (status, category, name, price) VALUES (?, ?, ?, ?)'
     const data = [req.body.status, req.body.category, req.body.name, req.body.price]
 
+
     connection.query(query, data, (err, results, fields) => {
         if (err) throw err;
 
-        console.log(results)
         res.json({
             status: 'success'
         })
     })
 })
 
+app.post('/api/upload', (req, res) => {
+    let imageFile
+    let uploadPath
+
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.json({
+            status: 'fail'
+        })
+    }
+
+    // The name of the input field (i.e. "imageFile") is used to retrieve the uploaded file
+    imageFile = req.files.imageFile.tempFilePath;
+
+   // uploadPath = __dirname + '/somewhere/on/your/server/' + sampleFile.name;
+
+    let params = {
+        'Bucket': 'hbb',
+        'Key': req.files.imageFile.name,
+        'ACL': 'public-read',
+        'Body': fs.createReadStream(imageFile),
+        'ContentType': 'image/png',
+    }
+
+    s3.putObject(params, (err, data)=> {
+        console.log(err)
+        console.log(data)
+    })
+
+    return res.json({
+        status: 'success'
+    })
+})
 
 app.get('/dashboard', (req, res) => {
     res.render('app',
