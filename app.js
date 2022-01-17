@@ -15,7 +15,12 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.use(express.static('assets'));
-app.set('view engine', 'pug'); /* template engine */
+
+/* Template engine */
+app.set('view engine', 'pug');
+
+/* Body parser */
+app.use(express.json())
 
 
 /* routing */
@@ -26,7 +31,7 @@ app.get('/', (req, res) => {
     // delivery_status = received  -> 주문 접수
     // delivery_status = confirmed -> 배달 준비
     // delivery_status = delivered -> 배달 완료
-    const query = 'SELECT * FROM (order_history) WHERE delivery_status = ? OR delivery_status = ? ORDER BY order_id DESC;'
+    const query = 'SELECT * FROM (order_history) WHERE status = ? OR status = ? ORDER BY order_id DESC;'
     let status = null;
 
     if (ds === "ready") // 배달 접수, 배달 준비 상태의 데이터 조회
@@ -69,7 +74,7 @@ app.get('/api/order', (req, res) => {
                 'name' : results[0].name || "-",
                 'shippingAddress': results[0].shipping_adress,
                 'pointNumber': results[0].point_number || "-",
-                'ds': results[0].delivery_status,
+                'ds': results[0].status,
                 'date': results[0].date
             }
 
@@ -111,21 +116,49 @@ app.get('/api/order', (req, res) => {
 })
 
 app.get('/products', (req, res) => {
-    res.render('app',
-        {
-            page: "products",
 
+    const query = 'SELECT * FROM (product) WHERE category <> ? ORDER BY product_id DESC;'
+
+    connection.query(query, 'not', (err, results, fields)=> {
+        if (err) throw err;
+
+        let products = [] /* 상품 목록*/
+
+        if (results.length !== 0){
+            for(let i = 0; i < results.length; i++){
+                products.push(results[i])
+            }
         }
-    )
+
+        res.render('app',
+            {
+                page: "products",
+                products: products
+            }
+        )
+    })
 })
 
 app.get('/addproduct', (req, res) => {
     res.render('app',
         {
             page: "addproduct",
-
         }
     )
+})
+
+app.post('/api/addproduct', (req, res) => {
+    const query = 'INSERT INTO product (status, category, name, price) VALUES (?, ?, ?, ?)'
+    const data = [req.body.status, req.body.category, req.body.name, req.body.price]
+
+    connection.query(query, data, (err, results, fields) => {
+        if (err) throw err;
+
+        console.log(results)
+        res.json({
+            status: 'success'
+        })
+    })
 })
 
 

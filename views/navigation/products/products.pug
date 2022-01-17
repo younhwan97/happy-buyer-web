@@ -3,24 +3,7 @@
     .col-12
         .page-title-box
             .page-title-right
-                button.btn.btn-outline-info.m-1(type='button' data-bs-toggle='modal' data-bs-target='#info-header-modal') 설명서
-                #info-header-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='info-header-modalLabel' aria-hidden='true')
-                    .modal-dialog
-                        .modal-content
-                            .modal-header.modal-colored-header.bg-info
-                                h4#info-header-modalLabel.modal-title 설명서 😆
-                                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                            .modal-body
-                                | 1. 좌측 상단의 숫자를 조절해서 한번에 보일 상품의 개수를 조절할 수 있어요! <br><br>
-                                | 2. 검색기능을 이용해서 상품을 검색할 수 있어요. 상품의 이름, 분류, 가격으로 검색이 가능해요 <br><br>
-                                | 3. 상품 목록 제일 위를 보면 검은색 배경에 상품, 분류, 가격 글씨가 보이시죠? 글씨를 클릭하면 상품들을 정렬할 수 있어요<br><br>
-                                | 4. 만약 상품의 재고가 없어서 배달이 불가능하면 재고를 있음->품절 으로 변경해 주세요 <br><br>
-                                | 분류 목록: 과일, 정육, 채소, 수산/건해산, 쌀/잡곡, 생수/음료, 커피/차, 과자/빙과, 장/양념, 라면/즉석식품, 우유/유제품, 세탁/청소, 제지/위생, 주방, 반려동물
-
-                            .modal-footer
-                                button.btn.btn-light(type='button' data-bs-dismiss='modal') 닫기
-                a.btn.btn-danger(href='./addproduct')
-                    i.mdi.mdi-plus-circle.me-2
+                a.btn.btn-primary(href='./addproduct')
                     |  상품 추가
             h4.page-title 상품 관리
 // end page title
@@ -32,9 +15,9 @@
                     .col-sm-12
                         .col-sm-12
                             h6 상품 상태
-                            button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class="btn btn-success rounded-pill m-1" onclick="clickedProductStatus(this)") 전체 보기
-                            button(id="product-status-filter-option-2" value="product-status-filter-option-2" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 판매중
-                            button(id="product-status-filter-option-3" value="product-status-filter-option-3" type="button" class="btn btn-light rounded-pill m-1" onclick="clickedProductStatus(this)") 품절
+                            button(value="all" type="button" class="btn btn-success rounded-pill m-1 product-status-option" onclick="checkProductStatusOption(this)") 전체 보기
+                            button(value="sale" type="button" class="btn btn-light rounded-pill m-1 product-status-option" onclick="checkProductStatusOption(this)") 판매중
+                            button(value="soldOut" type="button" class="btn btn-light rounded-pill m-1 product-status-option" onclick="checkProductStatusOption(this)") 품절
                         .col-sm-12
                             h6 상품 분류
                             span#product-category-container
@@ -47,8 +30,8 @@
                                 document.querySelector('#product-category-container').innerHTML = new_button
 
                 .table-responsive
-                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap.table-bordered.table-hover
-                        thead.table-dark
+                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap
+                        thead.table-light
                             tr
                                 th(style='width: 70px;') 상태
                                 th 분류
@@ -56,29 +39,27 @@
                                 th 가격
                                 th(style='width: 70px;') 수정/삭제
                         tbody
-                            tr
-                                td
-                                    span.badge.bg-success.rounded-pill.font-14 판매중
-                                td 라면
-                                td
-                                    img.rounded.me-3(src='images/products/product-1.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16 신라면
-                                td 14000
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
-                            tr
-                                td
-                                    span.badge.bg-danger.rounded-pill.font-14 품절
-                                td 유제품
-                                td
-                                    img.rounded.me-3(src='images/products/product-4.jpg' alt='contact-img' title='contact-img' height='48')
-                                    p.m-0.d-inline-block.align-middle.font-16 서울우유 500ml
-                                td 7000
-                                td.table-action
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-square-edit-outline
-                                    a.action-icon(href='javascript:void(0);')
-                                        i.mdi.mdi-delete
+                            each product in products
+                                - let status
+                                if product.status
+                                    - status = '판매중'
+                                else
+                                    - status = '품절'
+                                - let price = product.price
+                                - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+                                tr
+                                    td
+                                        if status === '판매중'
+                                            span.badge.bg-success.rounded-pill.font-14 #{status}
+                                        else
+                                            span.badge.bg-danger.rounded-pill.font-14 #{status}
+                                    td #{product.category}
+                                    td
+                                        p.m-0.d-inline-block.align-middle.font-16 #{product.name}
+                                    td #{price}원
+                                    td.table-action
+                                        a.action-icon(href='javascript:void(0);')
+                                            i.mdi.mdi-square-edit-outline
+                                        a.action-icon(href='javascript:void(0);')
+                                            i.mdi.mdi-delete

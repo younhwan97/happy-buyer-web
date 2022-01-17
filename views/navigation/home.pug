@@ -52,13 +52,13 @@
                                     td #{order.shipping_adress}
                                     td #{name}
                                     td
-                                        if order.delivery_status === 'received'
+                                        if order.status === 'received'
                                             i.mdi.mdi-circle.text-success
                                             |  주문 접수
-                                        else if order.delivery_status === 'confirmed'
+                                        else if order.status === 'confirmed'
                                             i.mdi.mdi-circle.text-info
                                             |  배달 준비
-                                        else if order.delivery_status === 'delivered'
+                                        else if order.status === 'delivered'
                                             i.mdi.mdi-circle.text-secondary
                                             |  배달 준비
                                     td

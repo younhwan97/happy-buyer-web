@@ -2,17 +2,17 @@
 function openOrderDetailModal(id){
     const orderId = id
 
-    /* Get Data from server */
+    /* Get data from server */
     fetch(`/api/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
             /* Create detail view */
-            createOrderDetailView(json.data, json.user) // view 생성
+            createView(json.data, json.user) // view 생성
         });
 
-    function createOrderDetailView(data, user){
+    function createView(data, user){
         /* create label view */
         let label = document.querySelector('#orderDetail-modalLabel')
         let timezoneOffset = new Date().getTimezoneOffset() * 60000;
