@@ -128,7 +128,7 @@ app.get('/products', (req, res) => {
 
     const query = 'SELECT * FROM (product) WHERE category <> ? ORDER BY product_id DESC;'
 
-    connection.query(query, 'not', (err, results, fields)=> {
+    connection.query(query, '미선택', (err, results, fields)=> {
         if (err) throw err;
 
         let products = [] // 상품 목록
