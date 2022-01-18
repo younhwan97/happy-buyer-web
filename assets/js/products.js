@@ -42,28 +42,44 @@ function uploadFile(){
     })
         .then(res => res.json())
         .then(json => {
-            if(json.status === 'success'){
-                let url = json.url
-                addProduct(url)
+            if(json.status === 'success'){ // 상품 이미지가 성공적으로 업로드 되었을 때
+                let uploadFileUrl = json.url
+                addProduct(uploadFileUrl)
+            } else if(json.status === 'fail'){ // 상품 이미지가 업로드 되지 않았을 때
+                $.NotificationApp.send(
+                    "오류!",
+                    "상품 이미지를 업로드 해주세요",
+                    "top-right",
+                    "#9EC600",
+                    "error",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
             } else {
-                console.log("fail")
+                $.NotificationApp.send(
+                    "오류!",
+                    "알 수 없는 오류 발생",
+                    "top-right",
+                    "#9EC600",
+                    "error",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
             }
         })
-        .catch(err => console.error(err));
+        .catch(err => console.error(err))
 }
 
-function addProduct(u){
-    let status = 1
+function addProduct(uploadFileUrl){
+    let status = 0
 
     // get product data
-    if($('#product-status-1').is(':checked'))
-        status = 1
-    else
-        status = 0
+    if($('#product-status-1').is(':checked')) status = 1
     const category = $("#product-category option:selected").val()
     const name = $('#product-name').val()
     const price = $('#product-price').val()
-    const url = u
 
     // send `POST` request
     fetch(`/api/addproduct`, {
@@ -76,7 +92,7 @@ function addProduct(u){
             category: category || 'not',
             name: name || "-",
             price: price || 0,
-            url: url || ""
+            url: uploadFileUrl || ""
         })
     })
         .then((res) => {
@@ -87,8 +103,7 @@ function addProduct(u){
                 location.href = '/products'
             }
         })
-        .catch(err => console.error(err));
-
+        .catch(err => console.error(err))
 }
 
 function createDetailPrice(self){

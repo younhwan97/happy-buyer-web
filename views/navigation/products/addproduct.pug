@@ -44,7 +44,7 @@
                                 option(value='pets') 반려동물
                         .mb-3.col-5
                             label(for="product-name" class="form-label") 이름
-                            input(type="text" id="product-name" class="form-control" placeholder="상품의 이름을 입력해주세요.")
+                            input#product-name(type="text" class="form-control" placeholder="상품의 이름을 입력해주세요.")
                         .mb-3.col-4
                             label(for="product-price" class="form-label") 가격
                             input(type="number" min="0" step="500" id="product-price" class="form-control" placeholder="상품의 가격을 입력해주세요." onkeyup="createDetailPrice(this)" onchange="createDetailPrice(this)")
@@ -52,7 +52,7 @@
                         hr
                         .mb-3.col-4
                             label(for="product-image" class="form-label") 상품 이미지
-                            input(type="file" id="product-image" class="form-control")
+                            input#product-image(type="file" class="form-control")
         .d-flex.justify-content-end
             button.btn.btn-success.col-2(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-add-product')
                 | 추가
