@@ -28,6 +28,10 @@ function checkProductStatusOption(option){
     }
 }
 
+function removeProduct(){
+
+}
+
 /* add product */
 function uploadFile(){
     const image = document.querySelector('#product-image').files[0] // 업르드할 상품 이미지

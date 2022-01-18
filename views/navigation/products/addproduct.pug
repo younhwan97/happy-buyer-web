@@ -58,15 +58,15 @@
         .d-flex.justify-content-end
             button.btn.btn-success.col-2(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-add-product')
                 | 추가
-        // Modal
-        #confirm-to-add-product.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
-            .modal-dialog.modal-dialog-centered
-                .modal-content
-                    .modal-header
-                        h5.modal-title 상품 추가
-                        button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                    .modal-body
-                        | 상품을 추가하시겠습니까?
-                    .modal-footer
-                        button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                        button.btn.btn-light(type='button' onclick="uploadFile()") 확인
+// Modal
+#confirm-to-add-product.modal.fade(data-bs-backdrop='static' data-bs-keyboard='false' tabindex='-1' aria-labelledby='staticBackdropLabel' aria-hidden='true')
+    .modal-dialog.modal-dialog-centered
+        .modal-content
+            .modal-header
+                h5.modal-title 상품 추가
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+            .modal-body
+                | 상품을 추가하시겠습니까?
+            .modal-footer
+                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
+                button.btn.btn-light(type='button' onclick="uploadFile()") 확인
