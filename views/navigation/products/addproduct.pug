@@ -54,7 +54,7 @@
                             label(for="product-image" class="form-label") 상품 이미지(필수)
                             input#product-image(type="file" class="form-control" onchange="readImage(this)" accept="image/*")
                             .d-block.mt-1
-                                img#image-preview.h-100.w-100(src="" alt="업로드된 이미지가 없습니다.")
+                                img#image-preview.w-100(src="" alt="업로드된 이미지가 없습니다." height="350")
         .d-flex.justify-content-end
             button.btn.btn-success.col-2(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-add-product')
                 | 추가

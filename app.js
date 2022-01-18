@@ -131,7 +131,7 @@ app.get('/products', (req, res) => {
     connection.query(query, 'not', (err, results, fields)=> {
         if (err) throw err;
 
-        let products = [] /* 상품 목록*/
+        let products = [] // 상품 목록
 
         if (results.length !== 0){
             for(let i = 0; i < results.length; i++){
@@ -195,8 +195,8 @@ app.post('/api/addproduct', (req, res) => {
         })
     }
 
-    query = 'INSERT INTO product (status, category, name, price) VALUES (?, ?, ?, ?)'
-    data = [req.body.status, req.body.category, req.body.name, req.body.price]
+    query = 'INSERT INTO product (status, category, name, price, image_url) VALUES (?, ?, ?, ?, ?)'
+    data = [req.body.status, req.body.category, req.body.name, req.body.price, req.body.url]
 
     connection.query(query, data, (err, results, fields) => {
         if (err) throw err
