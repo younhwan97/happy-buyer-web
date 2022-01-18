@@ -30,7 +30,7 @@ function checkProductStatusOption(option){
 
 /* add product */
 function uploadFile(){
-    const image = document.querySelector('#product-image').files[0]
+    const image = document.querySelector('#product-image').files[0] // 업르드할 상품 이미지
 
     const fd = new FormData()
     fd.append('file', image)
@@ -73,13 +73,13 @@ function uploadFile(){
 }
 
 function addProduct(uploadFileUrl){
-    let status = 0
+    let status = 0 // 상품 (판매) 상태
 
     // get product data
     if($('#product-status-1').is(':checked')) status = 1
-    const category = $("#product-category option:selected").val()
-    const name = $('#product-name').val()
-    const price = $('#product-price').val()
+    const category = $("#product-category option:selected").val() // 상품 카테고리
+    const name = $('#product-name').val() // 상품 이름
+    const price = $('#product-price').val() // 상품 가격
 
     // send `POST` request
     fetch(`/api/addproduct`, {
@@ -110,4 +110,22 @@ function createDetailPrice(self){
     let price = $(self).val()
     price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
     $('#price-detail').text(price+'원')
+}
+
+function readImage(input){
+    const previewImage = document.querySelector('#image-preview')
+
+    if(input.files && input.files[0]){
+        // FileReader 인스턴스 생성
+        const reader = new FileReader()
+
+        reader.onload = e => {
+            previewImage.src = e.target.result
+        }
+
+        // reader 가 이미지를 읽도록 하기
+        reader.readAsDataURL(input.files[0])
+    } else {
+        previewImage.src = ""
+    }
 }
