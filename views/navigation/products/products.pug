@@ -51,12 +51,12 @@
                                 tr
                                     td
                                         if status === '판매중'
-                                            span.badge.bg-success.rounded-pill.font-14 #{status}
+                                            span.badge.badge-outline-primary.font-14 #{status}
                                         else
-                                            span.badge.bg-danger.rounded-pill.font-14 #{status}
+                                            span.badge.badge-outline-danger.font-14 #{status}
                                     td #{product.category}
                                     td
-                                        img.rounded.me-3(title="contact-img" height="48" alt="contact-img" src=url)
+                                        img.rounded.me-3(title="contact-img" height="68" alt="contact-img" src=url)
                                         p.m-0.d-inline-block.align-middle.font-16 #{product.name}
                                     td #{price}원
                                     td.table-action
