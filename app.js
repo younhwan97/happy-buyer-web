@@ -156,50 +156,54 @@ app.get('/addproduct', (req, res) => {
     )
 })
 
-app.post('/api/addproduct', (req, res) => {
-    const query = 'INSERT INTO product (status, category, name, price) VALUES (?, ?, ?, ?)'
-    const data = [req.body.status, req.body.category, req.body.name, req.body.price]
+app.post('/api/upload', (req, res) => {
+    let file // client 에서 전송받은 파일
+    let params // s3 접속을 위한 params
 
+    if (!req.files || Object.keys(req.files).length === 0) { // 업로드할 파일이 없을 때
+        res.json({
+            status: 'fail'
+        })
+    }
 
-    connection.query(query, data, (err, results, fields) => {
-        if (err) throw err;
+    file = req.files.file
+    params = {
+        'Bucket': 'hbb',
+        'Key': file.name,
+        'ACL': 'public-read',
+        'Body': fs.createReadStream(file.tempFilePath),
+        'ContentType': 'image/png',
+    }
+
+    s3.upload(params, (err, data)=> {
+        if (err) throw err
 
         res.json({
-            status: 'success'
+            status: 'success',
+            url: data.Location
         })
     })
 })
 
-app.post('/api/upload', (req, res) => {
-    let imageFile
-    let uploadPath
+app.post('/api/addproduct', (req, res) => {
+    let query // 상품 추가를 위한 쿼리
+    let data // 상품 데이터
 
-    if (!req.files || Object.keys(req.files).length === 0) {
+    if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
         return res.json({
             status: 'fail'
         })
     }
 
-    // The name of the input field (i.e. "imageFile") is used to retrieve the uploaded file
-    imageFile = req.files.imageFile.tempFilePath;
+    query = 'INSERT INTO product (status, category, name, price) VALUES (?, ?, ?, ?)'
+    data = [req.body.status, req.body.category, req.body.name, req.body.price]
 
-   // uploadPath = __dirname + '/somewhere/on/your/server/' + sampleFile.name;
+    connection.query(query, data, (err, results, fields) => {
+        if (err) throw err
 
-    let params = {
-        'Bucket': 'hbb',
-        'Key': req.files.imageFile.name,
-        'ACL': 'public-read',
-        'Body': fs.createReadStream(imageFile),
-        'ContentType': 'image/png',
-    }
-
-    s3.putObject(params, (err, data)=> {
-        console.log(err)
-        console.log(data)
-    })
-
-    return res.json({
-        status: 'success'
+        return res.json({
+            status: 'success'
+        })
     })
 })
 

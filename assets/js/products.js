@@ -33,7 +33,7 @@ function uploadFile(){
     const image = document.querySelector('#product-image').files[0]
 
     const fd = new FormData()
-    fd.append('imageFile', image)
+    fd.append('file', image)
 
     // send `POST` request
     fetch('/api/upload', {
@@ -43,8 +43,8 @@ function uploadFile(){
         .then(res => res.json())
         .then(json => {
             if(json.status === 'success'){
-                let url
-                // addProduct(url)
+                let url = json.url
+                addProduct(url)
             } else {
                 console.log("fail")
             }
@@ -75,7 +75,8 @@ function addProduct(u){
             status: status || 1,
             category: category || 'not',
             name: name || "-",
-            price: price || 0
+            price: price || 0,
+            url: url || ""
         })
     })
         .then((res) => {
