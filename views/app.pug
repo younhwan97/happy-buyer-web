@@ -8,7 +8,8 @@ html(lang='kr' style="overflow-y:overlay")
         <!-- Start Content-->
         div(class="container-fluid")
             div(class="wrapper")
-                include ./templates/leftSideBar
+                .leftside-menu.leftside-menu-detached
+                    include ./templates/leftSideBar
 
                 .content-page
                     .content
@@ -21,7 +22,7 @@ html(lang='kr' style="overflow-y:overlay")
                             include ./navigation/products/addproduct
                         else if (page === "dashboard")
                             include navigation/dashboard
-
+                    footer.footer
                         include ./templates/footer
+
         include ./templates/script
-//body(class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}')
