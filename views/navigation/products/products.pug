@@ -35,7 +35,7 @@
                         tbody
                             each product in products
                                 - let status
-                                if product.status
+                                if product.status === 1
                                     - status = '판매중'
                                 else
                                     - status = '품절'
@@ -43,28 +43,29 @@
                                 - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                                 - let url = product.image_url
                                 - let name = product.name
+                                - let id = product.product_id
 
-                                tr
-                                    th.d-none #{product.product_id}
-                                    td
+                                tr.product
+                                    td.product-id.d-none #{id}
+                                    td.product-status
                                         if status === '판매중'
                                             span.badge.badge-outline-primary.font-14 #{status}
                                         else
                                             span.badge.badge-outline-danger.font-14 #{status}
-                                    td #{product.category}
-                                    td
+                                    td.product-cateogry #{product.category}
+                                    td.product-img
                                         img.rounded.me-3(title=name height="68" alt="상품 이미지" src=url)
                                         p.m-0.d-inline-block.align-middle.font-16 #{name}
-                                    td #{price}원
+                                    td.product-price #{price}원
                                     td.table-action
                                         button.btn
                                             a.action-icon(href='javascript:void(0);')
                                                 i.mdi.mdi-square-edit-outline
-                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-remove-product')
+                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-remove-product' onclick=`createRemoveProductModal(${id})`)
                                             a.action-icon(href='javascript:void(0);')
                                                 i.mdi.mdi-delete
 // Modal
-#confirm-to-remove-product.modal.fade(tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true")
+#confirm-to-remove-product.modal.fade(tabindex="-1" role="dialog" aria-labelledby="standard-modalLabel" aria-hidden="true" data-product-id="")
     .modal-dialog.modal-dialog-centered
         .modal-content
             .modal-header
@@ -74,4 +75,4 @@
                 | 상품을 정말 제거하시겠습니까?
             .modal-footer
                 button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                button.btn.btn-light(type='button' onclick="removeProduct()") 확인
+                button.btn.btn-light(type='button' onclick="removeProduct()" data-bs-dismiss='modal') 확인

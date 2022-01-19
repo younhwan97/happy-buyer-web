@@ -207,6 +207,28 @@ app.post('/api/addproduct', (req, res) => {
     })
 })
 
+app.post('/api/product/remove', (req, res) => {
+    let query
+    let productId
+
+    if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
+        return res.json({
+            status: 'fail'
+        })
+    }
+
+    query = 'DELETE FROM product WHERE product_id = ?'
+    productId = req.body.productId
+
+    connection.query(query, productId, (err, results, fields) => {
+        if (err) throw err
+
+        return res.json({
+            status: 'success'
+        })
+    })
+})
+
 app.get('/dashboard', (req, res) => {
     res.render('app',
         {

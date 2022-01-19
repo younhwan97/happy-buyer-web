@@ -9,8 +9,7 @@ $(document).ready(function () {
         lengthMenu:[10,20,30,40,50,100],
         displayLength: 20,
         info: false,
-        // 정렬 기능 숨기기
-        ordering: false,
+        ordering: false, // 정렬 기능 숨기기
     });
 
     var a = $("#datatable-buttons").DataTable({

@@ -1,16 +1,21 @@
 /* products */
 function checkProductStatusOption(option){
     const optionValue = option.value
+    let myTable = $('#basic-datatable').DataTable();
 
     if(optionValue === 'sale'){ // 판매 중
-
-
+        myTable.columns( 1 )
+            .search('판매중')
+            .draw();
     } else if(optionValue === 'soldOut'){ // 품절
-
+        myTable.columns( 1 )
+            .search('품절')
+            .draw();
 
     } else { // 전체
-
-
+        myTable.columns( 1 )
+            .search('')
+            .draw();
     }
 
     changeView(option)
@@ -28,8 +33,61 @@ function checkProductStatusOption(option){
     }
 }
 
-function removeProduct(){
+function createRemoveProductModal(productId){
+    $('#confirm-to-remove-product').attr('data-product-id', productId)
+}
 
+function removeProduct(){
+    let productId = $('#confirm-to-remove-product').attr('data-product-id')
+    productId = Number(productId)
+
+    // send `POST` request
+    fetch(`/api/product/remove`, {
+        method : 'POST',
+        headers : {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            productId: productId
+        })
+    })
+        .then((res) => {
+            return res.json(); // Promise 반환
+        })
+        .then((json) => {
+            if(json.status === "success"){
+                createView(productId)
+                $.NotificationApp.send(
+                    "성공",
+                    "상품이 성공적으로 삭제되었습니다 :)",
+                    "top-right",
+                    "#9EC600",
+                    "success",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
+            } else if(json.status === "fail"){
+
+            } else {
+
+            }
+        })
+        .catch(err => console.error(err))
+
+    function createView(productId){
+
+        let myTable = $('#basic-datatable').DataTable();
+        let productList = $('.product')
+
+        for(let i = 0; i< productList.length; i++){
+            let id = $(productList[i]).children('.product-id').text()
+            id = Number(id)
+            if (id === productId){
+                myTable.row(productList[i]).remove().draw()
+            }
+        }
+    }
 }
 
 /* add product */
@@ -92,7 +150,7 @@ function addProduct(uploadFileUrl){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            status: status || 1,
+            status: status || 0,
             category: category || 'not',
             name: name || "-",
             price: price || 0,
