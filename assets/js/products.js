@@ -4,16 +4,16 @@ function checkProductStatusOption(option){
     let myTable = $('#basic-datatable').DataTable();
 
     if(optionValue === 'sale'){ // 판매 중
-        myTable.columns( 1 )
+        myTable.columns(1)
             .search('판매중')
             .draw();
     } else if(optionValue === 'soldOut'){ // 품절
-        myTable.columns( 1 )
+        myTable.columns(1)
             .search('품절')
             .draw();
 
     } else { // 전체
-        myTable.columns( 1 )
+        myTable.columns(1)
             .search('')
             .draw();
     }
@@ -50,7 +50,7 @@ function checkProductCategoryOption(self){
     }
 
     let myTable = $('#basic-datatable').DataTable();
-    myTable.columns( 2 )
+    myTable.columns(2)
         .search(selectedCategories, true, false)
         .draw();
 
@@ -65,12 +65,12 @@ function checkProductCategoryOption(self){
     }
 }
 
-function createRemoveProductModal(productId){
-    $('#confirm-to-remove-product').attr('data-product-id', productId)
+function createProductRemoveModal(productId){
+    $('#productRemove-modal').attr('data-product-id', productId)
 }
 
 function removeProduct(){
-    let productId = $('#confirm-to-remove-product').attr('data-product-id')
+    let productId = $('#productRemove-modal').attr('data-product-id')
     productId = Number(productId)
 
     // send `POST` request
