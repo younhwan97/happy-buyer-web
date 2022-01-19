@@ -33,6 +33,38 @@ function checkProductStatusOption(option){
     }
 }
 
+function checkProductCategoryOption(self){
+
+    changeView(self)
+
+    const productCategoryOptions = $('.product-category-option')
+    let selectedCategories = ""
+
+    for(let i = 0; i < productCategoryOptions.length; i++){
+        if($(productCategoryOptions[i]).hasClass('btn-success')){
+            if(!selectedCategories)
+                selectedCategories += $(productCategoryOptions[i]).text()
+            else
+                selectedCategories = selectedCategories + "|" +$(productCategoryOptions[i]).text()
+        }
+    }
+
+    let myTable = $('#basic-datatable').DataTable();
+    myTable.columns( 2 )
+        .search(selectedCategories, true, false)
+        .draw();
+
+    function changeView(self){
+        if($(self).hasClass('btn-light')){
+            $(self).removeClass('btn-light')
+            $(self).addClass('btn-success')
+        }else{
+            $(self).addClass('btn-light')
+            $(self).removeClass('btn-success')
+        }
+    }
+}
+
 function createRemoveProductModal(productId){
     $('#confirm-to-remove-product').attr('data-product-id', productId)
 }

@@ -21,7 +21,7 @@
                         .col-sm-12
                             h6 상품 분류
                             each val, index in ['과일', '정육', '채소', '수산/건해산', '쌀/잡곡', '생수/음료', '커피/차', '과자/빙과', '장/양념', '라면/즉석식품', '우유/유제품', '세탁/청소', '제지/위생', '주방', '반려동물']
-                                button.btn.btn-light.rounded-pill.m-1(type="button" value=val) #{val}
+                                button.btn.btn-light.rounded-pill.m-1.product-category-option(type="button" value=val onclick="checkProductCategoryOption(this)") #{val}
                 .table-responsive
                     table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap
                         thead.table-light
