@@ -9,7 +9,7 @@ const mysql = require('mysql');
 AWS.config.update({region: 'ap-northeast-2'});
 
 /* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./config/database.json', 'utf-8')); // read db config file in server
+const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')); // read db config file in server
 const connection = mysql.createConnection({
     host: conf.host,
     user: conf.user,

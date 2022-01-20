@@ -1,26 +1,26 @@
 doctype html
 html(lang='ko' style="overflow-y:overlay")
     head
-        include ./templates/head
+        include templates/head
     body(class="loading" data-layout="detached" data-layout-config='{"leftSidebarCondensed":false,"darkMode":false, "showRightSidebarOnStart": false}')
-        include ./templates/topNavigation
+        include templates/topNavigation
 
         <!-- Start Content-->
         div(class="container-fluid")
             div(class="wrapper")
-                include ./templates/leftSideBar
+                include templates/leftSideBar
 
                 .content-page
                     .content
                         <!-- Navigation -->
                         if (page === "home")
-                            include ./navigation/home
+                            include navigation/home
                         else if (page === "products")
-                            include ./navigation/products/products
+                            include navigation/products/products
                         else if (page === "addproduct")
-                            include ./navigation/products/addproduct
+                            include navigation/products/addproduct
                         else if (page === "dashboard")
-                            include ./navigation/dashboard
-                    include ./templates/footer
+                            include navigation/dashboard
+                    include templates/footer
 
-        include ./templates/script
+        include templates/script

@@ -19,7 +19,7 @@ File: Icons Css File
 @media screen and (-webkit-min-device-pixel-ratio:0) {
   @font-face {
     font-family: 'unicons';
-    src: url('../font/unicons.svg?34404611#unicons') format('svg');
+    app: url('../font/unicons.svg?34404611#unicons') format('svg');
   }
 }
 */
