@@ -6,10 +6,10 @@ const app = express()
 const fileUpload = require('express-fileupload');
 
 /* Routing */
-const home = require("./routes")
+const home = require("./src/routes")
 
 /* App Setting */
-app.set("views", "./views")
+app.set("views", "./src/views")
 app.set('view engine', 'pug');
 app.use(express.static(`${__dirname}/assets`));
 app.use(express.json())
