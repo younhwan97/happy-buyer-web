@@ -11,7 +11,7 @@ const home = require("./src/routes")
 /* App Setting */
 app.set("views", "./src/views")
 app.set('view engine', 'pug');
-app.use(express.static(`${__dirname}/assets`));
+app.use(express.static(`${__dirname}/src/assets`));
 app.use(express.json())
 app.use(fileUpload({
     useTempFiles: true,
