@@ -3,9 +3,12 @@
 /* Module */
 const fs = require("fs")
 const AWS = require('aws-sdk')
-AWS.config.update({region: 'ap-northeast-2'});
 const s3 = new AWS.S3()
 const mysql = require('mysql');
+
+AWS.config.update({region: 'ap-northeast-2'});
+
+/* AWS RDS Setting */
 const conf = JSON.parse(fs.readFileSync('./config/database.json', 'utf-8')); // read db config file in server
 const connection = mysql.createConnection({
     host: conf.host,
@@ -95,7 +98,6 @@ const view = {
             }
         )
     }
-
 }
 
 const read = {

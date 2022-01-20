@@ -1,28 +1,22 @@
 "use strict";
 
-/* module */
+/* Module */
 const express = require('express')
-const fileUpload = require('express-fileupload');
-const PORT = 80
 const app = express()
+const fileUpload = require('express-fileupload');
 
-app.use(express.static('assets'));
+/* Routing */
+const home = require("./routes")
 
-/* Body parser */
+/* App Setting */
+app.set("views", "./views")
+app.set('view engine', 'pug');
+app.use(express.static(`${__dirname}/assets`));
 app.use(express.json())
-
-/* Upload to file in server */
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/'
 }));
-
-/* routing */
-const home = require("./routes")
-
-/* Setting App */
-app.set("views", "./views")
-app.set('view engine', 'pug');
 
 app.use("/", home);
 
@@ -40,6 +34,4 @@ app.post('/api/addproduct', home)
 
 app.post('/api/product/remove', home)
 
-app.listen(PORT, () => {
-    console.log(`Connected 80 port`);
-})
+module.exports = app
