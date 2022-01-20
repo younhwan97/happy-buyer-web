@@ -4,7 +4,7 @@
 const express = require("express")
 const router = express.Router()
 
-const controller = require('./home.ctrl')
+const controller = require('./ctrl')
 
 // View Rendering
 router.get('/', controller.view.home)

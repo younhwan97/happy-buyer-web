@@ -18,7 +18,7 @@ app.use(fileUpload({
 }));
 
 /* routing */
-const home = require("./routes/home")
+const home = require("./routes")
 
 /* Setting App */
 app.set("views", "./views")
