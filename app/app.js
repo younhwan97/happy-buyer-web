@@ -28,10 +28,10 @@ app.use("/dashboard", home)
 
 app.use("/api/order", home)
 
-app.post('/api/upload', home)
+app.use('/api/upload', home)
 
-app.post('/api/addproduct', home)
+app.use('/api/addproduct', home)
 
-app.post('/api/product/remove', home)
+app.use('/api/product/remove', home)
 
 module.exports = app
