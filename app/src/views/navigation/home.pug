@@ -2,6 +2,22 @@
 .row
     .col-12
         .page-title-box
+            if options.ds ==="ready"
+                .page-title-right.d-none
+            else
+                .page-title-right
+                    form.d-flex
+                        .input-group
+                            if options.date !== ""
+                                - let date = new Date(options.date);
+                                - date = date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
+                                input#dash-daterange.form-control.form-control-light(type='text' value= date)
+                            else
+                                input#dash-daterange.form-control.form-control-light(type='text')
+                            span.input-group-text.bg-primary.border-primary.text-white
+                                i.mdi.mdi-calendar-range.font-13
+                        a.btn.btn-primary.ms-2(href="#" onclick="readDeliveredOrderByDate()")
+                            i.mdi.mdi-autorenew
             h4.page-title 주문/배달 조회
 // end page title
 .row
@@ -59,7 +75,7 @@
                                         |  배달 준비
                                     else if order.status === 'delivered'
                                         i.mdi.mdi-circle.text-secondary
-                                        |  배달 준비
+                                        |  배달 완료
                                 td
                                     button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
 // order detail modal

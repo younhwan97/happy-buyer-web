@@ -24,15 +24,27 @@ const view = {
     home: (req, res) => {
         /* 쿼리스트링 값을 추출 */
         const ds = req.query.ds || "ready"
-        const query = 'SELECT * FROM (order_history) WHERE status = ? OR status = ? ORDER BY order_id DESC;'
+        const date = req.query.date || ""
 
         /* 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 조건 생성 */
         // delivery_status = received  -> 주문 접수
         // delivery_status = confirmed -> 배달 준비
         // delivery_status = delivered -> 배달 완료
-        let status = ["received", "confirmed"] // 주문 접수 및 배달 준비 상태의 데이터 조회 : 기본 값
-        if (ds === "delivered") // 배달 완료 상태의 데이터 조회
-            status = ["delivered", "delivered"]
+        let status
+        let query
+
+        if(ds === "ready"){
+            status = ["received", "confirmed"]
+            query = 'SELECT * FROM (order_history) WHERE status = ? OR status = ? ORDER BY order_id DESC;'
+        }else if (ds === "delivered") { // 배달 완료 상태의 데이터 조회
+            if(date === ""){
+                status = ["delivered"]
+                query = 'SELECT * FROM (order_history) WHERE status = ? AND DATE(date) = DATE(DATE_ADD(NOW(), INTERVAL 9 HOUR)) ORDER BY order_id DESC;'
+            } else {
+                status = ["delivered", date]
+                query = 'SELECT * FROM (order_history) WHERE status =? AND DATE(date) = ? ORDER BY order_id DESC;'
+            }
+        }
 
         /* order_history 테이블 조회 */
         connection.query(query, status, (err, results, fields)=>{
@@ -50,7 +62,8 @@ const view = {
                 {
                     page: "home",
                     options: {
-                        ds : ds
+                        ds : ds,
+                        date: date
                     },
                     orders: orders,
                 }
@@ -149,7 +162,7 @@ const read = {
                 status: 'fail',
             })
         }
-    }
+    },
 }
 
 const create = {

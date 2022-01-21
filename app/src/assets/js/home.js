@@ -82,3 +82,11 @@ function openOrderDetailModal(id){
         footer.innerHTML = view
     }
 }
+
+function readDeliveredOrderByDate(){
+    let selectedDate = document.querySelector('#dash-daterange').value
+    let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+    selectedDate = new Date(new Date(selectedDate) - timezoneOffset)
+    selectedDate = selectedDate.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(0, 10)
+    location.href = `?ds=delivered&date=${selectedDate}`
+}
