@@ -13,6 +13,7 @@ app.set("views", "./src/views")
 app.set('view engine', 'pug');
 app.use(express.static(`${__dirname}/src/assets`));
 app.use(express.json())
+app.use(express.urlencoded({extended:true}))
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/'
