@@ -167,10 +167,10 @@ function uploadFile(){
 }
 
 function addProduct(uploadFileUrl){
-    let status = 0 // 상품 (판매) 상태
+    let status = "품절" // 상품 (판매) 상태
 
     // get product data
-    if($('#product-status-1').is(':checked')) status = 1
+    if($('#product-status-1').is(':checked')) status = "판매중"
     const category = $("#product-category option:selected").val() // 상품 카테고리
     const name = $('#product-name').val() // 상품 이름
     const price = $('#product-price').val() // 상품 가격
@@ -182,8 +182,8 @@ function addProduct(uploadFileUrl){
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            status: status || 0,
-            category: category || 'not',
+            status: status || "품절",
+            category: category || '미선택',
             name: name || "-",
             price: price || 0,
             url: uploadFileUrl || ""

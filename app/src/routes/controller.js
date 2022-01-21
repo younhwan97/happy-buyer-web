@@ -73,9 +73,9 @@ const view = {
 
     products : (req, res) => {
 
-        const query = 'SELECT * FROM (product) WHERE category <> ? ORDER BY product_id DESC;'
+        const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
 
-        connection.query(query, '미선택', (err, results, fields)=> {
+        connection.query(query, ['미선택', '삭제됨'], (err, results, fields)=> {
             if (err) throw err;
 
             let products = [] // 상품 목록
@@ -221,7 +221,6 @@ const create = {
 const remove = {
     product : (req, res) => {
         let query
-        let productId
 
         if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
             return res.json({
@@ -229,10 +228,9 @@ const remove = {
             })
         }
 
-        query = 'DELETE FROM product WHERE product_id = ?'
-        productId = req.body.productId
+        query = 'UPDATE product SET status = ? WHERE product_id =?;'
 
-        connection.query(query, productId, (err, results, fields) => {
+        connection.query(query, ["삭제됨", req.body.productId], (err, results, fields) => {
             if (err) throw err
 
             return res.json({
@@ -240,7 +238,6 @@ const remove = {
             })
         })
     }
-
 }
 
 module.exports = {

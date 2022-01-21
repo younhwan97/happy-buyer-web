@@ -34,11 +34,7 @@
                                 th(style='width: 70px;') 수정/삭제
                         tbody
                             each product in products
-                                - let status
-                                if product.status === 1
-                                    - status = '판매중'
-                                else
-                                    - status = '품절'
+                                - let status = product.status
                                 - let price = product.price
                                 - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
                                 - let url = product.image_url
@@ -50,8 +46,10 @@
                                     td.product-status
                                         if status === '판매중'
                                             span.badge.badge-outline-primary.font-14 #{status}
-                                        else
+                                        else if status === '품절'
                                             span.badge.badge-outline-danger.font-14 #{status}
+                                        else if status === '삭제됨'
+                                            span.badge.badge-outline-secondary.font-14 #{status}
                                     td.product-cateogry #{product.category}
                                     td.product-img
                                         img.rounded.me-3(title=name height="68" alt="상품 이미지" src=url)
