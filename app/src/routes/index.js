@@ -22,4 +22,4 @@ router.post('/api/addproduct', controller.create.product)
 // Remove Data
 router.post('/api/product/remove', controller.remove.product)
 
-module.exports = router;
+module.exports = router

@@ -20,18 +20,4 @@ app.use(fileUpload({
 
 app.use("/", home);
 
-app.use("/products", home)
-
-app.use('/addproduct', home)
-
-app.use("/dashboard", home)
-
-app.use("/api/order", home)
-
-app.use('/api/upload', home)
-
-app.use('/api/addproduct', home)
-
-app.use('/api/product/remove', home)
-
 module.exports = app
