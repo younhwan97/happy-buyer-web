@@ -26,51 +26,50 @@
                                 - temp = "light"
                             button(id="product-status-filter-option-2" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
                                 | 배달 완료
-                .table-responsive
-                    table.table.table-centered.mb-0
-                        thead.table-light
+                table#order-datatable.table.dt-responsove.nowrap.w-100
+                    thead.table-light
+                        tr
+                            th 주문 번호
+                            th 날짜
+                            th 배달 주소
+                            th 이름
+                            th 배달 상태
+                            th(style='width: 125px;') 주문 상세
+                    tbody
+                        each order in orders
+                            - let price = order.price
+                            - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                            - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+                            - let date = new Date(new Date(order.date) - timezoneOffset)
+                            - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
+                            - let orderId = order.order_id
+                            - let name = order.name || "-"
                             tr
-                                th 주문 번호
-                                th 날짜
-                                th 배달 주소
-                                th 이름
-                                th 배달 상태
-                                th(style='width: 125px;') 주문 상세
-                        tbody
-                            each order in orders
-                                - let price = order.price
-                                - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                                - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
-                                - let date = new Date(new Date(order.date) - timezoneOffset)
-                                - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
-                                - let orderId = order.order_id
-                                - let name = order.name || "-"
-                                tr
-                                    td #{orderId}
-                                    td
-                                        small.text-muted #{date}
-                                    td #{order.shipping_adress}
-                                    td #{name}
-                                    td
-                                        if order.status === 'received'
-                                            i.mdi.mdi-circle.text-success
-                                            |  주문 접수
-                                        else if order.status === 'confirmed'
-                                            i.mdi.mdi-circle.text-info
-                                            |  배달 준비
-                                        else if order.status === 'delivered'
-                                            i.mdi.mdi-circle.text-secondary
-                                            |  배달 준비
-                                    td
-                                        button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
-                // order detail modal
-                #orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
-                    .modal-dialog
-                        .modal-content
-                            .modal-header
-                                h4#orderDetail-modalLabel.modal-title 주문 번호:
-                                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-                            .modal-body#orderDetail-modalBody
-                                .d-flex.justify-content-center
-                                    .spinner-border.avatar-md(role='status')
-                            .modal-footer.justify-content-between#orderDetail-modalFooter
+                                td #{orderId}
+                                td
+                                    small.text-muted #{date}
+                                td #{order.shipping_adress}
+                                td #{name}
+                                td
+                                    if order.status === 'received'
+                                        i.mdi.mdi-circle.text-success
+                                        |  주문 접수
+                                    else if order.status === 'confirmed'
+                                        i.mdi.mdi-circle.text-info
+                                        |  배달 준비
+                                    else if order.status === 'delivered'
+                                        i.mdi.mdi-circle.text-secondary
+                                        |  배달 준비
+                                td
+                                    button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
+// order detail modal
+#orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                h4#orderDetail-modalLabel.modal-title 주문 번호:
+                button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
+            .modal-body#orderDetail-modalBody
+                .d-flex.justify-content-center
+                    .spinner-border.avatar-md(role='status')
+            .modal-footer.justify-content-between#orderDetail-modalFooter
