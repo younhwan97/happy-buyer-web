@@ -53,7 +53,7 @@
                         .mb-3.col-6
                             label(for="product-image" class="form-label") 상품 이미지(필수)
                             input#product-image(type="file" class="form-control" onchange="readImage(this)" accept="image/*")
-                            .d-none.mt-1
+                            .d-block.mt-1
                                 img#image-preview.w-100(src="" alt="업로드된 이미지가 없습니다." height="350")
         .d-flex.justify-content-end
             button.btn.btn-success.col-2(type='button' data-bs-toggle='modal' data-bs-target='#confirm-to-add-product')
@@ -68,5 +68,5 @@
             .modal-body
                 | 상품을 추가하시겠습니까?
             .modal-footer
-                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                button.btn.btn-light(type='button' onclick="uploadFile()") 확인
+                button.btn.btn-primary(type='button' onclick="uploadFile()") 확인
+                button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

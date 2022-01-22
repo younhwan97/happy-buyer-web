@@ -24,7 +24,7 @@
                             each val, index in ['과일', '정육', '채소', '수산/건해산', '쌀/잡곡', '생수/음료', '커피/차', '과자/빙과', '장/양념', '라면/즉석식품', '우유/유제품', '세탁/청소', '제지/위생', '주방', '반려동물']
                                 button.btn.btn-light.rounded-pill.m-1.product-category-option(type="button" value=val onclick="checkProductCategoryOption(this)") #{val}
                 .table-responsive
-                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap
+                    table#basic-datatable.table.table-centered.w-100.dt-responsive.nowrap.table-hover
                         thead.table-light
                             tr
                                 th.d-none 상품번호
@@ -74,8 +74,8 @@
             .modal-body
                 | 상품을 정말 제거하시겠습니까?
             .modal-footer
-                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                button.btn.btn-light(type='button' onclick="removeProduct()" data-bs-dismiss='modal') 확인
+                button.btn.btn-primary(type='button' onclick="removeProduct()" data-bs-dismiss='modal') 확인
+                button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
 #productModify-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
     .modal-dialog
         .modal-content
@@ -86,5 +86,5 @@
                 .d-flex.justify-content-center
                     .spinner-border.avatar-md(role='status')
             .modal-footer#productModify-modalFooter
-                button.btn.btn-secondary(type='button' data-bs-dismiss='modal') 취소
-                button.btn.btn-light(type='button') 확인
+                button.btn.btn-primary(type='button') 확인
+                button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소

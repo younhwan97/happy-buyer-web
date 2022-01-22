@@ -42,11 +42,11 @@
                                 - temp = "light"
                             button(id="product-status-filter-option-2" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
                                 | 배달 완료
-                table#order-datatable.table.dt-responsove.nowrap.w-100
+                table#order-datatable.table.dt-responsove.nowrap.w-100.table-centered.table-hover
                     thead.table-light
                         tr
-                            th 주문 번호
-                            th 날짜
+                            th(style="width: 65px;") 주문 번호
+                            th(style="width: 90px;") 날짜
                             th 배달 주소
                             th 이름
                             th 배달 상태
@@ -74,7 +74,6 @@
                                         i.mdi.mdi-circle.text-info
                                         |  배달 준비
                                     else if order.status === 'delivered'
-                                        i.mdi.mdi-circle.text-secondary
                                         |  배달 완료
                                 td
                                     button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
