@@ -33,16 +33,16 @@ const view = {
         let status
         let query
 
-        if(ds === "ready"){
+        if(ds === "ready"){ // delivery_status === (received || confirmed)
             status = ["received", "confirmed"]
             query = 'SELECT * FROM (order_history) WHERE status = ? OR status = ? ORDER BY order_id DESC;'
-        }else if (ds === "delivered") { // 배달 완료 상태의 데이터 조회
-            if(date === ""){
+        } else if (ds === "delivered") { // 배달 완료 상태의 데이터 조회
+            if(date === ""){ // 오늘 날짜로 배달 완료 상태의 데이터 조회
                 status = ["delivered"]
                 query = 'SELECT * FROM (order_history) WHERE status = ? AND DATE(date) = DATE(DATE_ADD(NOW(), INTERVAL 9 HOUR)) ORDER BY order_id DESC;'
-            } else {
+            } else {        // 선택된 날짜로 배달 완료 상태의 데이터 조회
                 status = ["delivered", date]
-                query = 'SELECT * FROM (order_history) WHERE status =? AND DATE(date) = ? ORDER BY order_id DESC;'
+                query = 'SELECT * FROM (order_history) WHERE status = ? AND DATE(date) = ? ORDER BY order_id DESC;'
             }
         }
 
@@ -50,7 +50,7 @@ const view = {
         connection.query(query, status, (err, results, fields)=>{
             if (err) throw err
 
-            let orders = []; // 주문 목록
+            let orders = [] // 주문 목록
 
             if(results.length !== 0){
                 for(let i = 0; i < results.length; i++){
