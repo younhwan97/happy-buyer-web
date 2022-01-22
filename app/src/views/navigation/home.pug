@@ -8,15 +8,13 @@
                 .page-title-right
                     form.d-flex
                         .input-group
-                            if options.date !== ""
-                                - let date = new Date(options.date);
-                                - date = date.getMonth() + 1 + '/' + date.getDate() + '/' + date.getFullYear();
-                                input#dash-daterange.form-control.form-control-light(type='text' value= date)
+                            if options.date === ""
+                                input#order-daterange.form-control.form-control-light(type='text' name="order")
                             else
-                                input#dash-daterange.form-control.form-control-light(type='text')
+                                input#order-daterange.form-control.form-control-light(type='text' name="order" value= options.date)
                             span.input-group-text.bg-primary.border-primary.text-white
                                 i.mdi.mdi-calendar-range.font-13
-                        a.btn.btn-primary.ms-2(href="#" onclick="readDeliveredOrderByDate()")
+                        a.btn.btn-primary.ms-2(href=`/?ds=delivered`)
                             i.mdi.mdi-autorenew
             h4.page-title 주문/배달 조회
 // end page title

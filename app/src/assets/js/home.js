@@ -1,4 +1,22 @@
 /* home */
+$(function() {
+    $('input[name="order"]').daterangepicker({
+        locale:{
+            format: 'YYYY-MM-DD',
+            applyLabel: "적용",
+            cancelLabel: "닫기",
+        },
+        singleDatePicker: true,
+        showDropdowns: false,
+        autoUpdateInput: true
+    }, (start, end, label) => {
+        let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        start = new Date(new Date(start) - timezoneOffset)
+        start = start.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(0, 10)
+        location.href = `?ds=delivered&date=${start}`
+    });
+});
+
 function openOrderDetailModal(id){
     const orderId = id
 
@@ -66,27 +84,16 @@ function openOrderDetailModal(id){
         view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal">주문 취소</Button>`
         view += `<div class="p-0 m-0">`
 
-        if (user.ds === "delivered")
+        if (user.ds === "delivered"){
             view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal" disabled>배달 완료</Button>`
-        else
-            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 완료</Button>`
-
-
-        if (user.ds === "confirmed")
             view += `<Button class="btn btn-light" type="button" data-bs-dismiss="modal" disabled>배달 준비</Button>`
-        else
-            view += `<Button class="btn btn-light" type="button" data-bs-dismiss="modal">배달 준비</Button>`
+        } else {
+            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 완료</Button>`
+            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 준비</Button>`
+        }
 
         view += `</div>`
         let footer = document.querySelector("#orderDetail-modalFooter")
         footer.innerHTML = view
     }
-}
-
-function readDeliveredOrderByDate(){
-    let selectedDate = document.querySelector('#dash-daterange').value
-    let timezoneOffset = new Date().getTimezoneOffset() * 60000;
-    selectedDate = new Date(new Date(selectedDate) - timezoneOffset)
-    selectedDate = selectedDate.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(0, 10)
-    location.href = `?ds=delivered&date=${selectedDate}`
 }
