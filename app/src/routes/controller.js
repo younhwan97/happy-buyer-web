@@ -145,43 +145,44 @@ const read = {
                         })
                     }
 
-                    let template = 'SELECT * FROM (product) WHERE product_id = ?;'
                     let query = ""
                     mapping.map( it =>
-                        query += mysql.format(template, it.productId)
+                        query += mysql.format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
                     )
 
                     connection.query(query, (err, results, fields) => {
-                        if(results){
-                            let data = []
-                            if(results.length === mapping.length){
-                                // 찾고자 했던 상품이 모두 DB에 존재했을 때
-                                for(let i = 0; i < results.length; i++){
-                                    for(let j = 0; j< mapping.length; j++){
-                                        if(mapping[j].productId === results[i][0].product_id){
-                                            results[i][0].count = mapping[j].count
+                        let data = []
 
-                                            data.push(results[i][0])
-                                            break;
-                                        }
+                        if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
+                            for(let i = 0; i < results.length; i++){
+                                let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
+
+                                for(let j = 0; j< mapping.length; j++){
+                                    if(mapping[j].productId === results[i][0].product_id){
+                                        isMatched = true
+                                        results[i][0].count = mapping[j].count
+                                        data.push(results[i][0])
+                                        break;
                                     }
                                 }
-                            } else {
-                                return res.json({
-                                    status: 'fail'
-                                })
-                            }
 
-                            return res.json({
-                                status: 'success',
-                                data: data,
-                                user: user
-                            })
-                        } else {
+                                if(!isMatched){
+                                    return res.json({
+                                        status: 'fail'
+                                    })
+                                }
+                            }
+                        } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
                             return res.json({
                                 status: 'fail'
                             })
                         }
+
+                        return res.json({
+                            status: 'success',
+                            data: data,
+                            user: user
+                        })
                     })
                 })
             })
