@@ -1,4 +1,6 @@
 /* home */
+"use strict";
+
 $(function() {
     $('input[name="order"]').daterangepicker({
         locale:{

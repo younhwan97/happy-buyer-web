@@ -3,7 +3,21 @@ $(document).ready(function () {
 
     $("#basic-datatable").DataTable({
         keys: !0,
-        language: {paginate: {previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"}},
+        language: {
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"
+            },
+            emptyTable: "데이터가 없습니다",
+            info: "_START_ - _END_ \/ _TOTAL_",
+            infoEmpty: "0 - 0 \/ 0",
+            infoFiltered: "(총 _MAX_ 개)",
+            infoThousands: ",",
+            lengthMenu: "_MENU_ 개씩 보기",
+            loadingRecords: "읽는중...",
+            processing: "처리중...",
+            search: "검색:",
+            zeroRecords: "검색 결과가 없습니다",
+        },
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
         },
@@ -15,7 +29,21 @@ $(document).ready(function () {
 
     $("#order-datatable").DataTable({
         keys: !0,
-        language: {paginate: {previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"}},
+        language: {
+            paginate: {
+                previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"
+            },
+            emptyTable: "데이터가 없습니다",
+            info: "_START_ - _END_ \/ _TOTAL_",
+            infoEmpty: "0 - 0 \/ 0",
+            infoFiltered: "(총 _MAX_ 개)",
+            infoThousands: ",",
+            lengthMenu: "_MENU_ 개씩 보기",
+            loadingRecords: "읽는중...",
+            processing: "처리중...",
+            search: "검색:",
+            zeroRecords: "검색 결과가 없습니다",
+        },
         drawCallback: function () {
             $(".dataTables_paginate > .pagination").addClass("pagination-rounded")
         },
