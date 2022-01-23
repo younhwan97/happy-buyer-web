@@ -3,19 +3,20 @@ $(function() {
     $('input[name="order"]').daterangepicker({
         locale:{
             format: 'YYYY-MM-DD',
-            applyLabel: "적용",
-            cancelLabel: "닫기",
+            // applyLabel: "적용",
+            // cancelLabel: "닫기",
         },
         singleDatePicker: true,
         showDropdowns: false,
-        autoUpdateInput: true
+        autoUpdateInput: true,
+        autoApply: true,
     }, (start, end, label) => {
-        let timezoneOffset = new Date().getTimezoneOffset() * 60000;
+        let timezoneOffset = new Date().getTimezoneOffset() * 60000
         start = new Date(new Date(start) - timezoneOffset)
         start = start.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(0, 10)
         location.href = `?ds=delivered&date=${start}`
-    });
-});
+    })
+})
 
 function openOrderDetailModal(id){
     const orderId = id
