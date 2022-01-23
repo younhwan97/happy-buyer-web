@@ -24,14 +24,27 @@ function openOrderDetailModal(id){
     const orderId = id
 
     /* Get data from server */
-    fetch(`/api/order?id=${orderId}`)
+    fetch(`/api/read/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            /* Create detail view */
-            createView(json.data, json.user) // view 생성
-        });
+            if(json.status === "success"){
+                createView(json.data, json.user) // 주문 상세 뷰 생성
+            } else {
+                $.NotificationApp.send(
+                    "오류!",
+                    "주문 상세 정보를 읽어올 수 없습니다.",
+                    "top-right",
+                    "#9EC600",
+                    "error",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
+            }
+        })
+        .catch(err => console.error(err))
 
     function createView(data, user){
         /* create label view */
@@ -48,7 +61,7 @@ function openOrderDetailModal(id){
             let price = data[i].price
             totalPrice += price
             price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            view += `<li class="list-group-item d-flex justify-content-between align-items-center">${data[i].name}<span class="">${price}원</span></li>`
+            view += `<li class="list-group-item d-flex justify-content-between align-items-center">${data[i].name}&nbsp;${data[i].count}개<span class="">${price}원</span></li>`
         }
         totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">&nbsp;<span class="fw-bold font-18">${totalPrice}원</span></li></ul>`
@@ -87,12 +100,12 @@ function openOrderDetailModal(id){
         view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal">주문 취소</Button>`
         view += `<div class="p-0 m-0">`
 
-        if (user.ds === "delivered"){
-            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal" disabled>배달 완료</Button>`
-            view += `<Button class="btn btn-light" type="button" data-bs-dismiss="modal" disabled>배달 준비</Button>`
+        if (user.ds !== "delivered"){
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 완료</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 준비</Button>`
         } else {
-            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 완료</Button>`
-            view += `<Button class="btn btn-light mx-2" type="button" data-bs-dismiss="modal">배달 준비</Button>`
+            // view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 완료</Button>`
+            // view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 준비</Button>`
         }
 
         view += `</div>`

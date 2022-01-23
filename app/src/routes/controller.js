@@ -15,7 +15,8 @@ const connection = mysql.createConnection({
     user: conf.user,
     password: conf.password,
     port: conf.port,
-    database: conf.database
+    database: conf.database,
+    multipleStatements: true
 });
 connection.connect();
 
@@ -120,40 +121,67 @@ const read = {
             /* order ID 를 이용해 주문 정보를 확인한다. */
             let query = 'SELECT * FROM (order_history) WHERE order_id = ?'
             connection.query(query, orderId, (err, results, fields) => {
-                const user = {
+                const user = { // 고객 정보 객체
                     'name' : results[0].name || "-",
-                    'shippingAddress': results[0].shipping_adress,
+                    'shippingAddress': results[0].shipping_adress, // not null
                     'pointNumber': results[0].point_number || "-",
                     'ds': results[0].status,
-                    'date': results[0].date
+                    'date': results[0].date,
+                    'payment': results[0].payment,
+                    // 'request': results[0].request,
                 }
 
                 /* order ID 를 이용해 product ID 를 구한다. */
-                query = 'SELECT product_id FROM (order_product_mapping) WHERE order_id = ?'
+                query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?'
                 connection.query(query, orderId, (err, results, fields) => {
                     if (err) throw err;
 
-                    let productId = []
+                    let mapping = []
 
-                    for(let i = 0; i < results.length; i++)
-                        productId.push(results[i].product_id)
-
-                    /* product ID 를 이용해 상품 정보를 확인한다. */
-                    query = 'SELECT * FROM (product) WHERE'
-
-                    for(let i= 0; i < productId.length; i++){
-                        query = query+ ' product_id = ?'
-                        if (i !== productId.length - 1){
-                            query += ' OR'
-                        }
+                    for(let i = 0; i < results.length; i++) {
+                        mapping.push({
+                            productId : results[i].product_id,
+                            count : results[i].count
+                        })
                     }
 
-                    connection.query(query, productId, (err, results, fields) => {
-                        return res.json({
-                            status: 'success',
-                            data: results,
-                            user: user
-                        })
+                    let template = 'SELECT * FROM (product) WHERE product_id = ?;'
+                    let query = ""
+                    mapping.map( it =>
+                        query += mysql.format(template, it.productId)
+                    )
+
+                    connection.query(query, (err, results, fields) => {
+                        if(results){
+                            let data = []
+                            if(results.length === mapping.length){
+                                // 찾고자 했던 상품이 모두 DB에 존재했을 때
+                                for(let i = 0; i < results.length; i++){
+                                    for(let j = 0; j< mapping.length; j++){
+                                        if(mapping[j].productId === results[i][0].product_id){
+                                            results[i][0].count = mapping[j].count
+
+                                            data.push(results[i][0])
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                return res.json({
+                                    status: 'fail'
+                                })
+                            }
+
+                            return res.json({
+                                status: 'success',
+                                data: data,
+                                user: user
+                            })
+                        } else {
+                            return res.json({
+                                status: 'fail'
+                            })
+                        }
                     })
                 })
             })

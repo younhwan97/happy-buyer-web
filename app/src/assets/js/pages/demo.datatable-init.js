@@ -8,10 +8,6 @@ $(document).ready(function () {
                 previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"
             },
             emptyTable: "데이터가 없습니다",
-            info: "_START_ - _END_ \/ _TOTAL_",
-            infoEmpty: "0 - 0 \/ 0",
-            infoFiltered: "(총 _MAX_ 개)",
-            infoThousands: ",",
             lengthMenu: "_MENU_ 개씩 보기",
             loadingRecords: "읽는중...",
             processing: "처리중...",
@@ -34,10 +30,6 @@ $(document).ready(function () {
                 previous: "<i class='mdi mdi-chevron-left'>", next: "<i class='mdi mdi-chevron-right'>"
             },
             emptyTable: "데이터가 없습니다",
-            info: "_START_ - _END_ \/ _TOTAL_",
-            infoEmpty: "0 - 0 \/ 0",
-            infoFiltered: "(총 _MAX_ 개)",
-            infoThousands: ",",
             lengthMenu: "_MENU_ 개씩 보기",
             loadingRecords: "읽는중...",
             processing: "처리중...",
