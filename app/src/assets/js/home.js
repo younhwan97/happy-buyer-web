@@ -12,7 +12,7 @@ $(function() {
         showDropdowns: false,
         autoUpdateInput: true,
         autoApply: true,
-    }, (start, end, label) => {
+    }, (start) => {
         let timezoneOffset = new Date().getTimezoneOffset() * 60000
         start = new Date(new Date(start) - timezoneOffset)
         start = start.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(0, 10)
@@ -47,22 +47,36 @@ function openOrderDetailModal(id){
         .catch(err => console.error(err))
 
     function createView(data, user){
+        let view = ''
+
         /* create label view */
-        let label = document.querySelector('#orderDetail-modalLabel')
         let timezoneOffset = new Date().getTimezoneOffset() * 60000;
         let date = new Date(new Date(user.date) - timezoneOffset);
         date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
-        label.innerHTML = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderId} (${date})</span>`
+        view = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderId} (${date})</span>`
+
+        const label = document.querySelector('#orderDetail-modalLabel')
+        label.innerHTML = view
 
         /* create body view */
-        let view  = `<h5>주문 목록</h5><ul class="list-group list-group-flush">`
+        view = `<h5>주문 목록</h5><ul class="list-group list-group-flush">`
         let totalPrice = 0
         for(let i= 0; i< data.length; i++){
             let price = data[i].price
-            totalPrice += price
-            price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            view += `<li class="list-group-item d-flex justify-content-between align-items-center">${data[i].name}&nbsp;${data[i].count}개<span class="">${price}원</span></li>`
+            let countedPrice = price * data[i].count
+            totalPrice += (data[i].price * data[i].count)
+            price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            countedPrice = countedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+            view += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>
+                            ${data[i].name}&nbsp;${data[i].count}개 
+                            <div class="text-muted font-12"><span class="font-10">●</span>&nbsp;1개 가격: ${price}원</div>
+                        </span>
+                        <span>${countedPrice}원</span>
+                    </li>`
         }
+
         totalPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">&nbsp;<span class="fw-bold font-18">${totalPrice}원</span></li></ul>`
 
@@ -93,7 +107,7 @@ function openOrderDetailModal(id){
                  </li>`
         view += `</ul>`
 
-        let body = document.querySelector("#orderDetail-modalBody")
+        const body = document.querySelector("#orderDetail-modalBody")
         body.innerHTML = view
 
         /* create footer view */
@@ -109,7 +123,7 @@ function openOrderDetailModal(id){
         }
 
         view += `</div>`
-        let footer = document.querySelector("#orderDetail-modalFooter")
+        const footer = document.querySelector("#orderDetail-modalFooter")
         footer.innerHTML = view
     }
 }
