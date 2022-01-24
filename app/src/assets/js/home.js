@@ -29,7 +29,7 @@ function openOrderDetailModal(id){
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            if(json.status === "success"){
+            if(json.success){
                 createView(json.data, json.user) // 주문 상세 뷰 생성
             } else {
                 $.NotificationApp.send(

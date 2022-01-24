@@ -115,24 +115,26 @@ const view = {
 
 const read = {
     order: (req, res) => {
-        const orderId = req.query.id
+        const orderId = req.query.id // http://happybuyer.co.kr/api/read/order?id=orderId
 
         if(orderId){
-            /* order ID 를 이용해 주문 정보를 확인한다. */
-            let query = 'SELECT * FROM (order_history) WHERE order_id = ?'
+            /* order ID 를 이용해 order_history 테이블에서 주문 정보를 확인한다. */
+            let query = 'SELECT * FROM (order_history) WHERE order_id = ?;'
             connection.query(query, orderId, (err, results, fields) => {
+                if (err) throw err;
+
                 const user = { // 고객 정보 객체
-                    'name' : results[0].name || "-",
-                    'shippingAddress': results[0].shipping_adress, // not null
-                    'pointNumber': results[0].point_number || "-",
-                    'ds': results[0].status,
-                    'date': results[0].date,
-                    'payment': results[0].payment,
-                    // 'request': results[0].request,
+                    name : results[0].name || "-",
+                    shippingAddress: results[0].shipping_adress, // not null
+                    pointNumber: results[0].point_number || "-",
+                    ds: results[0].status,
+                    date: results[0].date,
+                    payment: results[0].payment,
+                    request: results[0].request || '-',
                 }
 
-                /* order ID 를 이용해 product ID 를 구한다. */
-                query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?'
+                /* order ID 를 이용해 order_product_mapping 테이블에서 productID, count 를 확인한다. */
+                query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?;'
                 connection.query(query, orderId, (err, results, fields) => {
                     if (err) throw err;
 
@@ -151,6 +153,8 @@ const read = {
                     )
 
                     connection.query(query, (err, results, fields) => {
+                        if (err) throw err;
+
                         let data = []
 
                         if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
@@ -168,18 +172,18 @@ const read = {
 
                                 if(!isMatched){
                                     return res.json({
-                                        status: 'fail'
+                                        success: false
                                     })
                                 }
                             }
                         } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
                             return res.json({
-                                status: 'fail'
+                                success: false
                             })
                         }
 
                         return res.json({
-                            status: 'success',
+                            success: true,
                             data: data,
                             user: user
                         })
@@ -188,7 +192,7 @@ const read = {
             })
         } else {
             return res.json({
-                status: 'fail',
+                success: false
             })
         }
     },
