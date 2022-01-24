@@ -110,9 +110,14 @@ const view = {
     },
 
     dashboard: (req, res) => {
+        const date = req.query.date || ""
+
         return res.render('app',
             {
-                page: 'dashboard'
+                page: 'dashboard',
+                options: {
+                    date: date
+                }
             }
         )
     }

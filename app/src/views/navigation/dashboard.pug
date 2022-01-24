@@ -5,10 +5,13 @@
             .page-title-right
                 form.d-flex
                     .input-group
-                        input#dash-daterange.form-control.form-control-light(type='text')
-                        span.input-group-text.bg-primary.border-primary.text-white
+                        if options.date === ""
+                            input#dashboard-daterange.form-control.form-control-light(type='text' name="dashboard")
+                        else
+                            input#dashboard-daterange.form-control.form-control-light(type='text' name="dashboard" value= options.date)
+                        span.input-group-text.bg-light.border-light.text-black
                             i.mdi.mdi-calendar-range.font-13
-                    a.btn.btn-primary.ms-2(href='javascript: void(0);')
+                    a.btn.btn-primary.ms-2(href='/dashboard')
                         i.mdi.mdi-autorenew
             h4.page-title 한눈에 보기
 // end page title
