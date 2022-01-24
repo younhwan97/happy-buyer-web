@@ -1,0 +1,42 @@
+doctype html
+head
+    include templates/head
+.account-pages.pt-2.pt-sm-5.pb-4.pb-sm-5
+    .container
+        .row.justify-content-center
+            .col-xxl-4.col-lg-5
+                .card
+                    // Logo
+                    .card-header.pt-4.pb-4.text-center.bg-primary
+                        a(href='/login')
+                            span
+                                img(src='images/logo.png' alt='logo' height='18')
+                    .card-body.p-4
+                        .text-center.w-75.m-auto.mb-3
+                            h4.text-dark-50.text-center.mt-0.fw-bold 로그인
+                        form(action='#')
+                            .mb-3
+                                label.form-label(for='loginId') 아이디
+                                input#loginId.form-control(type='text' required='' placeholder='아이디를 입력해 주세요.')
+                            .mb-3
+                                a.text-muted.float-end(href='pages-recoverpw.html')
+                                    small Forgot your password?
+                                label.form-label(for='password') 비밀번호
+                                .input-group.input-group-merge
+                                    input#password.form-control(type='password' placeholder='비밀번호를 입력해 주세요.')
+                                    .input-group-text(data-password='false')
+                                        span.password-eye
+                            .mb-3.mb-3
+                                .form-check
+                                    input#checkbox-signin.form-check-input(type='checkbox' checked='')
+                                    label.form-check-label(for='checkbox-signin') 로그인 상태 유지
+                            .mb-3.mb-0.text-center
+                                button.btn.btn-primary(type='submit') 로그인
+                .row.mt-3
+                    .col-12.text-center
+                        p.text-muted
+                            a.text-muted.ms-1(href='/')
+                                b 사이트 둘러보기 :)
+// bundle
+script(src='js/vendor.min.js')
+script(src='js/app.min.js')

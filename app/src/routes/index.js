@@ -8,6 +8,7 @@ const controller = require('./controller')
 
 // View Rendering
 router.get('/', controller.view.home)
+router.get('/login',controller.view.login)
 router.get('/products', controller.view.products)
 router.get('/addproduct', controller.view.addProduct)
 router.get('/dashboard', controller.view.dashboard)

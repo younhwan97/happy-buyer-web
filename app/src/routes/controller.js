@@ -72,6 +72,11 @@ const view = {
         })
     },
 
+    login : (req, res) => {
+
+        return res.render('login')
+    },
+
     products : (req, res) => {
 
         const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
