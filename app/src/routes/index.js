@@ -15,6 +15,8 @@ router.get('/dashboard', controller.view.dashboard)
 // Read Data
 router.get('/api/read/order', controller.read.order)
 
+// Update Data
+router.get('/api/update/order', controller.update.order)
 
 // Create&Upload Data
 router.post('/api/upload', controller.create.s3)

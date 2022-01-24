@@ -273,9 +273,26 @@ const remove = {
     }
 }
 
+const update = {
+    order : (req, res) => {
+        const orderId = req.query.id
+        const status = req.query.status
+
+        const query = 'UPDATE order_history SET status = ? WHERE order_id = ?;'
+        connection.query(query, [status, orderId], (err, results, fields) => {
+            if(err) throw err
+
+            return res.json({
+                success: true
+            })
+        })
+    }
+}
+
 module.exports = {
     view,
     read,
     create,
-    remove
+    update,
+    remove,
 }

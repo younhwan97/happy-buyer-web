@@ -95,6 +95,12 @@ function openOrderDetailModal(id){
                  </li>`
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
+                        <div class="fw-bold">결제 방식</div>
+                        ${user.payment}
+                    </div>
+                 </li>`
+        view += `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
                         <div class="fw-bold">포인트 번호</div>
                         ${user.pointNumber}
                     </div>
@@ -102,7 +108,7 @@ function openOrderDetailModal(id){
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fw-bold">요청 사항</div>
-                        벨 누르고 문 앞에 놔주세요
+                        ${user.request}
                     </div>
                  </li>`
         view += `</ul>`
@@ -114,16 +120,74 @@ function openOrderDetailModal(id){
         view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal">주문 취소</Button>`
         view += `<div class="p-0 m-0">`
 
-        if (user.ds !== "delivered"){
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 완료</Button>`
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 준비</Button>`
-        } else {
-            // view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 완료</Button>`
-            // view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal">배달 준비</Button>`
+        if (user.ds === "received"){
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'delivered')">배달 완료</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'confirmed')">배달 준비</Button>`
+        } else if (user.ds === 'confirmed'){
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'delivered')">배달 완료</Button>`
         }
 
         view += `</div>`
         const footer = document.querySelector("#orderDetail-modalFooter")
         footer.innerHTML = view
+    }
+}
+
+function updateOrderStatus(id, status){
+    fetch(`/api/update/order?id=${id}&status=${status}`)
+        .then((res) => {
+            return res.json(); // Promise 반환
+        })
+        .then((json) => {
+            if(json.success){
+                createView()
+            } else {
+
+            }
+        })
+        .catch(err => console.error(err))
+
+    function createView(){
+        let myTable = $('#order-datatable').DataTable()
+        let orders = $('.order')
+
+        for(let i = 0; i<orders.length; i++){
+            const orderId = Number($(orders[i]).attr('data-order-id'))
+
+            if(orderId === id){
+                if(status === 'delivered'){
+                    myTable.row(orders[i]).remove().draw()
+                    $.NotificationApp.send(
+                        "성공",
+                        "주문 배달이 완료되었습니다.",
+                        "top-right",
+                        "#9EC600",
+                        "success",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                } else if(status === 'confirmed'){
+                    const date = $(orders[i]).children('.order-date').html()
+                    const shipping_address = $(orders[i]).children('.order-shipping-address').text()
+                    const name = $(orders[i]).children('.order-name').text()
+                    const status = `<i class="mdi mdi-circle text-info"></i> 배달 준비`
+                    const detail = $(orders[i]).children('.order-detail').html()
+
+                    let newData = [id, date, shipping_address, name, status, detail]
+                    myTable.row(orders[i]).data(newData).draw()
+                    $.NotificationApp.send(
+                        "성공",
+                        "주문 상태가 변경되었습니다.",
+                        "top-right",
+                        "#9EC600",
+                        "success",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                }
+            }
+        }
     }
 }

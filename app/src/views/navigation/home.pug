@@ -58,13 +58,13 @@
                             - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
                             - let orderId = order.order_id
                             - let name = order.name || "-"
-                            tr
-                                td #{orderId}
-                                td
+                            tr.order(data-order-id = orderId)
+                                td.order-id #{orderId}
+                                td.order-date
                                     small.text-muted #{date}
-                                td #{order.shipping_adress}
-                                td #{name}
-                                td
+                                td.order-shipping-address #{order.shipping_adress}
+                                td.order-name #{name}
+                                td.order-status
                                     if order.status === 'received'
                                         i.mdi.mdi-circle.text-success
                                         |  주문 접수
@@ -73,7 +73,7 @@
                                         |  배달 준비
                                     else if order.status === 'delivered'
                                         |  배달 완료
-                                td
+                                td.order-detail
                                     button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
 // order detail modal
 #orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
