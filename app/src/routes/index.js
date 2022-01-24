@@ -24,5 +24,6 @@ router.post('/api/addproduct', controller.create.product)
 
 // Remove Data
 router.post('/api/product/remove', controller.remove.product)
+router.delete('/api/remove/order', controller.remove.order)
 
 module.exports = router

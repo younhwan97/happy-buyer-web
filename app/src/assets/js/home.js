@@ -117,7 +117,7 @@ function openOrderDetailModal(id){
         body.innerHTML = view
 
         /* create footer view */
-        view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal">주문 취소</Button>`
+        view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal" onclick="removeOrder(${orderId})">주문 취소</Button>`
         view += `<div class="p-0 m-0">`
 
         if (user.ds === "received"){
@@ -187,6 +187,51 @@ function updateOrderStatus(id, status){
                         "slide"
                     )
                 }
+            }
+        }
+    }
+}
+
+function removeOrder(id){
+
+    const fd = new FormData()
+    fd.append('order', id)
+
+    fetch(`/api/remove/order`,{
+        method: 'DELETE',
+        body: fd
+    })
+        .then((res) => {
+            return res.json(); // Promise 반환
+        })
+        .then((json) => {
+            if(json.success){
+                createView()
+            } else {
+
+            }
+        })
+        .catch(err => console.error(err))
+
+    function createView(){
+        let myTable = $('#order-datatable').DataTable()
+        let orders = $('.order')
+
+        for(let i = 0; i<orders.length; i++){
+            const orderId = Number($(orders[i]).attr('data-order-id'))
+
+            if(orderId === id){
+                myTable.row(orders[i]).remove().draw()
+                $.NotificationApp.send(
+                    "성공",
+                    "주문이 취소되었습니다.",
+                    "top-right",
+                    "#9EC600",
+                    "success",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
             }
         }
     }

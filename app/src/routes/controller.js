@@ -115,86 +115,88 @@ const view = {
 
 const read = {
     order: (req, res) => {
-        const orderId = req.query.id // http://happybuyer.co.kr/api/read/order?id=orderId
+        let orderId
 
-        if(orderId){
-            /* order ID 를 이용해 order_history 테이블에서 주문 정보를 확인한다. */
-            let query = 'SELECT * FROM (order_history) WHERE order_id = ?;'
-            connection.query(query, orderId, (err, results, fields) => {
-                if (err) throw err;
-
-                const user = { // 고객 정보 객체
-                    name : results[0].name || "-",
-                    shippingAddress: results[0].shipping_adress, // not null
-                    pointNumber: results[0].point_number || "-",
-                    ds: results[0].status,
-                    date: results[0].date,
-                    payment: results[0].payment,
-                    request: results[0].request || '-',
-                }
-
-                /* order ID 를 이용해 order_product_mapping 테이블에서 productID, count 를 확인한다. */
-                query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?;'
-                connection.query(query, orderId, (err, results, fields) => {
-                    if (err) throw err;
-
-                    let mapping = []
-
-                    for(let i = 0; i < results.length; i++) {
-                        mapping.push({
-                            productId : results[i].product_id,
-                            count : results[i].count
-                        })
-                    }
-
-                    let query = ""
-                    mapping.map( it =>
-                        query += mysql.format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
-                    )
-
-                    connection.query(query, (err, results, fields) => {
-                        if (err) throw err;
-
-                        let data = []
-
-                        if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
-                            for(let i = 0; i < results.length; i++){
-                                let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
-
-                                for(let j = 0; j< mapping.length; j++){
-                                    if(mapping[j].productId === results[i][0].product_id){
-                                        isMatched = true
-                                        results[i][0].count = mapping[j].count
-                                        data.push(results[i][0])
-                                        break;
-                                    }
-                                }
-
-                                if(!isMatched){
-                                    return res.json({
-                                        success: false
-                                    })
-                                }
-                            }
-                        } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
-                            return res.json({
-                                success: false
-                            })
-                        }
-
-                        return res.json({
-                            success: true,
-                            data: data,
-                            user: user
-                        })
-                    })
-                })
-            })
-        } else {
+        if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
             return res.json({
                 success: false
             })
         }
+
+        orderId = req.query.id // http://happybuyer.co.kr/api/read/order?id=orderId
+
+        /* order ID 를 이용해 order_history 테이블에서 주문 정보를 확인한다. */
+        let query = 'SELECT * FROM (order_history) WHERE order_id = ?;'
+        connection.query(query, orderId, (err, results, fields) => {
+            if (err) throw err;
+
+            const user = { // 고객 정보 객체
+                name : results[0].name || "-",
+                shippingAddress: results[0].shipping_adress, // not null
+                pointNumber: results[0].point_number || "-",
+                ds: results[0].status,
+                date: results[0].date,
+                payment: results[0].payment,
+                request: results[0].request || '-',
+            }
+
+            /* order ID 를 이용해 order_product_mapping 테이블에서 productID, count 를 확인한다. */
+            query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?;'
+            connection.query(query, orderId, (err, results, fields) => {
+                if (err) throw err;
+
+                let mapping = []
+
+                for(let i = 0; i < results.length; i++) {
+                    mapping.push({
+                        productId : results[i].product_id,
+                        count : results[i].count
+                    })
+                }
+
+                let query = ""
+                mapping.map( it =>
+                    query += mysql.format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
+                )
+
+                connection.query(query, (err, results, fields) => {
+                    if (err) throw err;
+
+                    let data = []
+
+                    if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
+                        for(let i = 0; i < results.length; i++){
+                            let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
+
+                            for(let j = 0; j< mapping.length; j++){
+                                if(mapping[j].productId === results[i][0].product_id){
+                                    isMatched = true
+                                    results[i][0].count = mapping[j].count
+                                    data.push(results[i][0])
+                                    break;
+                                }
+                            }
+
+                            if(!isMatched){
+                                return res.json({
+                                    success: false
+                                })
+                            }
+                        }
+                    } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
+                        return res.json({
+                            success: false
+                        })
+                    }
+
+                    return res.json({
+                        success: true,
+                        data: data,
+                        user: user
+                    })
+                })
+            })
+        })
     },
 }
 
@@ -253,7 +255,7 @@ const create = {
 
 const remove = {
     product : (req, res) => {
-        let query
+        let productId
 
         if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
             return res.json({
@@ -261,13 +263,36 @@ const remove = {
             })
         }
 
-        query = 'UPDATE product SET status = ? WHERE product_id =?;'
+        productId = req.body.productId
+        let query = 'UPDATE product SET status = ? WHERE product_id =?;'
 
-        connection.query(query, ["삭제됨", req.body.productId], (err, results, fields) => {
+        connection.query(query, ["삭제됨", productId], (err, results, fields) => {
             if (err) throw err
 
             return res.json({
                 status: 'success'
+            })
+        })
+    },
+
+    order : (req, res) => {
+        let orderId // 제거할 orderId
+
+        if (!req.body || Object.keys(req.body).length === 0) { // orderId 가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        orderId = req.body.order
+        let query = mysql.format('DELETE FROM order_product_mapping WHERE order_id = ?;', orderId)
+        query += mysql.format('DELETE FROM order_history WHERE order_id = ?;', orderId)
+
+        connection.query(query, (err, results, fields)=>{
+            if(err) throw err
+
+            return res.json({
+                success: true
             })
         })
     }
@@ -275,10 +300,19 @@ const remove = {
 
 const update = {
     order : (req, res) => {
-        const orderId = req.query.id
-        const status = req.query.status
+        let orderId // 업데이트할 orderId
+        let status
 
+        if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        orderId = req.query.id
+        status = req.query.status
         const query = 'UPDATE order_history SET status = ? WHERE order_id = ?;'
+
         connection.query(query, [status, orderId], (err, results, fields) => {
             if(err) throw err
 
