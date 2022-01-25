@@ -2,11 +2,7 @@
 
 /* Module */
 const fs = require("fs")
-const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
 const mysql = require('mysql');
-
-AWS.config.update({region: 'ap-northeast-2'})
 
 /* AWS RDS Setting */
 const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
@@ -24,16 +20,10 @@ const view = {
     login : (req, res) => {
         return res.render('login')
     },
-
-    logout : (req, res) => {
-        req.session.destroy( (err) => {
-            res.redirect('/auth/login')
-        })
-    }
 }
 
-const read = {
-    login_process : (req, res) => {
+const create = {
+    session : (req, res) => { // login process
         let loginId
         let loginPassword
         let query
@@ -60,7 +50,7 @@ const read = {
                     if(results.length){ // id와 password 모두 일치할 때
                         req.session.is_logined = true
                         req.session.nickname = loginId
-                        req.session.role = '관리자'
+                        req.session.role = 'admin'
                         req.session.save(()=>{
                             return res.json({
                                 success: true
@@ -77,6 +67,16 @@ const read = {
                     success: false
                 })
             }
+        })
+    },
+
+    guest_session : (req, res) => { // guest login process
+        req.session.is_logined = true
+        req.session.nickname = 'guest'
+        req.session.role = 'guest'
+
+        req.session.save(()=>{
+            return res.redirect('/')
         })
     },
 }
@@ -97,6 +97,6 @@ const remove = {
 
 module.exports = {
     view,
-    read,
-    remove
+    remove,
+    create
 }

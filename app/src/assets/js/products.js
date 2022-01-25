@@ -87,7 +87,7 @@ function removeProduct(){
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            if(json.status === "success"){
+            if(json.success){ // 상품 제거 성공
                 createView(productId)
                 $.NotificationApp.send(
                     "성공",
@@ -99,10 +99,21 @@ function removeProduct(){
                     "ture",
                     "slide"
                 )
-            } else if(json.status === "fail"){
+            } else { // 상품 제거 실패
+                if(json.hasRole){ // 제거할 상품 id가 제대로 전달되지 않은 경우
 
-            } else {
-
+                } else { // 상품을 제거할 권한이 없는 경우
+                    $.NotificationApp.send(
+                        "에러",
+                        "상품을 제거할 권한이 없습니다 :(",
+                        "top-right",
+                        "#9EC600",
+                        "error",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                }
             }
         })
         .catch(err => console.error(err))
@@ -136,31 +147,33 @@ function uploadFile(){
     })
         .then(res => res.json())
         .then(json => {
-            if(json.status === 'success'){ // 상품 이미지가 성공적으로 업로드 되었을 때
+            if(json.success){ // 상품 이미지가 성공적으로 업로드 되었을 때
                 let uploadFileUrl = json.url
                 addProduct(uploadFileUrl)
-            } else if(json.status === 'fail'){ // 상품 이미지가 업로드 되지 않았을 때
-                $.NotificationApp.send(
-                    "오류!",
-                    "상품 이미지를 업로드 해주세요",
-                    "top-right",
-                    "#9EC600",
-                    "error",
-                    "3000",
-                    "ture",
-                    "slide"
-                )
-            } else {
-                $.NotificationApp.send(
-                    "오류!",
-                    "알 수 없는 오류 발생",
-                    "top-right",
-                    "#9EC600",
-                    "error",
-                    "3000",
-                    "ture",
-                    "slide"
-                )
+            } else { // 상품 이미지가 업로드 되지 않았을 때
+                if(json.hasRole){
+                    $.NotificationApp.send(
+                        "오류!",
+                        "상품 이미지를 업로드 해주세요",
+                        "top-right",
+                        "#9EC600",
+                        "error",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                } else {
+                    $.NotificationApp.send(
+                        "오류!",
+                        "상품을 업로드할 권한이 없습니다!",
+                        "top-right",
+                        "#9EC600",
+                        "error",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                }
             }
         })
         .catch(err => console.error(err))
@@ -193,7 +206,7 @@ function addProduct(uploadFileUrl){
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            if(json.status === "success"){
+            if(json.success){
                 location.href = '/products'
             }
         })

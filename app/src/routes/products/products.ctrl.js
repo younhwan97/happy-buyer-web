@@ -28,6 +28,7 @@ const view = {
             nickname : req.session.nickname,
             role : req.session.role
         }
+
         const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
 
         connection.query(query, ['미선택', '삭제됨'], (err, results, fields)=> {
@@ -69,12 +70,20 @@ const view = {
 
 const create = {
     s3 : (req, res) => {
+        if(req.session.role === 'guest'){ // 게스트 로그인
+            return res.json({
+                success: false,
+                hasRole: false
+            })
+        }
+
         let file // client 에서 전송받은 파일
         let params // s3 접속을 위한 params
 
         if (!req.files || Object.keys(req.files).length === 0) { // 업로드할 파일이 없을 때
             return res.json({
-                status: 'fail'
+                success: false,
+                hasRole: true
             })
         }
 
@@ -91,7 +100,7 @@ const create = {
             if (err) throw err
 
             return res.json({
-                status: 'success',
+                success: true,
                 url: data.Location
             })
         })
@@ -103,7 +112,7 @@ const create = {
 
         if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
             return res.json({
-                status: 'fail'
+                success: false
             })
         }
 
@@ -114,7 +123,7 @@ const create = {
             if (err) throw err
 
             return res.json({
-                status: 'success'
+                success: true
             })
         })
     }
@@ -122,11 +131,19 @@ const create = {
 
 const remove = {
     product : (req, res) => {
+        if(req.session.role === 'guest'){ // 게스트 로그인
+            return res.json({
+                success: false,
+                hasRole: false
+            })
+        }
+
         let productId
 
         if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
             return res.json({
-                status: 'fail'
+                success: false,
+                hasRole: true
             })
         }
 
@@ -137,7 +154,7 @@ const remove = {
             if (err) throw err
 
             return res.json({
-                status: 'success'
+                success: true
             })
         })
     }
