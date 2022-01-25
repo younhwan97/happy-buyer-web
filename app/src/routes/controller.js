@@ -6,19 +6,19 @@ const AWS = require('aws-sdk')
 const s3 = new AWS.S3()
 const mysql = require('mysql');
 
-AWS.config.update({region: 'ap-northeast-2'});
+AWS.config.update({region: 'ap-northeast-2'})
 
 /* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')); // read db config file in server
+const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
 const connection = mysql.createConnection({
     host: conf.host,
     user: conf.user,
-    password: conf.password,
     port: conf.port,
+    password: conf.password,
     database: conf.database,
     multipleStatements: true
 });
-connection.connect();
+connection.connect()
 
 
 const view = {
@@ -111,7 +111,6 @@ const view = {
 
     dashboard: (req, res) => {
         const date = req.query.date || ""
-
         return res.render('app',
             {
                 page: 'dashboard',
