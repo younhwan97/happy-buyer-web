@@ -8,6 +8,7 @@ const fileUpload = require('express-fileupload')
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session)
 const dbConf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
+const sessionConf = JSON.parse(fs.readFileSync('./src/config/session.json', 'utf-8'))
 const sessionStore = new MySQLStore({
     host: dbConf.host,
     port: dbConf.port,
@@ -27,11 +28,11 @@ app.use(fileUpload({
     tempFileDir: '/tmp/'
 }))
 app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret',
+    secret: sessionConf.secret,
+    resave: sessionConf.resave,
+    saveUninitialized: sessionConf.saveUninitialized,
     store: sessionStore,
-    resave: false,
-    saveUninitialized: false
+    // secure: sessionConf.secure
 }))
 
 /* Routing */

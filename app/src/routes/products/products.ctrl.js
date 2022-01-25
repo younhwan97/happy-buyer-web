@@ -23,6 +23,7 @@ connection.connect()
 
 const view = {
     products : (req, res) => {
+        if(!req.session.is_logined) return res.redirect('/auth/login')
 
         const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
 
@@ -47,6 +48,8 @@ const view = {
     },
 
     addProduct: (req, res) => {
+        if(!req.session.is_logined) return res.redirect('/auth/login')
+
         return res.render('app',
             {
                 page: "addproduct",

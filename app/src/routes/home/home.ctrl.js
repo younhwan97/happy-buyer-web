@@ -23,6 +23,8 @@ connection.connect()
 
 const view = {
     home: (req, res) => {
+        if(!req.session.is_logined) return res.redirect('/auth/login')
+
         /* 쿼리스트링 값을 추출 */
         const ds = req.query.ds || "ready"
         const date = req.query.date || ""
