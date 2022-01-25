@@ -81,7 +81,22 @@ const read = {
     },
 }
 
+const remove = {
+    session : (req, res) => {
+        if (!req.session || Object.keys(req.session).length === 0) { // 세션 데이터가 없을 때
+            return res.redirect('/auth/login')
+        }
+
+        req.session.destroy( (err) => {
+            if(err) throw  err
+
+            return res.redirect('/auth/login')
+        })
+    },
+}
+
 module.exports = {
     view,
-    read
+    read,
+    remove
 }

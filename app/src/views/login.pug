@@ -19,17 +19,11 @@ head
                                 label.form-label(for='loginId') 아이디
                                 input#loginId.form-control(type='text' required='' placeholder='아이디를 입력해 주세요.')
                             .mb-3
-                                a.text-muted.float-end(href='pages-recoverpw.html')
-                                    small Forgot your password?
                                 label.form-label(for='password') 비밀번호
                                 .input-group.input-group-merge
                                     input#password.form-control(type='password' placeholder='비밀번호를 입력해 주세요.')
                                     .input-group-text(data-password='false')
                                         span.password-eye
-                            .mb-3.mb-3
-                                .form-check
-                                    input#checkbox-signin.form-check-input(type='checkbox' checked='')
-                                    label.form-check-label(for='checkbox-signin') 로그인 상태 유지
                             .mb-3.mb-0.text-center
                                 button.btn.btn-primary(type="button" onclick="readUser()") 로그인
                 .row.mt-3
