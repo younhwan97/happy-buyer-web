@@ -74,7 +74,7 @@ function removeProduct(){
     productId = Number(productId)
 
     // send `POST` request
-    fetch(`/api/product/remove`, {
+    fetch(`/products/api/remove`, {
         method : 'POST',
         headers : {
             'Content-Type': 'application/json'
@@ -130,7 +130,7 @@ function uploadFile(){
     fd.append('file', image)
 
     // send `POST` request
-    fetch('/api/upload', {
+    fetch('/products/api/upload', {
         method: 'POST',
         body: fd
     })
@@ -176,7 +176,7 @@ function addProduct(uploadFileUrl){
     const price = $('#product-price').val() // 상품 가격
 
     // send `POST` request
-    fetch(`/api/addproduct`, {
+    fetch(`/products/api/add`, {
         method : 'POST',
         headers : {
             'Content-Type': 'application/json'

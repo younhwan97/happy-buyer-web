@@ -7,17 +7,14 @@ const app = express()
 const fileUpload = require('express-fileupload')
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session)
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
+const dbConf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
 const sessionStore = new MySQLStore({
-    host: conf.host,
-    port: conf.port,
-    user: conf.user,
-    password: conf.password,
-    database: conf.database,
+    host: dbConf.host,
+    port: dbConf.port,
+    user: dbConf.user,
+    password: dbConf.password,
+    database: dbConf.database,
 })
-
-/* Routing */
-const home = require("./src/routes")
 
 /* App Setting */
 app.set("views", "./src/views")
@@ -37,6 +34,15 @@ app.use(session({
     saveUninitialized: false
 }))
 
-app.use("/", home)
+/* Routing */
+const homeRouter = require("./src/routes/home")
+const authRouter = require("./src/routes/auth")
+const productRouter = require("./src/routes/products")
+const dashboardRouter = require("./src/routes/dashboard")
+
+app.use("/", homeRouter)
+app.use("/auth", authRouter)
+app.use("/products", productRouter)
+app.use("/dashboard", dashboardRouter)
 
 module.exports = app
