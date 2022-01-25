@@ -13,11 +13,9 @@ function readUser(){
         .then(res => res.json())
         .then(json => {
             if(json.success){ // 로그인 성공
-
                 location.href='/'
-
             } else { // 로그인 실패
-
+                $('#ps-feedback').addClass('d-block')
             }
         })
         .catch(err => console.error(err))

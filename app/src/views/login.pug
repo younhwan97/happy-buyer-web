@@ -6,7 +6,6 @@ head
         .row.justify-content-center
             .col-xxl-4.col-lg-5
                 .card
-                    // Logo
                     .card-header.pt-4.pb-4.text-center.bg-primary
                         a(href='/auth/login')
                             span
@@ -14,7 +13,7 @@ head
                     .card-body.p-4
                         .text-center.w-75.m-auto.mb-3
                             h4.text-dark-50.text-center.mt-0.fw-bold 로그인
-                        form
+                        div
                             .mb-3
                                 label.form-label(for='loginId') 아이디
                                 input#loginId.form-control(type='text' required='' placeholder='아이디를 입력해 주세요.')
@@ -24,13 +23,15 @@ head
                                     input#password.form-control(type='password' placeholder='비밀번호를 입력해 주세요.')
                                     .input-group-text(data-password='false')
                                         span.password-eye
+                                .invalid-feedback#ps-feedback
+                                    | 비밀번호가 잘못 입력 되었습니다.
                             .mb-3.mb-0.text-center
                                 button.btn.btn-primary(type="button" onclick="readUser()") 로그인
                 .row.mt-3
                     .col-12.text-center
                         p.text-muted
                             a.text-muted.ms-1(href='/')
-                                b 사이트 둘러보기 :)
+                                b 사이트 둘러보기 : )
 // bundle
 script(src='/js/vendor.min.js')
 script(src='/js/app.min.js')

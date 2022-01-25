@@ -24,6 +24,10 @@ connection.connect()
 const view = {
     home: (req, res) => {
         if(!req.session.is_logined) return res.redirect('/auth/login')
+        const login = {
+            nickname : req.session.nickname,
+            role : req.session.role
+        }
 
         /* 쿼리스트링 값을 추출 */
         const ds = req.query.ds || "ready"
@@ -64,6 +68,7 @@ const view = {
             return res.render('app',
                 {
                     page: "home",
+                    login: login,
                     options: {
                         ds : ds,
                         date: date

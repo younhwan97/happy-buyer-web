@@ -2,10 +2,10 @@ div(class="navbar-custom topnav-navbar topnav-navbar-dark")
     div(class="container-fluid")
         <!-- LOGO -->
         a(href="/" class="topnav-logo")
-            span(class="topnav-logo-lg")
-                img(src="/images/logo-light.png" alt="" height="16")
-            span(class="topnav-logo-sm")
-                img(src="/images/logo_sm.png" alt="" height="16")
+            //span(class="topnav-logo-lg")
+            //    img(src="/images/logo-light.png" alt="" height="16")
+            //span(class="topnav-logo-sm")
+            //    img(src="/images/logo_sm.png" alt="" height="16")
         ul(class="list-unstyled topbar-menu float-end mb-0")
             li(class="dropdown notification-list")
                 a(class="nav-link dropdown-toggle arrow-none" data-bs-toggle="dropdown" href="#" id="topbar-notifydrop" role="button" aria-haspopup="true" aria-expanded="false")
@@ -39,14 +39,14 @@ div(class="navbar-custom topnav-navbar topnav-navbar-dark")
             li(class="dropdown notification-list")
                 a(class="nav-link dropdown-toggle nav-user arrow-none me-0" data-bs-toggle="dropdown" id="topbar-userdrop" href="#" role="button" aria-haspopup="true" aria-expanded="false")
                     span(class="account-user-avatar")
-                        img(src="/images/users/avatar-1.jpg" alt="user-image" class="rounded-circle")
+                        img(src="/images/users/bear.png" alt="user-image" class="rounded")
                     span
-                        span(class="account-user-name") Dominic Keller
-                        span(class="account-position") Founder
+                        span(class="account-user-name") #{login.nickname}
+                        span(class="account-position") #{login.role}
                 div(class="dropdown-menu dropdown-menu-end dropdown-menu-animated topbar-dropdown-menu profile-dropdown" aria-labelledby="topbar-userdrop")
                     <!-- item-->
                     div(class=" dropdown-header noti-title")
-                        h6(class="text-overflow m-0") Welcome!
+                        h6(class="text-overflow m-0") 환영합니다!
                     a(href="/auth/logout" class="dropdown-item notify-item")
                         i(class="mdi mdi-logout me-1")
                         span Logout

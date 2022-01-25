@@ -24,7 +24,10 @@ connection.connect()
 const view = {
     products : (req, res) => {
         if(!req.session.is_logined) return res.redirect('/auth/login')
-
+        const login = {
+            nickname : req.session.nickname,
+            role : req.session.role
+        }
         const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
 
         connection.query(query, ['미선택', '삭제됨'], (err, results, fields)=> {
@@ -41,6 +44,7 @@ const view = {
             return res.render('app',
                 {
                     page: "products",
+                    login: login,
                     products: products
                 }
             )
@@ -49,10 +53,15 @@ const view = {
 
     addProduct: (req, res) => {
         if(!req.session.is_logined) return res.redirect('/auth/login')
+        const login = {
+            nickname : req.session.nickname,
+            role : req.session.role
+        }
 
         return res.render('app',
             {
                 page: "addproduct",
+                login: login,
             }
         )
     }
