@@ -1,9 +1,11 @@
 "use strict";
 
 /* Module */
-const fs = require("fs")
+const fs = require('fs')
 const express = require('express')
+const http = require('http')
 const app = express()
+const server = http.createServer(app)
 const fileUpload = require('express-fileupload')
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session)
@@ -16,6 +18,8 @@ const sessionStore = new MySQLStore({
     password: dbConf.password,
     database: dbConf.database,
 })
+const socketIO = require("socket.io")
+const io = socketIO(server)
 
 /* App Setting */
 app.set("views", "./src/views")
@@ -41,9 +45,13 @@ const authRouter = require("./src/routes/auth")
 const productRouter = require("./src/routes/products")
 const dashboardRouter = require("./src/routes/dashboard")
 
+io.on("connection", (socket) => {
+    console.log("연결 완료")
+})
+
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
 app.use("/products", productRouter)
 app.use("/dashboard", dashboardRouter)
 
-module.exports = app
+module.exports = server

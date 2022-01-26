@@ -2,6 +2,8 @@
 "use strict";
 
 $(function() {
+    const socket = io()
+
     $('input[name="order"]').daterangepicker({
         locale:{
             format: 'YYYY-MM-DD',
