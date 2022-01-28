@@ -24,6 +24,7 @@ const io = socketIO(server)
 /* App Setting */
 app.set("views", "./src/views")
 app.set('view engine', 'pug')
+app.set('io', io)
 app.use(express.static(`${__dirname}/src/assets`))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
@@ -44,10 +45,6 @@ const homeRouter = require("./src/routes/home")
 const authRouter = require("./src/routes/auth")
 const productRouter = require("./src/routes/products")
 const dashboardRouter = require("./src/routes/dashboard")
-
-io.on("connection", (socket) => {
-    console.log("연결 완료")
-})
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)

@@ -3,7 +3,6 @@
 /* Module */
 const fs = require("fs")
 const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
 const mysql = require('mysql');
 
 AWS.config.update({region: 'ap-northeast-2'})
@@ -131,23 +130,34 @@ const read = {
 
                     let data = []
 
-                    if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
-                        for(let i = 0; i < results.length; i++){
-                            let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
-
-                            for(let j = 0; j< mapping.length; j++){
-                                if(mapping[j].productId === results[i][0].product_id){
-                                    isMatched = true
-                                    results[i][0].count = mapping[j].count
-                                    data.push(results[i][0])
-                                    break;
-                                }
-                            }
-
-                            if(!isMatched){
+                    if(results.length === mapping.length && results ){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
+                        if(results.length === 1){ // 상품을 1개만 주문했을 때
+                            if(mapping[0].productId === results[0].product_id){
+                                results[0].count = mapping[0].count
+                                data.push(results[0])
+                            } else {
                                 return res.json({
-                                    success: false
+                                    success: true
                                 })
+                            }
+                        } else { // 상품을 여러개 주문했을 때
+                            for(let i = 0; i < results.length; i++){
+                                let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
+
+                                for(let j = 0; j< mapping.length; j++){
+                                    if(mapping[j].productId === results[i][0].product_id){
+                                        isMatched = true
+                                        results[i][0].count = mapping[j].count
+                                        data.push(results[i][0])
+                                        break;
+                                    }
+                                }
+
+                                if(!isMatched){
+                                    return res.json({
+                                        success: false
+                                    })
+                                }
                             }
                         }
                     } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
@@ -216,8 +226,21 @@ const update = {
     }
 }
 
+const create = {
+    order : (req , res) => {
+        // 앱에서 온 데이터를 바탕으로 새로운 주문건 생성
+
+
+
+        // 연결된 web page 에 메시지 전달
+        const io = req.app.get('io')
+        io.emit('hello', 'world')
+    }
+}
+
 module.exports = {
     view,
+    create,
     read,
     update,
     remove,

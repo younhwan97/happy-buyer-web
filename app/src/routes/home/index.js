@@ -9,6 +9,9 @@ const ctrl = require('./home.ctrl')
 // View Rendering
 router.get('/', ctrl.view.home)
 
+// Create Data
+router.get('/api/create/order', ctrl.create.order)
+
 // Read Data
 router.get('/api/read/order', ctrl.read.order)
 

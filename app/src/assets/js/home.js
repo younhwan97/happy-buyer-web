@@ -1,9 +1,13 @@
 /* home */
 "use strict";
 
-$(function() {
-    const socket = io()
+const socket = io()
+socket.on("connect", () => { console.log("connection server"); });
+socket.on('hello', (data) => {
+    console.log("소켓으로부터 받은 데이터:"+data)
+})
 
+$(function() {
     $('input[name="order"]').daterangepicker({
         locale:{
             format: 'YYYY-MM-DD',
