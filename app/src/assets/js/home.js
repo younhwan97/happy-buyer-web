@@ -30,30 +30,48 @@ $(function() {
 })
 
 function openOrderDetailModal(id){
+    /* 주문 상세 모달에 로딩 스피너를 생성 */
+    const body = document.querySelector("#orderDetail-modalBody")
+    body.innerHTML = `<div class="d-flex justify-content-center">
+                        <div class="spinner-border avatar-md" role="status"></div>
+                      </div>`
+
     const orderId = id
 
-    /* Get data from server */
+    /* 서버에서 주문에 관한 상세 정보를 가져온다. */
     fetch(`/api/read/order?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            if(json.success){
+            if(json.success){ // 주문 상세 정보를 받아오는데 성공
                 createView(json.data, json.user) // 주문 상세 뷰 생성
-            } else {
-                $.NotificationApp.send(
-                    "오류!",
-                    "주문 상세 정보를 읽어올 수 없습니다.",
-                    "top-right",
-                    "#9EC600",
-                    "error",
-                    "3000",
-                    "ture",
-                    "slide"
-                )
+            } else { // 주문 상세 정보를 받아오는데 실패
+                if(json.hasRole){
+                    $.NotificationApp.send(
+                        "오류!",
+                        "주문 상세 정보를 읽어올 수 없습니다.",
+                        "top-right",
+                        "#9EC600",
+                        "error",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                } else {
+                    $.NotificationApp.send(
+                        "오류!",
+                        "권한이 없습니다 : (",
+                        "top-right",
+                        "#9EC600",
+                        "error",
+                        "3000",
+                        "ture",
+                        "slide"
+                    )
+                }
             }
         })
-        .catch(err => console.error(err))
 
     function createView(data, user){
         let view = ''

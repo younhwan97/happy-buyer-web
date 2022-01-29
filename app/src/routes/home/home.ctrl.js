@@ -3,7 +3,7 @@
 /* Module */
 const fs = require("fs")
 const AWS = require('aws-sdk')
-const mysql = require('mysql');
+const mysql = require('mysql')
 
 AWS.config.update({region: 'ap-northeast-2'})
 
@@ -16,7 +16,7 @@ const connection = mysql.createConnection({
     password: conf.password,
     database: conf.database,
     multipleStatements: true
-});
+})
 connection.connect()
 
 
@@ -81,6 +81,13 @@ const view = {
 
 const read = {
     order: (req, res) => {
+        if (req.session.is_logined && req.session.role === "guest"){ // 사용자 권한을 확인
+            return res.json({
+                success: false,
+                hasRole: false
+            })
+        }
+
         let orderId
 
         if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
@@ -96,7 +103,7 @@ const read = {
         connection.query(query, orderId, (err, results, fields) => {
             if (err) throw err;
 
-            const user = { // 고객 정보 객체
+            const userInfo = { // 고객 정보를 저장
                 name : results[0].name || "-",
                 shippingAddress: results[0].shipping_adress, // not null
                 pointNumber: results[0].point_number || "-",
@@ -130,14 +137,14 @@ const read = {
 
                     let data = []
 
-                    if(results.length === mapping.length && results ){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
+                    if(results.length === mapping.length && results){ // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
                         if(results.length === 1){ // 상품을 1개만 주문했을 때
                             if(mapping[0].productId === results[0].product_id){
                                 results[0].count = mapping[0].count
                                 data.push(results[0])
                             } else {
                                 return res.json({
-                                    success: true
+                                    success: false
                                 })
                             }
                         } else { // 상품을 여러개 주문했을 때
@@ -169,7 +176,7 @@ const read = {
                     return res.json({
                         success: true,
                         data: data,
-                        user: user
+                        user: userInfo
                     })
                 })
             })
