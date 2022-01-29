@@ -1,25 +1,5 @@
 "use strict";
 
-/* Module */
-const fs = require("fs")
-const AWS = require('aws-sdk')
-const mysql = require('mysql')
-
-AWS.config.update({region: 'ap-northeast-2'})
-
-/* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
-const connection = mysql.createConnection({
-    host: conf.host,
-    user: conf.user,
-    port: conf.port,
-    password: conf.password,
-    database: conf.database,
-    multipleStatements: true
-})
-connection.connect()
-
-
 const view = {
     home: (req, res) => {
         if(!req.session.is_logined) return res.redirect('/auth/login')
@@ -53,7 +33,7 @@ const view = {
         }
 
         /* order_history 테이블 조회 */
-        connection.query(query, status, (err, results, fields)=>{
+        req.app.get('dbConnection').query(query, status, (err, results, fields)=>{
             if (err) throw err
 
             let orders = [] // 주문 목록
@@ -100,7 +80,7 @@ const read = {
 
         /* order ID 를 이용해 order_history 테이블에서 주문 정보를 확인한다. */
         let query = 'SELECT * FROM (order_history) WHERE order_id = ?;'
-        connection.query(query, orderId, (err, results, fields) => {
+        req.app.get('dbConnection').query(query, orderId, (err, results, fields) => {
             if (err) throw err;
 
             const userInfo = { // 고객 정보를 저장
@@ -115,7 +95,7 @@ const read = {
 
             /* order ID 를 이용해 order_product_mapping 테이블에서 productID, count 를 확인한다. */
             query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?;'
-            connection.query(query, orderId, (err, results, fields) => {
+            req.app.get('dbConnection').query(query, orderId, (err, results, fields) => {
                 if (err) throw err;
 
                 let mapping = []
@@ -129,10 +109,10 @@ const read = {
 
                 let query = ""
                 mapping.map( it =>
-                    query += mysql.format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
+                    query += req.app.get('mysql').format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
                 )
 
-                connection.query(query, (err, results, fields) => {
+                req.app.get('dbConnection').query(query, (err, results, fields) => {
                     if (err) throw err;
 
                     let data = []
@@ -195,10 +175,10 @@ const remove = {
         }
 
         orderId = req.body.order
-        let query = mysql.format('DELETE FROM order_product_mapping WHERE order_id = ?;', orderId)
-        query += mysql.format('DELETE FROM order_history WHERE order_id = ?;', orderId)
+        let query = req.app.get('mysql').format('DELETE FROM order_product_mapping WHERE order_id = ?;', orderId)
+        query += req.app.get('mysql').format('DELETE FROM order_history WHERE order_id = ?;', orderId)
 
-        connection.query(query, (err, results, fields)=>{
+        req.app.get('dbConnection').query(query, (err, results, fields)=>{
             if(err) throw err
 
             return res.json({
@@ -223,7 +203,7 @@ const update = {
         status = req.query.status
         const query = 'UPDATE order_history SET status = ? WHERE order_id = ?;'
 
-        connection.query(query, [status, orderId], (err, results, fields) => {
+        req.app.get('dbConnection').query(query, [status, orderId], (err, results, fields) => {
             if(err) throw err
 
             return res.json({

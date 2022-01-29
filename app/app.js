@@ -6,6 +6,8 @@ const express = require('express')
 const http = require('http')
 const app = express()
 const server = http.createServer(app)
+const AWS = require('aws-sdk')
+const mysql = require('mysql')
 const fileUpload = require('express-fileupload')
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session)
@@ -21,10 +23,27 @@ const sessionStore = new MySQLStore({
 const socketIO = require("socket.io")
 const io = socketIO(server)
 
+AWS.config.update({region: 'ap-northeast-2'})
+
+/* AWS RDS Setting */
+const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
+const connection = mysql.createConnection({
+    host: conf.host,
+    user: conf.user,
+    port: conf.port,
+    password: conf.password,
+    database: conf.database,
+    multipleStatements: true
+})
+connection.connect()
+
+
 /* App Setting */
 app.set("views", "./src/views")
 app.set('view engine', 'pug')
 app.set('io', io)
+app.set('dbConnection', connection)
+app.set('mysql', mysql)
 app.use(express.static(`${__dirname}/src/assets`))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
