@@ -1,25 +1,6 @@
 "use strict";
 
-/* Module */
-const fs = require("fs")
-const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
-const mysql = require('mysql');
-
-AWS.config.update({region: 'ap-northeast-2'})
-
-/* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
-const connection = mysql.createConnection({
-    host: conf.host,
-    user: conf.user,
-    port: conf.port,
-    password: conf.password,
-    database: conf.database,
-    multipleStatements: true
-});
-connection.connect()
-
+const fs = require('fs')
 
 const view = {
     products : (req, res) => {
@@ -31,7 +12,7 @@ const view = {
 
         const query = 'SELECT * FROM (product) WHERE category <> ? AND status <> ? ORDER BY product_id DESC;'
 
-        connection.query(query, ['미선택', '삭제됨'], (err, results, fields)=> {
+        req.app.get('dbConnection').query(query, ['미선택', '삭제됨'], (err, results, fields)=> {
             if (err) throw err;
 
             let products = [] // 상품 목록
@@ -96,7 +77,7 @@ const create = {
             'ContentType': 'image/png',
         }
 
-        s3.upload(params, (err, data)=> {
+        req.app.get('s3').upload(params, (err, data)=> {
             if (err) throw err
 
             return res.json({
@@ -119,7 +100,7 @@ const create = {
         query = 'INSERT INTO product (status, category, name, price, image_url) VALUES (?, ?, ?, ?, ?)'
         data = [req.body.status, req.body.category, req.body.name, req.body.price, req.body.url]
 
-        connection.query(query, data, (err, results, fields) => {
+        req.app.get('dbConnection').query(query, data, (err, results, fields) => {
             if (err) throw err
 
             return res.json({
@@ -129,9 +110,17 @@ const create = {
     }
 }
 
+const read = {
+
+}
+
+const update = {
+
+}
+
 const remove = {
     product : (req, res) => {
-        if(req.session.role === 'guest'){ // 게스트 로그인
+        if(req.session.is_logined && req.session.role === 'guest'){ // 게스트 로그인
             return res.json({
                 success: false,
                 hasRole: false
@@ -150,7 +139,7 @@ const remove = {
         productId = req.body.productId
         let query = 'UPDATE product SET status = ? WHERE product_id =?;'
 
-        connection.query(query, ["삭제됨", productId], (err, results, fields) => {
+        req.app.get('dbConnection').query(query, ["삭제됨", productId], (err, results, fields) => {
             if (err) throw err
 
             return res.json({
@@ -163,5 +152,7 @@ const remove = {
 module.exports = {
     view,
     create,
+    read,
+    update,
     remove,
 }

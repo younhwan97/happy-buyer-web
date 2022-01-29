@@ -2,19 +2,6 @@
 
 /* Module */
 const fs = require("fs")
-const mysql = require('mysql');
-
-/* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
-const connection = mysql.createConnection({
-    host: conf.host,
-    user: conf.user,
-    port: conf.port,
-    password: conf.password,
-    database: conf.database,
-    multipleStatements: true
-});
-connection.connect()
 
 const view = {
     login : (req, res) => {
@@ -38,13 +25,13 @@ const create = {
         loginPassword = req.body.loginPassword
 
         query = 'SELECT * FROM auth WHERE id = ?;'
-        connection.query(query, loginId, (err, results, fields) => {
+        req.app.get('dbConnection').query(query, loginId, (err, results, fields) => {
             if(err) throw err
 
             if(results.length && results[0].id === loginId){
 
                 query = 'SELECT * FROM auth WHERE password = ?;'
-                connection.query(query, loginPassword, (err, results, fields) => {
+                req.app.get('dbConnection').query(query, loginPassword, (err, results, fields) => {
                     if(err) throw err
 
                     if(results.length){ // id와 password 모두 일치할 때
