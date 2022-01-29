@@ -2,17 +2,33 @@
 
 /* Module */
 const fs = require('fs')
-const express = require('express')
-const http = require('http')
-const app = express()
-const server = http.createServer(app)
-const AWS = require('aws-sdk')
-const s3 = new AWS.S3()
-const mysql = require('mysql')
 const fileUpload = require('express-fileupload')
+// Express
+const express = require('express')
+const app = express()
+// Socket.IO
+const http = require('http')
+const server = http.createServer(app)
+const socketIO = require("socket.io")
+const io = socketIO(server)
+// AWS
+const AWS = require('aws-sdk')
+const mysql = require('mysql')
+const s3 = new AWS.S3()
+AWS.config.update({region: 'ap-northeast-2'})
+const dbConf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
+const connection = mysql.createConnection({
+    host: dbConf.host,
+    user: dbConf.user,
+    port: dbConf.port,
+    password: dbConf.password,
+    database: dbConf.database,
+    multipleStatements: true
+})
+connection.connect()
+// Session
 const session = require('express-session');
 const MySQLStore = require('express-mysql-session')(session)
-const dbConf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
 const sessionConf = JSON.parse(fs.readFileSync('./src/config/session.json', 'utf-8'))
 const sessionStore = new MySQLStore({
     host: dbConf.host,
@@ -21,31 +37,14 @@ const sessionStore = new MySQLStore({
     password: dbConf.password,
     database: dbConf.database,
 })
-const socketIO = require("socket.io")
-const io = socketIO(server)
-
-AWS.config.update({region: 'ap-northeast-2'})
-
-/* AWS RDS Setting */
-const conf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8')) // read db config file in server
-const connection = mysql.createConnection({
-    host: conf.host,
-    user: conf.user,
-    port: conf.port,
-    password: conf.password,
-    database: conf.database,
-    multipleStatements: true
-})
-connection.connect()
-
 
 /* App Setting */
 app.set("views", "./src/views")
 app.set('view engine', 'pug')
-app.set('io', io)
-app.set('dbConnection', connection)
+app.set('io', io) // socket.io
+app.set('dbConnection', connection) // aws rds connect
+app.set('s3', s3) // aws s3 connect
 app.set('mysql', mysql)
-app.set('s3', s3)
 app.use(express.static(`${__dirname}/src/assets`))
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
