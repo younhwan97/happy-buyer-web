@@ -220,8 +220,8 @@ const create = {
 
 
         // 연결된 web page 에 메시지 전달
-        const io = req.app.get('io')
-        io.emit('hello', 'world')
+        // const io = req.app.get('io')
+        // io.emit('hello', 'world')
     }
 }
 

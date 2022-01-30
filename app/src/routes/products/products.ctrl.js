@@ -111,7 +111,24 @@ const create = {
 }
 
 const read = {
+    productsByApp : (req, res) => {
+        let category
+        let query
 
+        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        category = req.query.category
+        query = 'SELECT * FROM product WHERE category = ? AND status <> ? '
+        req.app.get('dbConnection').query(query, [category, '삭제됨'], (err, results, fields) => {
+            res.json({
+                data: results
+            })
+        })
+    }
 }
 
 const update = {

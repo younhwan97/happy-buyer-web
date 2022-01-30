@@ -65,6 +65,21 @@ function checkProductCategoryOption(self){
     }
 }
 
+function createProductUpdateModal(){
+    const body = document.querySelector('#productUpdate-modalBody')
+    body.innerHTML = `
+                    <div class="d-flex justify-content-center">
+                        <div class="spinner-border avatar-md" role="status"></div>
+                    </div>`
+
+
+}
+
+function updateProduct(){
+
+}
+
+
 function createProductRemoveModal(productId){
     $('#productRemove-modal').attr('data-product-id', productId)
 }

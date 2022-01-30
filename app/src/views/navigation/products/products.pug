@@ -57,7 +57,7 @@
                                         p.m-0.d-inline-block.align-middle.font-16 #{name}
                                     td.product-price #{price}원
                                     td.table-action
-                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productModify-modal')
+                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productUpdate-modal' onclick=`createProductUpdateModal()`)
                                             a.action-icon(href='javascript:void(0);')
                                                 i.mdi.mdi-square-edit-outline
                                         button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productRemove-modal' onclick=`createProductRemoveModal(${id})`)
@@ -76,15 +76,13 @@
             .modal-footer
                 button.btn.btn-primary(type='button' onclick="removeProduct()" data-bs-dismiss='modal') 확인
                 button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
-#productModify-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
+#productUpdate-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
     .modal-dialog
         .modal-content
             .modal-header
-                h4#productModify-modalLabel.modal-title temp
+                h4#productUpdate-modalLabel.modal-title temp
                 button.btn-close(type='button' data-bs-dismiss='modal' aria-hidden='true')
-            .modal-body#productModify-modalBody
-                .d-flex.justify-content-center
-                    .spinner-border.avatar-md(role='status')
-            .modal-footer#productModify-modalFooter
+            .modal-body#productUpdate-modalBody
+            .modal-footer#productUpdate-modalFooter
                 button.btn.btn-primary(type='button') 확인
                 button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
