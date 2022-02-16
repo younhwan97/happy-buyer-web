@@ -66,6 +66,44 @@ const create = {
             return res.redirect('/')
         })
     },
+
+    userByApp : (req, res) => {
+        let kakaoAccountId
+        let kakaoAccountNickname
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        kakaoAccountId = req.query.id
+        kakaoAccountNickname = req.query.nickname
+        query = 'SELECT * FROM user WHERE id = ?;'
+        req.app.get('dbConnection').query(query, kakaoAccountId, (err, results, fields) => {
+            if(err) throw err
+
+            if(results.length === 0){
+                query = 'INSERT INTO user (id, name) VALUES (?, ?);'
+                req.app.get("dbConnection").query(query, [kakaoAccountId, kakaoAccountNickname], (err, results, fields) => {
+                    if(err) throw err
+
+
+                    console.log(results)
+                    return res.json({
+                        success: true
+                    })
+                })
+            } else {
+                console.log(results)
+                
+                return res.json({
+                    success: true
+                })
+            }
+        })
+    }
 }
 
 const remove = {
