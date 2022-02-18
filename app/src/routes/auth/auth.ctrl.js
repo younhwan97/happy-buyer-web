@@ -89,18 +89,25 @@ const create = {
                 req.app.get("dbConnection").query(query, [kakaoAccountId, kakaoAccountNickname], (err, results, fields) => {
                     if(err) throw err
 
-
-                    console.log(results)
                     return res.json({
                         success: true
                     })
                 })
             } else {
-                console.log(results)
-                
-                return res.json({
-                    success: true
-                })
+                if(kakaoAccountNickname !== results[0].name){
+                    query = 'UPDATE user SET name = ? WHERE id = ?'
+                    req.app.get('dbConnection').query(query, [kakaoAccountNickname, kakaoAccountId], (err, results, fields) => {
+                        if(err) throw err
+
+                        return res.json({
+                            success: true
+                        })
+                    })
+                }else {
+                    return res.json({
+                        success: true
+                    })
+                }
             }
         })
     }
