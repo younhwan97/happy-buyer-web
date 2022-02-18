@@ -133,7 +133,7 @@ const update = {
         query = 'UPDATE user SET name = ? WHERE id = ?;'
         req.app.get('dbConnection').query(query, [kakaoAccountNickname, kakaoAccountId], (err, results, fields) => {
             if (err) throw err
-            
+
             return res.json({
                 success: true
             })
@@ -141,9 +141,35 @@ const update = {
     }
 }
 
+const read = {
+    userByApp : (req, res) => {
+        let kakaoAccountId
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        kakaoAccountId = req.query.id
+        query = 'SELECT * FROM user WHERE id = ?;'
+        req.app.get('dbConnection').query(query, kakaoAccountId, (err, results, fields) => {
+            if (err) throw err
+
+            return res.json({
+                data: results,
+                success: true
+            })
+        })
+    }
+}
+
+
 module.exports = {
     view,
     remove,
     create,
-    update
+    update,
+    read
 }
