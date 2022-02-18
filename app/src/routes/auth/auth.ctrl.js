@@ -94,20 +94,9 @@ const create = {
                     })
                 })
             } else {
-                if(kakaoAccountNickname !== results[0].name){
-                    query = 'UPDATE user SET name = ? WHERE id = ?'
-                    req.app.get('dbConnection').query(query, [kakaoAccountNickname, kakaoAccountId], (err, results, fields) => {
-                        if(err) throw err
-
-                        return res.json({
-                            success: true
-                        })
-                    })
-                }else {
-                    return res.json({
-                        success: true
-                    })
-                }
+                return res.json({
+                    success: true
+                })
             }
         })
     }
@@ -127,8 +116,34 @@ const remove = {
     },
 }
 
+const update = {
+    userByApp : (req, res) => {
+        let kakaoAccountId
+        let kakaoAccountNickname
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        kakaoAccountId = req.query.id
+        kakaoAccountNickname = req.query.nickname
+        query = 'UPDATE user SET name = ? WHERE id = ?;'
+        req.app.get('dbConnection').query(query, [kakaoAccountNickname, kakaoAccountId], (err, results, fields) => {
+            if (err) throw err
+            
+            return res.json({
+                success: true
+            })
+        })
+    }
+}
+
 module.exports = {
     view,
     remove,
-    create
+    create,
+    update
 }
