@@ -65,10 +65,12 @@ const homeRouter = require("./src/routes/home")
 const authRouter = require("./src/routes/auth")
 const productRouter = require("./src/routes/products")
 const dashboardRouter = require("./src/routes/dashboard")
+const basketRouter = require("./src/routes/basket")
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
 app.use("/products", productRouter)
 app.use("/dashboard", dashboardRouter)
+app.use("/basket", basketRouter)
 
 module.exports = server
