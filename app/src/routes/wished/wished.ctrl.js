@@ -40,13 +40,30 @@ const create = {
 
         kakaoAccountId = req.query.uid
         productId = req.query.pid
-        query = 'INSERT INTO wished (user_id, product_id) VALUES(?, ?);'
+
+        query = 'SELECT * FROM wished WHERE user_id = ? AND product_id = ?;'
         req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
             if(err) throw err
 
-            return res.json({
-                success: true
-            })
+            if(results.length === 0){
+                query = 'INSERT INTO wished (user_id, product_id) VALUES(?, ?);'
+                req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
+                    if(err) throw err
+
+                    return res.json({
+                        success: true
+                    })
+                })
+            } else {
+                query = 'DELETE FROM wished WHERE user_id = ? AND product_id = ?;'
+                req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
+                    if(err) throw err
+
+                    return res.json({
+                        success: true
+                    })
+                })
+            }
         })
     }
 }
