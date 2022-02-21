@@ -66,11 +66,13 @@ const authRouter = require("./src/routes/auth")
 const productRouter = require("./src/routes/products")
 const dashboardRouter = require("./src/routes/dashboard")
 const basketRouter = require("./src/routes/basket")
+const wishedRouter = require("./src/routes/wished")
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
 app.use("/products", productRouter)
 app.use("/dashboard", dashboardRouter)
 app.use("/basket", basketRouter)
+app.use("/wished", wishedRouter)
 
 module.exports = server

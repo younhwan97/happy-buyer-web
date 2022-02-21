@@ -16,21 +16,25 @@ const create = {
 
         productId = req.query.pid
         kakaoAccountId = req.query.uid
-        query = 'SELECT * FROM basket WHERE used_id = ? AND product_id = ?;'
+        query = 'SELECT * FROM basket WHERE user_id = ? AND product_id = ?;'
+
         req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
             if (err) throw err
 
             if(results.length !== 0){
-                query = 'UPDATE basket set count = count + 1 WHERE used_id = ? AND product_id = ?;'
+                query = 'UPDATE basket set count = count + ? WHERE user_id = ? AND product_id = ?;'
 
-                req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields)=>{
+                req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
 
                     res.json({
                         success: true
                     })
                 })
             } else{
-                query = 'INSERT INTO basket(user_id, product_id, count) VALUES (?, ?, ?);'
+                query = 'INSERT INTO basket(user_id, product_id, count) VALUES(?, ?, ?);'
+
+                console.log(kakaoAccountId)
+                console.log(productId)
 
                 req.app.get('dbConnection').query(query, [kakaoAccountId, productId, 1], (err, results, fields)=>{
 
