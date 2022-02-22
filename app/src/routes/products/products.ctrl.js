@@ -122,7 +122,12 @@ const read = {
         }
 
         category = req.query.category
-        query = 'SELECT * FROM product WHERE category = ? AND status <> ? '
+        if(category === "total"){
+            query = 'SELECT * FROM product WHERE status <> ?;'
+        } else {
+            query = 'SELECT * FROM product WHERE category = ? AND status <> ?;'
+        }
+
         req.app.get('dbConnection').query(query, [category, '삭제됨'], (err, results, fields) => {
             res.json({
                 data: results
