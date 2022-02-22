@@ -59,7 +59,7 @@ const read = {
         }
 
         kakaoAccountId = req.query.id
-        query = 'SELECT (product_id, count) FROM basket WHERE user_id =?;'
+        query = 'SELECT product_id, count FROM basket WHERE user_id =?;'
         req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results, fields) => {
 
             res.json({
