@@ -47,6 +47,31 @@ const create = {
     }
 }
 
+const read = {
+    basketByApp : (req, res) => {
+        let kakaoAccountId
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        kakaoAccountId = req.query.id
+        query = 'SELECT (product_id, count) FROM basket WHERE user_id =?;'
+        req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results, fields) => {
+
+            res.json({
+                success: true,
+                data: results
+            })
+        })
+    }
+}
+
+
 module.exports = {
     create,
+    read
 }

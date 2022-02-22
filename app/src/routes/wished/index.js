@@ -10,5 +10,4 @@ router.get('/api/app/read', ctrl.read.wishedByApp) // http://happybuyer.co.kr/pr
 
 router.get('/api/app/create', ctrl.create.wishedByApp)
 
-
 module.exports = router
