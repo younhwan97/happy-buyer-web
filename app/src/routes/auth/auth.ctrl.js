@@ -119,7 +119,8 @@ const remove = {
 const update = {
     userByApp : (req, res) => {
         let kakaoAccountId
-        let kakaoAccountNickname
+        let target
+        let newContent
         let query
 
         if (!req.query || Object.keys(req.query).length === 0) {
@@ -129,9 +130,26 @@ const update = {
         }
 
         kakaoAccountId = req.query.id
-        kakaoAccountNickname = req.query.nickname
-        query = 'UPDATE user SET name = ? WHERE id = ?;'
-        req.app.get('dbConnection').query(query, [kakaoAccountNickname, kakaoAccountId], (err, results, fields) => {
+        target = req.query.target
+        newContent = req.query.content
+
+        if(target === "nickname"){
+            query = 'UPDATE user SET name = ? WHERE id = ?;'
+        } else if(target === "basket"){
+            query = 'UPDATE user SET activated_basket = ? WHERE id = ?;'
+        } else if(target === "phone"){
+            query = 'UPDATE user SET phone_number = ? WHERE id = ?;'
+        } else if(target === "point"){
+            query = 'UPDATE user SET point_number = ? WHERE id = ?;'
+        } else if(target === "address"){
+            query = 'UPDATE user SET shipping_address = ? WHERE id = ?;'
+        } else {
+            return res.json({
+                success: false
+            })
+        }
+
+        req.app.get('dbConnection').query(query, [newContent, kakaoAccountId], (err, results, fields) => {
             if (err) throw err
 
             return res.json({
