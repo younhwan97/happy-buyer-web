@@ -112,6 +112,7 @@ const create = {
 
 const read = {
     productsByApp : (req, res) => {
+        let id
         let category
         let query
 
@@ -121,18 +122,53 @@ const read = {
             })
         }
 
+        id = req.query.id
         category = req.query.category
+
         if(category === "total"){
             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
-
         } else {
             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category,'삭제됨'])
         }
 
         req.app.get('dbConnection').query(query, (err, results, fields) => {
-            res.json({
-                data: results
-            })
+            if(err) throw err
+
+            let products = results
+
+            if(id !== null && id !== -1){
+                query = 'SELECT * FROM wished WHERE used_id = ?;'
+
+                req.app.get('dbConnection').query(query, [id], (err, results, fields) => {
+                    if(err) throw err
+
+                    if(results.length !== 0){
+                        for(let i = 0; i < results.length; i++){
+                            for(let j = 0; j < products.length; j++){
+                                if(results[i].product_id === products[j].product_id){
+                                    products[j].isWished = true
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        return res.json({
+                            success: true,
+                            data: products
+                        })
+                    } else {
+                        return res.json({
+                            success: true,
+                            data: products
+                        })
+                    }
+                })
+            } else {
+                res.json({
+                    success: true,
+                    data: products
+                })
+            }
         })
     }
 }
