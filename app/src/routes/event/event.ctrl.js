@@ -3,40 +3,38 @@
 const fs = require('fs')
 
 const read = {
-    basketByApp : (req, res) => {
+    eventByApp : (req, res) => {
         let query = 'SELECT * FROM event_product;'
 
         req.app.get('dbConnection').query(query, (err, results, fields) => {
             if (err) throw err
 
-            if(results.length !==0){
+            if(results.length !== 0){
                 let eventProductIdAndPrice = results
+                let eventProductId = []
 
-                let query = 'SELECT * FROM product;'
-                req.app.get('dbConnection').query(query, (err, results, fields) => {
-                    if (err) throw err
+                for(let i = 0; i<eventProductIdAndPrice.length; i++){
+                    eventProductId.push(eventProductIdAndPrice[i].product_id)
+                }
 
-                    if(results.length !== 0){
-                        let eventProduct = []
+                let query = 'SELECT * FROM product WHERE product_id IN (?)'
+                req.app.get('dbConnection').query(query, [eventProductId], (err, results, fields)=>{
+                    if(err) throw err
 
-                        for(let i = 0; i < results.length; i++){
-                            for(let j = 0; j < eventProductIdAndPrice.length; j++){
-                                if(results[i].product_id === eventProductIdAndPrice[j].product_id){
-                                    results[i].event_price = eventProductIdAndPrice[j].event_price
-                                    eventProduct.push(results[i])
-                                    break;
-                                }
+                    for(let i = 0; i < results.length; i++){
+                        for(let j = 0; j < eventProductIdAndPrice.length; j++){
+                            if(results[i].product_id === eventProductIdAndPrice[j].product_id){
+                                results[i].event_price = eventProductIdAndPrice[j].event_price
+                                break;
                             }
                         }
-                        return res.json({
-                            success: true,
-                            data: eventProduct
-                        })
-                    } else {
-                        return res.json({
-                            success: false
-                        })
                     }
+
+                    return res.json({
+                        success: true,
+                        data: results
+                    })
+
                 })
             } else {
                 return res.json({

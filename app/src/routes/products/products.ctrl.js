@@ -161,7 +161,7 @@ const read = {
                             for(let k = 0; k < eventProducts.length; k++){
                                 if(products[i].product_id === eventProducts[k].product_id){
                                     products[i].onSale = true
-                                    products[i].event_price = eventProducts[k].event_price
+                                    products[i].eventPrice = eventProducts[k].event_price
                                     break;
                                 }
                             }
