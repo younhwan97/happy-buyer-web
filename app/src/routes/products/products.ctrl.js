@@ -112,11 +112,11 @@ const create = {
 
 const read = {
     productsByApp : (req, res) => {
-        let id
-        let category
+        let id // 유저 아이디
+        let category // 선택된 상품 카테고리
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+        if (!req.query || Object.keys(req.query).length === 0) { // 쿼리가 없을 때
             return res.json({
                 success: false
             })
@@ -128,47 +128,62 @@ const read = {
         if(category === "total"){
             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
         } else {
-            query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category,'삭제됨'])
+            query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
         }
 
         req.app.get('dbConnection').query(query, (err, results, fields) => {
-            if(err) throw err
+            if (err) throw err
+
+            if (results.length === 0){ // DB에 등록된 상품이 하나도 없을 때
+                return res.json({
+                    success: false
+                })
+            }
 
             let products = results
+            query = 'SELECT * FROM event_product;'
 
-            if(id !== null && id !== -1){
-                query = 'SELECT * FROM wished WHERE used_id = ?;'
+            req.app.get('dbConnection').query(query, (err, results, fields)=>{
+                if(err) throw err
 
-                req.app.get('dbConnection').query(query, [id], (err, results, fields) => {
-                    if(err) throw err
+                let eventProducts = results
 
-                    if(results.length !== 0){
-                        for(let i = 0; i < results.length; i++){
-                            for(let j = 0; j < products.length; j++){
-                                if(results[i].product_id === products[j].product_id){
-                                    products[j].isWished = true
+                if(id !== null && id !== -1){
+                    query = 'SELECT * FROM wished WHERE user_id = ?;'
+
+                    req.app.get('dbConnection').query(query, id, (err, results, fields) => {
+                        if(err) throw err
+
+                        let wishedProducts = results
+
+                        for(let i = 0; i < products.length; i++){
+                            for(let j = 0; j < wishedProducts.length; j++){
+                                if(products[i].product_id === wishedProducts[j].product_id){
+                                    products[i].isWished = true
+                                    break;
+                                }
+                            }
+
+                            for(let k = 0; k < eventProducts.length; k++){
+                                if(products[i].product_id === eventProducts[k].product_id){
+                                    products[i].onSale = true
                                     break;
                                 }
                             }
                         }
-                        
+
                         return res.json({
                             success: true,
                             data: products
                         })
-                    } else {
-                        return res.json({
-                            success: true,
-                            data: products
-                        })
-                    }
-                })
-            } else {
-                res.json({
-                    success: true,
-                    data: products
-                })
-            }
+                    })
+                } else {
+                    res.json({
+                        success: true,
+                        data: products
+                    })
+                }
+            })
         })
     }
 }
