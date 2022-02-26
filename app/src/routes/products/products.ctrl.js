@@ -134,12 +134,6 @@ const read = {
         req.app.get('dbConnection').query(query, (err, results, fields) => {
             if (err) throw err
 
-            if (results.length === 0){ // DB에 등록된 상품이 하나도 없을 때
-                return res.json({
-                    success: false
-                })
-            }
-
             let products = results
             query = 'SELECT * FROM event_product;'
 
@@ -167,6 +161,7 @@ const read = {
                             for(let k = 0; k < eventProducts.length; k++){
                                 if(products[i].product_id === eventProducts[k].product_id){
                                     products[i].onSale = true
+                                    products[i].event_price = eventProducts[k].event_price
                                     break;
                                 }
                             }
