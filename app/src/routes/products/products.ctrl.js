@@ -114,7 +114,6 @@ const read = {
     productsByApp : (req, res) => {
         let category // 선택된 상품 카테고리
         let sort
-        let count
         let query
 
         if (!req.query || Object.keys(req.query).length === 0) { // 쿼리가 없을 때
@@ -125,14 +124,13 @@ const read = {
 
         category = req.query.category
         sort = req.query.sort // 정렬 기준
-        count = req.query.count // 개수
 
-        if(sort === "popular" && count !== null){
+        if(sort === "popular"){
 
             if(category === "total"){
-                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit ?;', ['삭제됨', count])
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 10;', '삭제됨')
             } else {
-                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit ?', [category, '삭제됨', count])
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 10', [category, '삭제됨'])
             }
 
             req.app.get('dbConnection').query(query, (err, results, fields) => {
@@ -162,7 +160,7 @@ const read = {
                     })
                 })
             })
-        } else if (sort === null && count === null){
+        } else if (sort === null){
 
             if(category === "total"){
                 query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
