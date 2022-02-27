@@ -113,6 +113,8 @@ const create = {
 const read = {
     productsByApp : (req, res) => {
         let category // 선택된 상품 카테고리
+        let sort
+        let count
         let query
 
         if (!req.query || Object.keys(req.query).length === 0) { // 쿼리가 없을 때
@@ -120,42 +122,82 @@ const read = {
                 success: false
             })
         }
-        
+
         category = req.query.category
+        sort = req.query.sort // 정렬 기준
+        count = req.query.count // 개수
 
-        if(category === "total"){
-            query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
-        } else {
-            query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
-        }
+        if(sort === "popular" && count !== null){
 
-        req.app.get('dbConnection').query(query, (err, results, fields) => {
-            if (err) throw err
+            if(category === "total"){
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit ?;', ['삭제됨', count])
+            } else {
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit ?', [category, '삭제됨', count])
+            }
 
-            let products = results
-            query = 'SELECT * FROM event_product;'
-
-            req.app.get('dbConnection').query(query, (err, results, fields)=>{
+            req.app.get('dbConnection').query(query, (err, results, fields) => {
                 if(err) throw err
 
-                let eventProducts = results
+                let products = results
+                query = 'SELECT * FROM event_product;'
 
-                for(let i = 0; i < products.length; i++){
-                    for(let k = 0; k < eventProducts.length; k++){
-                        if(products[i].product_id === eventProducts[k].product_id){
-                            products[i].on_sale = true
-                            products[i].event_price = eventProducts[k].event_price
-                            break;
+                req.app.get('dbConnection').query(query, (err, results, fields)=>{
+                    if(err) throw err
+
+                    let eventProducts = results
+
+                    for(let i = 0; i < products.length; i++){
+                        for(let k = 0; k < eventProducts.length; k++){
+                            if(products[i].product_id === eventProducts[k].product_id){
+                                products[i].on_sale = true
+                                products[i].event_price = eventProducts[k].event_price
+                                break;
+                            }
                         }
                     }
-                }
 
-                return res.json({
-                    success: true,
-                    data: products
+                    return res.json({
+                        success: true,
+                        data: products
+                    })
                 })
             })
-        })
+        } else if (sort === null && count === null){
+
+            if(category === "total"){
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
+            } else {
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
+            }
+
+            req.app.get('dbConnection').query(query, (err, results, fields) => {
+                if (err) throw err
+
+                let products = results
+                query = 'SELECT * FROM event_product;'
+
+                req.app.get('dbConnection').query(query, (err, results, fields)=>{
+                    if(err) throw err
+
+                    let eventProducts = results
+
+                    for(let i = 0; i < products.length; i++){
+                        for(let k = 0; k < eventProducts.length; k++){
+                            if(products[i].product_id === eventProducts[k].product_id){
+                                products[i].on_sale = true
+                                products[i].event_price = eventProducts[k].event_price
+                                break;
+                            }
+                        }
+                    }
+
+                    return res.json({
+                        success: true,
+                        data: products
+                    })
+                })
+            })
+        }
     }
 }
 
