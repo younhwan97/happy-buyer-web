@@ -112,7 +112,6 @@ const create = {
 
 const read = {
     productsByApp : (req, res) => {
-        let id // 유저 아이디
         let category // 선택된 상품 카테고리
         let query
 
@@ -121,8 +120,7 @@ const read = {
                 success: false
             })
         }
-
-        id = req.query.id
+        
         category = req.query.category
 
         if(category === "total"){
@@ -142,42 +140,20 @@ const read = {
 
                 let eventProducts = results
 
-                if(id !== null && id !== -1){
-                    query = 'SELECT * FROM wished WHERE user_id = ?;'
-
-                    req.app.get('dbConnection').query(query, id, (err, results, fields) => {
-                        if(err) throw err
-
-                        let wishedProducts = results
-
-                        for(let i = 0; i < products.length; i++){
-                            for(let j = 0; j < wishedProducts.length; j++){
-                                if(products[i].product_id === wishedProducts[j].product_id){
-                                    products[i].isWished = true
-                                    break;
-                                }
-                            }
-
-                            for(let k = 0; k < eventProducts.length; k++){
-                                if(products[i].product_id === eventProducts[k].product_id){
-                                    products[i].onSale = true
-                                    products[i].eventPrice = eventProducts[k].event_price
-                                    break;
-                                }
-                            }
+                for(let i = 0; i < products.length; i++){
+                    for(let k = 0; k < eventProducts.length; k++){
+                        if(products[i].product_id === eventProducts[k].product_id){
+                            products[i].on_sale = true
+                            products[i].event_price = eventProducts[k].event_price
+                            break;
                         }
-
-                        return res.json({
-                            success: true,
-                            data: products
-                        })
-                    })
-                } else {
-                    res.json({
-                        success: true,
-                        data: products
-                    })
+                    }
                 }
+
+                return res.json({
+                    success: true,
+                    data: products
+                })
             })
         })
     }
