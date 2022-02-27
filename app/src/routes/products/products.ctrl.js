@@ -128,9 +128,9 @@ const read = {
         if(sort === "popular"){
 
             if(category === "total"){
-                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 10;', '삭제됨')
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 6;', '삭제됨')
             } else {
-                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 10', [category, '삭제됨'])
+                query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 6', [category, '삭제됨'])
             }
 
             req.app.get('dbConnection').query(query, (err, results, fields) => {
@@ -160,7 +160,7 @@ const read = {
                     })
                 })
             })
-        } else if (sort === null){
+        } else if (sort === "basic"){
 
             if(category === "total"){
                 query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
