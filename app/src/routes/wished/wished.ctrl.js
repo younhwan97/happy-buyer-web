@@ -18,10 +18,17 @@ const read = {
         query = 'SELECT * FROM wished WHERE user_id = ?;'
 
         req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results, fields) => {
-            return res.json({
-                success: true,
-                data: results
-            })
+
+            if(results.length !== 0){
+                return res.json({
+                    success: true,
+                    data: results
+                })
+            } else {
+                return res.json({
+                    success: false
+                })
+            }
         })
     }
 }
@@ -52,7 +59,7 @@ const create = {
 
                     return res.json({
                         success: true,
-                        explain: 'create'
+                        perform: 'create'
                     })
                 })
             } else {
@@ -62,7 +69,7 @@ const create = {
 
                     return res.json({
                         success: true,
-                        explain: 'delete'
+                        perform: 'delete'
                     })
                 })
             }
