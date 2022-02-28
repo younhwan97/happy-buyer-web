@@ -139,9 +139,36 @@ const update = {
     }
 }
 
+const remove = {
+    basketByApp : (req, res) => {
+        let productId
+        let kakaoAccountId
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        productId = req.query.pid
+        kakaoAccountId = req.query.uid
+
+        query = 'DELETE FROM basket WHERE user_id = ? AND product_id = ?;'
+
+        req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results)=>{
+            if(err) throw err
+
+            res.json({
+                success: true
+            })
+        })
+    }
+}
 
 module.exports = {
     create,
     read,
-    update
+    update,
+    remove
 }
