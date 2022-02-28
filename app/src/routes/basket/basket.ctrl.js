@@ -60,6 +60,12 @@ const read = {
 
         req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results) => {
 
+            if(results.length === 0){
+                return res.json({
+                    success: false
+                })
+            }
+
             let basketProductIdAndCount = results
             let basketProductId = []
             for(let i = 0; i < basketProductIdAndCount.length; i++){

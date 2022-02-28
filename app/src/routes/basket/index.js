@@ -12,4 +12,6 @@ router.get('/api/app/read', ctrl.read.basketByApp)
 
 router.get('/api/app/update', ctrl.update.basketByApp)
 
+router.get('/api/app/delete', ctrl.remove.basketByApp)
+
 module.exports = router
