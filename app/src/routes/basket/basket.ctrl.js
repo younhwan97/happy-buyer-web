@@ -108,8 +108,40 @@ const read = {
     }
 }
 
+const update = {
+    basketByApp : (req, res) => {
+        let productId
+        let kakaoAccountId
+        let perform
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        productId = req.query.pid
+        kakaoAccountId = req.query.uid
+        perform = req.query.perform
+
+        if(perform === "minus"){
+            query = 'UPDATE basket set count = count - ? WHERE user_id = ? AND product_id = ?;'
+
+            req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
+                if(err) throw err
+
+                res.json({
+                    success: true
+                })
+            })
+        }
+    }
+}
+
 
 module.exports = {
     create,
-    read
+    read,
+    update
 }
