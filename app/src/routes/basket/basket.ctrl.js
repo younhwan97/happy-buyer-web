@@ -33,9 +33,6 @@ const create = {
             } else{
                 query = 'INSERT INTO basket(user_id, product_id, count) VALUES(?, ?, ?);'
 
-                console.log(kakaoAccountId)
-                console.log(productId)
-
                 req.app.get('dbConnection').query(query, [kakaoAccountId, productId, 1], (err, results, fields)=>{
 
                     res.json({
@@ -61,12 +58,12 @@ const read = {
         kakaoAccountId = req.query.id
         query = 'SELECT product_id, count FROM basket WHERE user_id =?;'
 
-        req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results, fields) => {
+        req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results) => {
 
             let basketProductIdAndCount = results
             let basketProductId = []
-            for(let i = 0; i < basketProduct.length; i++){
-                basketProductId.push(basketProduct[i].product_id)
+            for(let i = 0; i < basketProductIdAndCount.length; i++){
+                basketProductId.push(basketProductIdAndCount[i].product_id)
             }
 
             query = 'SELECT * FROM product WHERE status <> ? AND product_id IN (?);'
@@ -86,9 +83,25 @@ const read = {
                     }
                 }
 
-                return res.json({
-                    success: true,
-                    data: basketProduct
+                query = 'SELECT * FROM event_product;'
+
+                req.app.get('dbConnection').query(query, (err, results) => {
+                    if(err) throw err
+
+                    for(let i = 0; i < basketProduct.length; i++){
+                        for(let j = 0; j < results.length; j++){
+                            if(basketProduct[i].product_id === results[j].product_id){
+                                basketProduct[i].on_sale = true
+                                basketProduct[i].event_price = results[j].event_price
+                                break;
+                            }
+                        }
+                    }
+
+                    return res.json({
+                        success: true,
+                        data: basketProduct
+                    })
                 })
             })
         })
