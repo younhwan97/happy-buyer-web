@@ -1,7 +1,5 @@
 "use strict";
 
-const fs = require('fs')
-
 const create = {
     basketByApp : (req, res) => {
         let productId
@@ -22,21 +20,34 @@ const create = {
             if (err) throw err
 
             if(results.length !== 0){
-                query = 'UPDATE basket set count = count + ? WHERE user_id = ? AND product_id = ?;'
 
-                req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
+                if(results[0].count <= 9){
+                    query = 'UPDATE basket set count = count + ? WHERE user_id = ? AND product_id = ?;'
 
-                    res.json({
-                        success: true
+                    let count = results[0].count
+                    req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
+                        if(err) throw err
+
+                        return res.json({
+                            success: true,
+                            count: count+1
+                        })
                     })
-                })
+                } else {
+                    return res.json({
+                        success: true,
+                        count: 10
+                    })
+                }
             } else{
                 query = 'INSERT INTO basket(user_id, product_id, count) VALUES(?, ?, ?);'
 
                 req.app.get('dbConnection').query(query, [kakaoAccountId, productId, 1], (err, results, fields)=>{
+                    if(err) throw err
 
                     res.json({
-                        success: true
+                        success: true,
+                        count: 1
                     })
                 })
             }
