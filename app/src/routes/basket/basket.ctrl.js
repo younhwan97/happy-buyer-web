@@ -52,7 +52,7 @@ const read = {
         let kakaoAccountId
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+        if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
             })
@@ -60,11 +60,36 @@ const read = {
 
         kakaoAccountId = req.query.id
         query = 'SELECT product_id, count FROM basket WHERE user_id =?;'
+
         req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results, fields) => {
 
-            res.json({
-                success: true,
-                data: results
+            let basketProductIdAndCount = results
+            let basketProductId = []
+            for(let i = 0; i < basketProduct.length; i++){
+                basketProductId.push(basketProduct[i].product_id)
+            }
+
+            query = 'SELECT * FROM product WHERE status <> ? AND product_id IN (?);'
+
+            req.app.get('dbConnection').query(query, ['삭제됨', basketProductId], (err, results) =>{
+                if(err) throw err
+
+                let basketProduct = []
+
+                for(let i = 0; i < basketProductIdAndCount.length; i++){
+                    for(let j = 0; j < results.length; j++){
+                        if(basketProductIdAndCount[i].product_id === results[j].product_id){
+                            results[j].count_in_basket = basketProductIdAndCount[i].count
+                            basketProduct.push(results[j])
+                            break
+                        }
+                    }
+                }
+
+                return res.json({
+                    success: true,
+                    data: basketProduct
+                })
             })
         })
     }
