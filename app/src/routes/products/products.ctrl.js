@@ -111,7 +111,65 @@ const create = {
 }
 
 const read = {
-    productsByApp : (req, res) => {
+    productByApp : (req, res) => { // 상품 1개를 읽어온다.
+        let productId
+        let kakaoAccountId
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) { // 쿼리가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        productId = req.query.pid
+        kakaoAccountId = req.query.uid
+        query = 'SELECT * FROM product WHERE product_id = ? AND status <> ?;'
+
+        req.app.get('dbConnection').query(query, [productId, '삭제됨'], (err, results) => {
+            if(err) throw err
+
+            if(results.length === 0){
+                return res.json({
+                    success: false
+                })
+            }
+
+            let product = results[0]
+            query = 'SELECT * FROM event_product WHERE product_id = ?;'
+
+            req.app.get('dbConnection').query(query, productId, (err, results) => {
+                if(err) throw err
+
+                if(results.length !== 0){
+                    product.event_price  = results[0].event_price
+                    product.on_sale = true
+                }
+
+                if(kakaoAccountId === -1 || kakaoAccountId === null){
+                    return res.json({
+                        success: true,
+                        data: product
+                    })
+                }
+
+                query = 'SELECT * FROM wished WHERE product_id = ? AND user_id = ?;'
+                req.app.get('dbConnection').query(query, [productId, kakaoAccountId], (err, results) => {
+                    if(err) throw err
+
+                    if(results.length !== 0)
+                        product.is_wished = true
+
+                    return res.json({
+                        success: true,
+                        data: product
+                    })
+                })
+            })
+        })
+    },
+
+    productsByApp : (req, res) => { // 상품 여러개를 읽어온다.
         let category // 선택된 상품 카테고리
         let sort
         let query
@@ -196,7 +254,7 @@ const read = {
                 })
             })
         }
-    }
+    },
 }
 
 const update = {

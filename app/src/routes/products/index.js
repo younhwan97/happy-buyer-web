@@ -15,7 +15,8 @@ router.post('/api/upload', ctrl.create.s3) // http://happybuyer.co.kr/products/a
 router.post('/api/add', ctrl.create.product) // http://happybuyer.co.kr/products/api/add
 
 // Read Data
-router.get('/api/app/read', ctrl.read.productsByApp)
+router.get('/api/app/reads', ctrl.read.productsByApp)
+router.get('/api/app/read', ctrl.read.productByApp)
 
 // Remove Data
 router.post('/api/remove', ctrl.remove.product) // http://happybuyer.co.kr/products/api/remove
