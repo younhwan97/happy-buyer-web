@@ -4,9 +4,10 @@ const create = {
     basketByApp : (req, res) => {
         let productId
         let kakaoAccountId
+        let count
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+        if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
             })
@@ -14,29 +15,29 @@ const create = {
 
         productId = req.query.pid
         kakaoAccountId = req.query.uid
+        count = req.query.count
         query = 'SELECT * FROM basket WHERE user_id = ? AND product_id = ?;'
 
         req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
             if (err) throw err
 
             if(results.length !== 0){
+                let resultCount = results[0].count + count
 
-                if(results[0].count <= 9){
+                if(resultCount < 20){
                     query = 'UPDATE basket set count = count + ? WHERE user_id = ? AND product_id = ?;'
-
-                    let count = results[0].count
-                    req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
+                    req.app.get('dbConnection').query(query, [count, kakaoAccountId, productId], (err, results, fields)=>{
                         if(err) throw err
 
                         return res.json({
                             success: true,
-                            count: count+1
+                            count: resultCount
                         })
                     })
                 } else {
                     return res.json({
                         success: true,
-                        count: 10
+                        count: 20
                     })
                 }
             } else{
