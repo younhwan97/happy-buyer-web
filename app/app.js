@@ -68,6 +68,7 @@ const dashboardRouter = require("./src/routes/dashboard")
 const basketRouter = require("./src/routes/basket")
 const wishedRouter = require("./src/routes/wished")
 const eventRouter = require("./src/routes/event")
+const searchRouter = require('./src/routes/search')
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
@@ -76,5 +77,6 @@ app.use("/dashboard", dashboardRouter)
 app.use("/basket", basketRouter)
 app.use("/wished", wishedRouter)
 app.use("/event", eventRouter)
+app.use("/search", searchRouter)
 
 module.exports = server
