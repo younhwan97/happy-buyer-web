@@ -15,40 +15,45 @@ const create = {
 
         productId = req.query.pid
         kakaoAccountId = req.query.uid
-        count = req.query.count
+        count = parseInt(req.query.count)
         query = 'SELECT * FROM basket WHERE user_id = ? AND product_id = ?;'
 
         req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results, fields) => {
             if (err) throw err
 
             if(results.length !== 0){
-                let resultCount = results[0].count + count
+                count += results[0].count
 
-                if(resultCount < 20){
-                    query = 'UPDATE basket set count = count + ? WHERE user_id = ? AND product_id = ?;'
+                if(count <= 20){
+                    query = 'UPDATE basket set count = count WHERE user_id = ? AND product_id = ?;'
                     req.app.get('dbConnection').query(query, [count, kakaoAccountId, productId], (err, results, fields)=>{
                         if(err) throw err
 
                         return res.json({
                             success: true,
-                            count: resultCount
+                            result_count: parseInt(count)
                         })
                     })
                 } else {
-                    return res.json({
-                        success: true,
-                        count: 20
+                    query = 'UPDATE basket set count = ? WHERE user_id = ? AND product_id = ?;'
+                    req.app.get('dbConnection').query(query, [20, kakaoAccountId, productId], (err, results, fields)=>{
+                        if(err) throw err
+
+                        return res.json({
+                            success: true,
+                            result_count: 20
+                        })
                     })
                 }
             } else{
                 query = 'INSERT INTO basket(user_id, product_id, count) VALUES(?, ?, ?);'
 
-                req.app.get('dbConnection').query(query, [kakaoAccountId, productId, 1], (err, results, fields)=>{
+                req.app.get('dbConnection').query(query, [kakaoAccountId, productId, count], (err, results, fields)=>{
                     if(err) throw err
 
                     res.json({
                         success: true,
-                        count: 1
+                        result_count: parseInt(count)
                     })
                 })
             }
