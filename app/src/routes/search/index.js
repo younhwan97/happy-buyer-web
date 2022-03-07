@@ -12,5 +12,7 @@ router.get('/api/app/recent/create', ctrl.create.recentSearchByApp)
 
 router.get('/api/app/recent/delete', ctrl.remove.recentSearchByApp)
 
+router.get('/api/app/history/read', ctrl.read.historyByApp)
+
 
 module.exports = router

@@ -22,7 +22,25 @@ const read = {
                 data: results
             })
         })
+    },
 
+    historyByApp : (req, res) => {
+
+        let query= 'SELECT * FROM search_history ORDER BY count DESC LIMIT 300;'
+        req.app.get('dbConnection').query(query, (err, results) => {
+            if (err) throw err
+
+            if(results.length !== 0){
+                return res.json({
+                    success: true,
+                    data: results
+                })
+            } else {
+                return res.json({
+                    success: false
+                })
+            }
+        })
     }
 }
 
