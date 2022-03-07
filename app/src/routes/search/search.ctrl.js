@@ -27,7 +27,7 @@ const read = {
 }
 
 const create = {
-    searchByApp : (req, res) => {
+    recentSearchByApp : (req, res) => {
         let kakaoAccountId
         let keyword
         let query
@@ -63,7 +63,39 @@ const create = {
     }
 }
 
+const remove = {
+    recentSearchByApp : (req, res) => {
+        let kakaoAccountId
+        let keyword
+        let query
+
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        kakaoAccountId = req.query.id
+        keyword = req.query.keyword
+
+        if(keyword === null){
+            query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ?;', kakaoAccountId)
+        } else {
+            query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ? AND keyword = ?;', [kakaoAccountId, keyword])
+        }
+
+        req.app.get('dbConnection').query(query, (err, results) => {
+            if (err) throw err
+
+            return res.json({
+                success: true
+            })
+        })
+    }
+}
+
 module.exports = {
     read,
-    create
+    create,
+    remove
 }
