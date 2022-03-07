@@ -226,6 +226,24 @@ const read = {
             })
         })
     },
+
+    productsNameByApp : (req, res) => {
+        let query = 'SELECT name FROM product;'
+
+        req.app.get('dbConnection').query(query, (err, results) => {
+            if(results.length !==0){
+                return res.json({
+                    success: true,
+                    data: results
+                })
+            } else {
+                return res.json({
+                    success: false
+                })
+            }
+        })
+
+    }
 }
 
 const update = {
