@@ -78,7 +78,7 @@ const remove = {
         kakaoAccountId = req.query.id
         keyword = req.query.keyword
 
-        if(keyword === null){
+        if(keyword === null || keyword === undefined){
             query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ?;', kakaoAccountId)
         } else {
             query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ? AND keyword = ?;', [kakaoAccountId, keyword])
