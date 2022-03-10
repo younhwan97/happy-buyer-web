@@ -59,25 +59,34 @@ const create = {
         kakaoAccountId = req.query.id
         keyword = req.query.keyword
 
-        query = 'SELECT * FROM recent_search WHERE user_id = ? AND keyword = ?;'
-        req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
+        query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?) WHERE NOT EXISTS (SELECT search_id FROM recent_search WHERE user_id = ? AND keyword =?);'
+
+        req.app.get('dbConnection').query(query, [kakaoAccountId, keyword, kakaoAccountId, keyword], (err) => {
             if(err) throw err
 
-            if(results.length !== 0){
-                return res.json({
-                    success: true
-                })
-            }
-
-            query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);'
-            req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
-                if(err) throw err
-
-                return res.json({
-                    success: true
-                })
+            return res.json({
+                success: true
             })
         })
+
+        //
+        // query = 'SELECT * FROM recent_search WHERE user_id = ? AND keyword = ?;'
+        // req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
+        //     if(err) throw err
+        //
+        //     if(results.length !== 0){
+        //
+        //     }
+        //
+        //     query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);'
+        //     req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
+        //         if(err) throw err
+        //
+        //         return res.json({
+        //             success: true
+        //         })
+        //     })
+        // })
     }
 }
 
