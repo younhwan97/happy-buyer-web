@@ -112,11 +112,11 @@ const create = {
 
 const read = {
     productByApp : (req, res) => { // 상품 1개를 읽어온다.
-        let productId
-        let kakaoAccountId
         let query
+        let productId // 읽을 상품 id
+        let kakaoAccountId // 유저 id
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 쿼리가 없을 때
+        if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
             })
@@ -129,7 +129,7 @@ const read = {
         req.app.get('dbConnection').query(query, [productId, '삭제됨'], (err, results) => {
             if(err) throw err
 
-            if(results.length === 0){
+            if(!results.length){
                 return res.json({
                     success: false
                 })
@@ -141,12 +141,12 @@ const read = {
             req.app.get('dbConnection').query(query, productId, (err, results) => {
                 if(err) throw err
 
-                if(results.length !== 0){
+                if(results.length){
                     product.event_price  = results[0].event_price
                     product.on_sale = true
                 }
 
-                if(kakaoAccountId === -1 || kakaoAccountId === null){
+                if(kakaoAccountId === -1 || kakaoAccountId === null || kakaoAccountId === undefined){
                     return res.json({
                         success: true,
                         data: product
@@ -157,8 +157,7 @@ const read = {
                 req.app.get('dbConnection').query(query, [productId, kakaoAccountId], (err, results) => {
                     if(err) throw err
 
-                    if(results.length !== 0)
-                        product.is_wished = true
+                    if(results.length) product.is_wished = true
 
                     return res.json({
                         success: true,
@@ -170,10 +169,10 @@ const read = {
     },
 
     productsByApp : (req, res) => { // 상품 여러개를 읽어온다.
-        let category // 선택된 상품 카테고리
+        let query
         let sort // 정렬 기준
         let keyword // 키워드
-        let query
+        let category // 선택된 상품 카테고리
 
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
@@ -185,58 +184,48 @@ const read = {
         sort = req.query.sort
         keyword = req.query.keyword
 
-        console.log(keyword)
-        if(category === "total"){
-            if(sort === "popular"){
-                if(keyword === "null"){
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 6;', '삭제됨')
-                } else {
-                    query =
-                        req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ? ORDER BY sales DESC limit 6;', ['삭제됨', '%'+keyword+'%'])
-                }
-            } else if(sort === "basic"){
-                if(keyword === "null"){
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
-                } else {
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ?;', ['삭제됨', '%'+keyword+'%'])
-                }
-            }
-        } else {
-            if(sort === "popular"){
-                if(keyword === "null") {
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 6', [category, '삭제됨'])
-                } else {
-                    query =
-                        req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ? ORDER BY sales DESC limit 6', [category, '삭제됨', '%'+keyword+'%'])
-                }
-            } else if(sort === "basic"){
-                if(keyword === "null"){
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
-                } else {
-                    query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ?;', [category, '삭제됨', '%'+keyword+'%'])
-                }
-            }
+        let except_status = '삭제됨'
+        query = 'SELECT * FROM product WHERE status <> ' + req.app.get('mysql').escape(except_status)
+
+        if(category !== "total"){
+            query += ' AND category = ' + req.app.get('mysql').escape(category)
         }
 
-        console.log(query)
+        if(keyword){
+            query += ' AND name LIKE ' + req.app.get('mysql').escape('%'+keyword+'%')
+        }
 
-        req.app.get('dbConnection').query(query, (err, results, fields) => {
+        if(sort !== "basic"){
+            let count = 6
+            query += ' ORDER BY sales DESC limit ' + req.app.get('mysql').escape(count)
+        }
+
+        query += ';'
+
+        req.app.get('dbConnection').query(query, (err, results) => {
             if(err) throw err
+
+            if(!results.length){
+                // 검색된 상품이 없을 때
+                return res.json({
+                    success: false
+                })
+            }
 
             let products = results
             query = 'SELECT * FROM event_product;'
 
-            req.app.get('dbConnection').query(query, (err, results, fields)=>{
+            req.app.get('dbConnection').query(query, (err, results)=>{
                 if(err) throw err
 
                 let eventProducts = results
 
-                for(let i = 0; i < products.length; i++){
-                    for(let k = 0; k < eventProducts.length; k++){
-                        if(products[i].product_id === eventProducts[k].product_id){
-                            products[i].on_sale = true
-                            products[i].event_price = eventProducts[k].event_price
-                            break;
+                for(let i = 0; i < eventProducts.length; i++){
+                    for(let j = 0; j < products.length; j++){
+                        if(eventProducts[i].product_id === products[j].product_id){
+                            products[j].on_sale = true
+                            products[j].event_price = eventProducts[i].event_price
+                            break
                         }
                     }
                 }
@@ -247,6 +236,42 @@ const read = {
                 })
             })
         })
+
+
+        // if(category === "total"){
+        //     if(sort === "popular"){
+        //         if(keyword === "null"){
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 6;', '삭제됨')
+        //         } else {
+        //             query =
+        //                 req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ? ORDER BY sales DESC limit 6;', ['삭제됨', '%'+keyword+'%'])
+        //         }
+        //     } else if(sort === "basic"){
+        //         if(keyword === "null"){
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
+        //         } else {
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ?;', ['삭제됨', '%'+keyword+'%'])
+        //         }
+        //     }
+        // } else {
+        //     if(sort === "popular"){
+        //         if(keyword === "null") {
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 6', [category, '삭제됨'])
+        //         } else {
+        //             query =
+        //                 req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ? ORDER BY sales DESC limit 6', [category, '삭제됨', '%'+keyword+'%'])
+        //         }
+        //     } else if(sort === "basic"){
+        //         if(keyword === "null"){
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
+        //         } else {
+        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ?;', [category, '삭제됨', '%'+keyword+'%'])
+        //         }
+        //     }
+        // }
+        //
+
+
     },
 
 }
