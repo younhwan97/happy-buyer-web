@@ -7,15 +7,15 @@ const create = {
         let count
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        productId = req.query.pid
-        kakaoAccountId = req.query.uid
-        count = parseInt(req.query.count)
+        kakaoAccountId = parseInt(req.body.user_id)
+        productId = parseInt(req.body.product_id)
+        count = parseInt(req.body.count)
         query = 'SELECT * FROM basket WHERE user_id = ? AND product_id = ?;'
 
         req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results) => {
@@ -131,15 +131,15 @@ const update = {
         let perform
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        productId = req.query.pid
-        kakaoAccountId = req.query.uid
-        perform = req.query.perform
+        kakaoAccountId = parseInt(req.body.user_id)
+        productId = parseInt(req.body.product_id)
+        perform = req.body.perform
 
         if(perform === "minus"){
             query = 'UPDATE basket set count = count - ? WHERE user_id = ? AND product_id = ?;'
@@ -161,14 +161,14 @@ const remove = {
         let kakaoAccountId
         let query
 
-        if (!req.query || Object.keys(req.query).length === 0) { // 상품 데이터가 없을 때
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        productId = req.query.pid
-        kakaoAccountId = req.query.uid
+        kakaoAccountId = parseInt(req.body.user_id)
+        productId = parseInt(req.body.product_id)
 
         query = 'DELETE FROM basket WHERE user_id = ? AND product_id = ?;'
 

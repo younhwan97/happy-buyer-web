@@ -6,12 +6,12 @@ const router = express.Router()
 
 const ctrl = require('./basket.ctrl')
 
-router.get('/api/app/create', ctrl.create.basketByApp)
+router.get('/', ctrl.read.basketByApp)
 
-router.get('/api/app/read', ctrl.read.basketByApp)
+router.post('/', ctrl.create.basketByApp)
 
-router.get('/api/app/update', ctrl.update.basketByApp)
+router.put('/', ctrl.update.basketByApp)
 
-router.get('/api/app/delete', ctrl.remove.basketByApp)
+router.delete('/', ctrl.remove.basketByApp)
 
 module.exports = router
