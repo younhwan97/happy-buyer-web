@@ -2,19 +2,16 @@
 
 const read = {
     recentSearchByApp : (req, res) => {
-        let kakaoAccountId
-        let query
-
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = req.query.id
-        query = 'SELECT * FROM recent_search WHERE user_id = ?;'
+        const userId = req.query.id
 
-        req.app.get('dbConnection').query(query, kakaoAccountId, (err, results) => {
+        const query = "SELECT * FROM recent_search WHERE user_id = ?;"
+        req.app.get('dbConnection').query(query, userId, (err, results) => {
             if(err) throw err
 
             return res.json({
@@ -25,12 +22,11 @@ const read = {
     },
 
     historyByApp : (req, res) => {
-
-        let query= 'SELECT * FROM search_history ORDER BY count DESC LIMIT 300;'
+        let query= "SELECT * FROM search_history ORDER BY count DESC LIMIT 300;"
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
 
-            if(results.length !== 0){
+            if(results.length){
                 return res.json({
                     success: true,
                     data: results
@@ -46,36 +42,21 @@ const read = {
 
 const create = {
     recentSearchByApp : (req, res) => {
-        let kakaoAccountId
-        let keyword
-        let query
-
-        if (!req.query || Object.keys(req.query).length === 0) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
+        
+        const userId = req.body.id
+        const keyword = req.body.keyword
 
-        kakaoAccountId = req.query.id
-        keyword = req.query.keyword
-
-        query = 'SELECT * FROM recent_search WHERE user_id = ? AND keyword = ?;'
-        req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
+        const query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);'
+        req.app.get('dbConnection').query(query, [userId, keyword], (err) => {
             if(err) throw err
 
-            if(results.length !== 0){
-                return res.json({
-                    success: true
-                })
-            }
-
-            query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);'
-            req.app.get('dbConnection').query(query, [kakaoAccountId, keyword], (err, results) => {
-                if(err) throw err
-
-                return res.json({
-                    success: true
-                })
+            return res.json({
+                success: true
             })
         })
     }
@@ -83,26 +64,24 @@ const create = {
 
 const remove = {
     recentSearchByApp : (req, res) => {
-        let kakaoAccountId
-        let keyword
-        let query
-
-        if (!req.query || Object.keys(req.query).length === 0) {
+        if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = req.query.id
-        keyword = req.query.keyword
+        const userId = req.body.id
+        const keyword = req.body.keyword
 
-        if(keyword === null || keyword === undefined){
-            query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ?;', kakaoAccountId)
-        } else {
-            query = req.app.get('mysql').format('DELETE FROM recent_search WHERE user_id = ? AND keyword = ?;', [kakaoAccountId, keyword])
+        let query = "DELETE FROM recent_search WHERE user_id = " + req.app.get('mysql').escape(userId)
+
+        if(keyword !== null && keyword !== undefined){
+            query += " AND keyword = " + req.app.get('mysql').escape(keyword)
         }
 
-        req.app.get('dbConnection').query(query, (err, results) => {
+        query += ';'
+
+        req.app.get('dbConnection').query(query, (err) => {
             if (err) throw err
 
             return res.json({

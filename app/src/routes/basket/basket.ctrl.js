@@ -1,7 +1,7 @@
 "use strict";
 
-const create = {
-    basketByApp : (req, res) => {
+const basket = {
+    createOrUpdate : (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
@@ -52,11 +52,9 @@ const create = {
                 })
             }
         })
-    }
-}
+    },
 
-const read = {
-    basketByApp : (req, res) => {
+    read : (req, res) => {
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
@@ -125,11 +123,9 @@ const read = {
                 })
             })
         })
-    }
-}
+    },
 
-const update = {
-    basketByApp : (req, res) => {
+    update: (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
@@ -160,11 +156,9 @@ const update = {
                 success: false
             })
         }
-    }
-}
+    },
 
-const remove = {
-    basketByApp : (req, res) => {
+    delete: (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
@@ -198,9 +192,4 @@ const remove = {
     }
 }
 
-module.exports = {
-    create,
-    read,
-    update,
-    remove
-}
+module.exports = { basket }

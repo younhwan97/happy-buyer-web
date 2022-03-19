@@ -1,18 +1,15 @@
 "use strict";
 
-/* Module */
 const express = require("express")
 const router = express.Router()
-
 const ctrl = require('./search.ctrl')
 
-router.get('/api/app/recent/read', ctrl.read.recentSearchByApp)
+router.get('/recent', ctrl.read.recentSearchByApp) // READ
 
-router.get('/api/app/recent/create', ctrl.create.recentSearchByApp)
+router.get('/history', ctrl.read.historyByApp) // READ
 
-router.get('/api/app/recent/delete', ctrl.remove.recentSearchByApp)
+router.post('/recent', ctrl.create.recentSearchByApp) // CREATE
 
-router.get('/api/app/history/read', ctrl.read.historyByApp)
-
+router.delete('/recent', ctrl.remove.recentSearchByApp) // DELETE
 
 module.exports = router

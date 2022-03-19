@@ -4,12 +4,12 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./basket.ctrl')
 
-router.post('/', ctrl.create.basketByApp) // CREATE
+router.post('/', ctrl.basket.createOrUpdate) // CREATE or UPDATE
 
-router.get('/', ctrl.read.basketByApp) // READ
+router.get('/', ctrl.basket.read) // READ
 
-router.put('/', ctrl.update.basketByApp) // UPDATE
+router.put('/', ctrl.basket.update) // UPDATE
 
-router.delete('/', ctrl.remove.basketByApp) // DELETE
+router.delete('/', ctrl.basket.delete) // DELETE
 
 module.exports = router
