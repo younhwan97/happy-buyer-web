@@ -1,13 +1,13 @@
 "use strict";
 
-const create = {
-    wishedByApp : (req, res) => {
+const wished = {
+    createOrDelete : (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
-        
+
         const userId = req.body.uid
         const productId = req.body.pid
 
@@ -37,11 +37,9 @@ const create = {
                 })
             }
         })
-    }
-}
+    },
 
-const read = {
-    wishedByApp : (req, res) => {
+    read: (req, res) => {
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
@@ -68,7 +66,4 @@ const read = {
     }
 }
 
-module.exports = {
-    read,
-    create
-}
+module.exports = { wished }
