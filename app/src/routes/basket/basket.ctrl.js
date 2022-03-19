@@ -2,33 +2,35 @@
 
 const create = {
     basketByApp : (req, res) => {
-        let productId
-        let kakaoAccountId
-        let count
-        let query
-
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = parseInt(req.body.user_id)
-        productId = parseInt(req.body.product_id)
-        count = parseInt(req.body.count)
-        query = 'SELECT * FROM basket WHERE user_id = ? AND product_id = ?;'
+        const userId = parseInt(req.body.user_id) || -1
+        const productId = parseInt(req.body.product_id)
+        let count = parseInt(req.body.count)
 
-        req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results) => {
+        if(userId === -1){ // 로그인 정보가 없는 유저
+            return res.json({
+                success: false
+            })
+        }
+
+        let query = "SELECT * FROM basket WHERE user_id = ? AND product_id = ?;"
+        req.app.get('dbConnection').query(query, [userId, productId], (err, results) => {
             if (err) throw err
 
-            if(results.length !== 0){
+            if(results.length){
                 count += results[0].count
 
                 if(count > 20) count = 20
 
-                query = 'UPDATE basket set count = ' + req.app.get('mysql').escape(count)
-                query += ' WHERE user_id = ' + req.app.get('mysql').escape(kakaoAccountId)
-                query += ' AND product_id = ' + req.app.get('mysql').escape(productId)
+                query = "UPDATE basket set count = " + req.app.get('mysql').escape(count)
+                query += " WHERE user_id = " + req.app.get('mysql').escape(userId)
+                query += " AND product_id = " + req.app.get('mysql').escape(productId)
+                query += ';'
 
                 req.app.get('dbConnection').query(query, (err) => {
                     if(err) throw err
@@ -38,15 +40,14 @@ const create = {
                         result_count: count
                     })
                 })
-            } else{
+            } else {
                 query = 'INSERT INTO basket(user_id, product_id, count) VALUES(?, ?, ?);'
-
-                req.app.get('dbConnection').query(query, [kakaoAccountId, productId, 1], (err) => {
+                req.app.get('dbConnection').query(query, [userId, productId, count], (err) => {
                     if(err) throw err
 
                     res.json({
                         success: true,
-                        result_count: 1
+                        result_count: count
                     })
                 })
             }
@@ -56,52 +57,55 @@ const create = {
 
 const read = {
     basketByApp : (req, res) => {
-        let kakaoAccountId
-        let query
-
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = req.query.id
-        query = 'SELECT product_id, count FROM basket WHERE user_id =?;'
+        const userId = req.query.id || -1
 
-        req.app.get('dbConnection').query(query, [kakaoAccountId], (err, results) => {
+        if(userId === -1){ // 로그인 정보가 없는 유저
+            return res.json({
+                success: false
+            })
+        }
 
-            if(results.length === 0){
+        // 유저의 아이디를 이용해 장바구니에 담긴 상품의 정보(아이디, 카운트)를 가져온다.
+        let query = "SELECT product_id, count FROM basket WHERE user_id = ?;"
+        req.app.get('dbConnection').query(query, [userId], (err, results) => {
+            if(err) throw err
+
+            if(!results.length){ // 유저의 장바구니가 비어있을 때
                 return res.json({
                     success: false
                 })
             }
 
-            let basketProductIdAndCount = results
-            let basketProductId = []
-            for(let i = 0; i < basketProductIdAndCount.length; i++){
-                basketProductId.push(basketProductIdAndCount[i].product_id)
+            let basketProduct = results // 장바구니에 들어있는 상품 배열
+            let basketProductId = [] // 장바구니에 들어있는 상품의 아이디 배열
+            for(let i = 0; i < basketProduct.length; i++){
+                basketProductId.push(basketProduct[i].product_id)
             }
 
-            query = 'SELECT * FROM product WHERE status <> ? AND product_id IN (?);'
-
-            req.app.get('dbConnection').query(query, ['삭제됨', basketProductId], (err, results) =>{
+            // 장바구니에 담긴 상품의 아이디를 이용해 상품의 나머지 정보(이미지, 가격 ..)를 가져온다.
+            query = "SELECT * FROM product WHERE status <> ? AND product_id IN (?);"
+            req.app.get('dbConnection').query(query, ['삭제됨', basketProductId], (err, results) => {
                 if(err) throw err
 
-                let basketProduct = []
-
-                for(let i = 0; i < basketProductIdAndCount.length; i++){
+                for(let i = 0; i < basketProduct.length; i++){
                     for(let j = 0; j < results.length; j++){
-                        if(basketProductIdAndCount[i].product_id === results[j].product_id){
-                            results[j].count_in_basket = basketProductIdAndCount[i].count
-                            basketProduct.push(results[j])
+                        if(basketProduct[i].product_id === results[j].product_id){
+                            results[j].count_in_basket = basketProduct[i].count
+                            basketProduct[i] = results[j]
                             break
                         }
                     }
                 }
 
-                query = 'SELECT * FROM event_product;'
-
-                req.app.get('dbConnection').query(query, (err, results) => {
+                // 장바구니에 담긴 상품의 아이디를 이용해 상품의 할인 정보를 가져온다.
+                query = "SELECT * FROM event_product WHERE product_id IN (?);"
+                req.app.get('dbConnection').query(query, [basketProductId], (err, results) => {
                     if(err) throw err
 
                     for(let i = 0; i < basketProduct.length; i++){
@@ -109,7 +113,7 @@ const read = {
                             if(basketProduct[i].product_id === results[j].product_id){
                                 basketProduct[i].on_sale = true
                                 basketProduct[i].event_price = results[j].event_price
-                                break;
+                                break
                             }
                         }
                     }
@@ -126,30 +130,34 @@ const read = {
 
 const update = {
     basketByApp : (req, res) => {
-        let productId
-        let kakaoAccountId
-        let perform
-        let query
-
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = parseInt(req.body.user_id)
-        productId = parseInt(req.body.product_id)
-        perform = req.body.perform
+        const userId = parseInt(req.body.user_id) || -1
+        const productId = parseInt(req.body.product_id)
+        const perform = req.body.perform
+
+        if(userId === -1){ // 로그인 정보가 없는 유저
+            return res.json({
+                success: false
+            })
+        }
 
         if(perform === "minus"){
-            query = 'UPDATE basket set count = count - ? WHERE user_id = ? AND product_id = ?;'
-
-            req.app.get('dbConnection').query(query, [1, kakaoAccountId, productId], (err, results, fields)=>{
+            const query = "UPDATE basket set count = count - ? WHERE user_id = ? AND product_id = ?;"
+            req.app.get('dbConnection').query(query, [1, userId, productId], (err) => {
                 if(err) throw err
 
-                res.json({
+                return res.json({
                     success: true
                 })
+            })
+        } else {
+            return res.json({
+                success: false
             })
         }
     }
@@ -157,22 +165,30 @@ const update = {
 
 const remove = {
     basketByApp : (req, res) => {
-        let productId
-        let kakaoAccountId
-        let query
-
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
             })
         }
 
-        kakaoAccountId = parseInt(req.body.user_id)
-        productId = parseInt(req.body.product_id)
+        const reqBody = req.body
+        const userId = reqBody[0].user_id || -1
+        const productId = []
 
-        query = 'DELETE FROM basket WHERE user_id = ? AND product_id = ?;'
+        if(userId === -1){ // 로그인 정보가 없는 유저
+            return res.json({
+                success: false
+            })
+        }
 
-        req.app.get('dbConnection').query(query, [kakaoAccountId, productId], (err, results)=>{
+        for(let i = 0; i < reqBody.length; i++){
+            if(reqBody[i].user_id === userId){
+                productId.push(reqBody[i].product_id)
+            }
+        }
+
+        const query = "DELETE FROM basket WHERE user_id = ? AND product_id IN (?);"
+        req.app.get('dbConnection').query(query, [userId, productId], (err)=>{
             if(err) throw err
 
             res.json({
