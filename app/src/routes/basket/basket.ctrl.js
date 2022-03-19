@@ -8,9 +8,9 @@ const create = {
             })
         }
 
-        const userId = parseInt(req.body.user_id) || -1
-        const productId = parseInt(req.body.product_id)
-        let count = parseInt(req.body.count)
+        const userId = req.body.user_id || -1
+        const productId = req.body.product_id
+        let count = req.body.count
 
         if(userId === -1){ // 로그인 정보가 없는 유저
             return res.json({
@@ -136,8 +136,8 @@ const update = {
             })
         }
 
-        const userId = parseInt(req.body.user_id) || -1
-        const productId = parseInt(req.body.product_id)
+        const userId = req.body.user_id || -1
+        const productId = req.body.product_id
         const perform = req.body.perform
 
         if(userId === -1){ // 로그인 정보가 없는 유저
