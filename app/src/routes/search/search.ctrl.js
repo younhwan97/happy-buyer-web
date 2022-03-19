@@ -1,7 +1,48 @@
 "use strict";
 
-const read = {
-    recentSearchByApp : (req, res) => {
+const search = {
+    createRecentWithHistory: (req, res) => {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        const userId = req.body.id
+        const keyword = req.body.keyword
+
+        let query = "INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);"
+        req.app.get('dbConnection').query(query, [userId, keyword], (err) => {
+            if(err) throw err
+
+            query = "SELECT * FROM search_history WHERE keyword = ?;"
+            req.app.get('dbConnection').query(query, keyword, (err, results) => {
+                if(err) throw err
+
+                if(results){
+                    query = "UPDATE search_history SET count = count + ? WHERE keyword = ?;"
+                    req.app.get('dbConnection').query(query, [1, keyword], (err) => {
+                        if(err) throw err
+
+                        return res.json({
+                            success: true
+                        })
+                    })
+                } else {
+                    query = "INSERT INTO search_history (keyword, count) VALUES (?, ?);"
+                    req.app.get('dbConnection').query(query, [keyword, 1], (err) => {
+                        if(err) throw err
+
+                        return res.json({
+                            success: true
+                        })
+                    })
+                }
+            })
+        })
+    },
+
+    readRecent: (req, res) => {
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
                 success: false
@@ -21,7 +62,7 @@ const read = {
         })
     },
 
-    historyByApp : (req, res) => {
+    readHistory: (req, res) => {
         let query= "SELECT * FROM search_history ORDER BY count DESC LIMIT 300;"
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
@@ -37,33 +78,9 @@ const read = {
                 })
             }
         })
-    }
-}
+    },
 
-const create = {
-    recentSearchByApp : (req, res) => {
-        if (!req.body || Object.keys(req.body).length === 0) {
-            return res.json({
-                success: false
-            })
-        }
-        
-        const userId = req.body.id
-        const keyword = req.body.keyword
-
-        const query = 'INSERT INTO recent_search (user_id, keyword) VALUES (?, ?);'
-        req.app.get('dbConnection').query(query, [userId, keyword], (err) => {
-            if(err) throw err
-
-            return res.json({
-                success: true
-            })
-        })
-    }
-}
-
-const remove = {
-    recentSearchByApp : (req, res) => {
+    deleteRecent: (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
                 success: false
@@ -91,8 +108,5 @@ const remove = {
     }
 }
 
-module.exports = {
-    read,
-    create,
-    remove
-}
+
+module.exports = { search }

@@ -4,12 +4,12 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./search.ctrl')
 
-router.get('/recent', ctrl.read.recentSearchByApp) // READ
+router.post('/recent-with-history', ctrl.search.createRecentWithHistory) // CREATE
 
-router.get('/history', ctrl.read.historyByApp) // READ
+router.get('/recent', ctrl.search.readRecent) // READ
 
-router.post('/recent', ctrl.create.recentSearchByApp) // CREATE
+router.get('/history', ctrl.search.readHistory) // READ
 
-router.delete('/recent', ctrl.remove.recentSearchByApp) // DELETE
+router.delete('/recent', ctrl.search.deleteRecent) // DELETE
 
 module.exports = router
