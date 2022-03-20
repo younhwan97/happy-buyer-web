@@ -4,12 +4,16 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./search.ctrl')
 
-router.post('/recent-with-history', ctrl.search.createRecentWithHistory) // CREATE
+// CREATE, http://happybuyer.co.kr/search/api/recent-with-history
+router.post('/api/recent-with-history', ctrl.search.createRecentWithHistory)
 
-router.get('/recent', ctrl.search.readRecent) // READ
+// READ, http://happybuyer.co.kr/search/api/recent
+router.get('/api/recent', ctrl.search.readRecent)
 
-router.get('/history', ctrl.search.readHistory) // READ
+// READ, http://happybuyer.co.kr/search/api/history
+router.get('/api/history', ctrl.search.readHistory)
 
-router.delete('/recent', ctrl.search.deleteRecent) // DELETE
+// DELETE, http://happybuyer.co.kr/search/api/recent
+router.delete('/api/recent', ctrl.search.deleteRecent)
 
 module.exports = router

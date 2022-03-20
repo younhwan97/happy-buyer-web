@@ -4,8 +4,10 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./wished.ctrl')
 
-router.post('/', ctrl.wished.createOrDelete) // CREATE or DELETE
+// CREATE DELETE, http://happybuyer.co.kr/wished/api
+router.post('/api', ctrl.wished.createOrDelete)
 
-router.get('/', ctrl.wished.read) // READ
+// READ, http://happybuyer.co.kr/wished/api
+router.get('/api', ctrl.wished.read)
 
 module.exports = router

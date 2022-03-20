@@ -4,12 +4,16 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./basket.ctrl')
 
-router.post('/', ctrl.basket.createOrUpdate) // CREATE or UPDATE
+// CREATE UPDATE, http://happybuyer.co.kr/basket/api
+router.post('/api', ctrl.basket.createOrUpdate)
 
-router.get('/', ctrl.basket.read) // READ
+// READ, http://happybuyer.co.kr/basket/api
+router.get('/api', ctrl.basket.read)
 
-router.put('/', ctrl.basket.update) // UPDATE
+// UPDATE, http://happybuyer.co.kr/basket/api
+router.put('/api', ctrl.basket.update)
 
-router.delete('/', ctrl.basket.delete) // DELETE
+// DELETE, http://happybuyer.co.kr/basket/api
+router.delete('/api', ctrl.basket.delete)
 
 module.exports = router
