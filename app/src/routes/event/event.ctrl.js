@@ -7,7 +7,7 @@ const event = {
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
 
-            if (!results.length) { // 행사 상품이 없을 때
+            if (results.length === 0) { // 행사 상품이 없을 때
                 return res.json({
                     success: false
                 })

@@ -34,7 +34,7 @@ const wished = {
         req.app.get('dbConnection').query(query, [userId, productId], (err, results) => {
             if (err) throw err
 
-            if (results.length) { // 결과값(유저가 찜한 상품)이 존재하는 경우
+            if (results.length !== 0) { // 결과값(유저가 찜한 상품)이 존재하는 경우
                 query = 'DELETE FROM wished WHERE user_id = ? AND product_id = ?;' // 상품의 찜을 해제(찜 테이블에서 제거, delete)
                 req.app.get('dbConnection').query(query, [userId, productId], (err) => {
                     if (err) throw err

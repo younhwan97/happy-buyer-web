@@ -22,7 +22,7 @@ const basket = {
         req.app.get('dbConnection').query(query, [userId, productId], (err, results) => {
             if (err) throw err
 
-            if(results.length){
+            if(results.length !== 0){
                 count += results[0].count
 
                 if(count > 20) count = 20
@@ -74,7 +74,7 @@ const basket = {
         req.app.get('dbConnection').query(query, [userId], (err, results) => {
             if(err) throw err
 
-            if(!results.length){ // 유저의 장바구니가 비어있을 때
+            if(results.length === 0){ // 유저의 장바구니가 비어있을 때
                 return res.json({
                     success: false
                 })

@@ -45,7 +45,7 @@ const search = {
             req.app.get('dbConnection').query(query, keyword, (err, results) => {
                 if (err) throw err
 
-                if (results) { // 검색 히스토리 테이블에 이미 키워드가 존재할 경우
+                if (results.length !== 0) { // 검색 히스토리 테이블에 이미 키워드가 존재할 경우
                     query = "UPDATE search_history SET count = count + ? WHERE keyword = ?;" // 카운트를 1 증가
                     req.app.get('dbConnection').query(query, [1, keyword], (err) => {
                         if (err) throw err
