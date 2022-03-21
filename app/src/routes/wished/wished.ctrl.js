@@ -82,13 +82,29 @@ const wished = {
         }
 
         // 쿼리 생성 및 디비 요청
-        const query = "SELECT * FROM wished WHERE user_id = ?;" // 유저가 찜한 상품을 모두 조회
+        let query = "SELECT * FROM wished WHERE user_id = ?;" // 유저가 찜한 상품을 모두 조회
         req.app.get('dbConnection').query(query, userId, (err, results) => {
             if (err) throw err
 
-            return res.json({
-                success: true,
-                data: results
+            if(results.length === 0){
+                return res.json({
+                    success: false
+                })
+            }
+
+            let productId = []
+            for(let i = 0; i< results.length; i++){
+                productId.push(results[i].product_id)
+            }
+
+            query = "SELECT * FROM product WHERE product_id IN (?);"
+            req.app.get('dbConnection').query(query, [productId], (err, results) => {
+                if (err) throw err
+
+                return res.json({
+                    success: true,
+                    data: results
+                })
             })
         })
     }

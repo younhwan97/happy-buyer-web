@@ -135,7 +135,7 @@ const read = {
         if(keyword){
             query += ' AND name LIKE ' + req.app.get('mysql').escape('%'+keyword+'%')
         }
-        
+
         query += ';'
 
         req.app.get('dbConnection').query(query, (err, results) => {
