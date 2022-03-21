@@ -111,66 +111,8 @@ const create = {
 }
 
 const read = {
-    productByApp : (req, res) => { // 상품 1개를 읽어온다.
-        let query
-        let productId // 읽을 상품 id
-        let kakaoAccountId // 유저 id
-
-        if (!req.query || Object.keys(req.query).length === 0) {
-            return res.json({
-                success: false
-            })
-        }
-
-        productId = req.query.pid
-        kakaoAccountId = req.query.uid
-        query = 'SELECT * FROM product WHERE product_id = ? AND status <> ?;'
-
-        req.app.get('dbConnection').query(query, [productId, '삭제됨'], (err, results) => {
-            if(err) throw err
-
-            if(!results.length){
-                return res.json({
-                    success: false
-                })
-            }
-
-            let product = results[0]
-            query = 'SELECT * FROM event_product WHERE product_id = ?;'
-
-            req.app.get('dbConnection').query(query, productId, (err, results) => {
-                if(err) throw err
-
-                if(results.length){
-                    product.event_price  = results[0].event_price
-                    product.on_sale = true
-                }
-
-                if(kakaoAccountId === -1 || kakaoAccountId === null || kakaoAccountId === undefined){
-                    return res.json({
-                        success: true,
-                        data: product
-                    })
-                }
-
-                query = 'SELECT * FROM wished WHERE product_id = ? AND user_id = ?;'
-                req.app.get('dbConnection').query(query, [productId, kakaoAccountId], (err, results) => {
-                    if(err) throw err
-
-                    if(results.length) product.is_wished = true
-
-                    return res.json({
-                        success: true,
-                        data: product
-                    })
-                })
-            })
-        })
-    },
-
     productsByApp : (req, res) => { // 상품 여러개를 읽어온다.
         let query
-        let sort // 정렬 기준
         let keyword // 키워드
         let category // 선택된 상품 카테고리
 
@@ -181,7 +123,6 @@ const read = {
         }
 
         category = req.query.category
-        sort = req.query.sort
         keyword = req.query.keyword
 
         let except_status = '삭제됨'
@@ -194,12 +135,7 @@ const read = {
         if(keyword){
             query += ' AND name LIKE ' + req.app.get('mysql').escape('%'+keyword+'%')
         }
-
-        if(sort !== "basic"){
-            let count = 6
-            query += ' ORDER BY sales DESC limit ' + req.app.get('mysql').escape(count)
-        }
-
+        
         query += ';'
 
         req.app.get('dbConnection').query(query, (err, results) => {
