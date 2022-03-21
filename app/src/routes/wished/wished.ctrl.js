@@ -101,9 +101,25 @@ const wished = {
             req.app.get('dbConnection').query(query, [productId], (err, results) => {
                 if (err) throw err
 
-                return res.json({
-                    success: true,
-                    data: results
+                let product = results
+                query = "SELECT * FROM event_product WHERE product_id IN (?);"
+                req.app.get('dbConnection').query(query, [productId], (err, results) => {
+                    if (err) throw err
+
+                    for(let i = 0; i < results.length; i++){
+                        for(let j = 0; j< product.length; j++){
+                            if(results[i].product_id === product[j].product_id){
+                                product[j].on_sale = true
+                                product[j].event_price = results[i].event_price
+                                break
+                            }
+                        }
+                    }
+
+                    return res.json({
+                        success: true,
+                        data: product
+                    })
                 })
             })
         })
