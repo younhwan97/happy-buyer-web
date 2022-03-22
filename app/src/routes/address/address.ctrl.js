@@ -11,7 +11,7 @@ const address = {
 
         // 리퀘스트 바디로 부터 값을 얻어온다.
         let userId = req.body.user_id || -1
-        let receiver = req.body.receiver_namess
+        let receiver = req.body.receiver_name
         let phone = req.body.phone_number
         let address = req.body.address
 
