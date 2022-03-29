@@ -71,6 +71,7 @@ const eventRouter = require("./src/routes/event")
 const searchRouter = require('./src/routes/search')
 const addressRouter = require("./src/routes/address")
 
+
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
 app.use("/products", productRouter)

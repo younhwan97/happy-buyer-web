@@ -213,22 +213,89 @@ const update = {
     }
 }
 
-const create = {
-    order : (req , res) => {
-        // 앱에서 온 데이터를 바탕으로 새로운 주문건 생성
 
 
+const order = {
+    create: (req, res) => {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
 
-        // 연결된 web page 에 메시지 전달
-        // const io = req.app.get('io')
-        // io.emit('hello', 'world')
+        let userId = req.body.user_id || -1
+        let orderProducts = req.body.order_products
+
+        // 타입체크
+        if (typeof userId !== "number") {
+            userId = Number(userId)
+        }
+
+        // 유저 아이디가 -1인 경우 바로 종료
+        if (userId === -1) {
+            return res.json({
+                success: false
+            })
+        }
+
+        // 전달된 상품이 없을 경우 바로 종료
+        if(orderProducts.length === 0){
+            return res.json({
+                success: false
+            })
+        }
+
+        let insertData = {
+            user_id : userId,
+            receiver: req.body.receiver,
+            phone: req.body.phone_number,
+            address: req.body.address,
+            requirement: req.body.requirement,
+            point_number: req.body.point_number,
+            detective_handling_method: req.body.detective_handling_method,
+            payment: req.body.payment,
+            original_price: req.body.original_price,
+            event_price: req.body.event_price,
+            be_paid_price: req.body.be_paid_price,
+            status: "received",
+            date: new Date()
+        }
+
+        // 쿼리 생성 및 디비 요청
+        let query = "INSERT INTO order_history SET ?"
+        req.app.get("dbConnection").query(query, insertData, (err, results) => {
+            if(err) throw err
+
+            if(results.length === 0){
+                return res.json({
+                    success: false
+                })
+            }
+
+            let orderId = results.insertId
+
+            let values = []
+            for(let i = 0; i < orderProducts.length; i++){
+                values.push([orderId, orderProducts[i].product_id, orderProducts[i].count])
+            }
+
+            query = "INSERT INTO order_product_mapping (order_id, product_id, count) VALUES ?;"
+            req.app.get("dbConnection").query(query, [values], (err, results) => {
+                if(err) throw err
+
+                return res.json({
+                    success: true
+                })
+            })
+        })
     }
 }
 
+
 module.exports = {
     view,
-    create,
     read,
     update,
     remove,
+    order
 }
