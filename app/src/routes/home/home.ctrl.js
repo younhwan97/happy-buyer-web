@@ -1,5 +1,7 @@
 "use strict";
 
+
+
 const view = {
     home: (req, res) => {
         if (!req.session.is_logined) return res.redirect('/auth/login')
@@ -224,6 +226,8 @@ const order = {
 
         // request body data
         let userId = req.body.user_id || -1
+        const name = req.body.name || "-" // not null
+        const status = req.body.status || "주문접수" // not null
 
         const receiver = req.body.receiver // not null
         const phone = req.body.phone // not null
@@ -258,7 +262,7 @@ const order = {
         }
 
         // 널 체크
-        if (receiver == null || phone == null || address == null || detectiveHandlingMethod == null || payment == null || originalPrice == null || eventPrice == null || bePaidPrice == null) {
+        if (name == null || status == null || receiver == null || phone == null || address == null || detectiveHandlingMethod == null || payment == null || originalPrice == null || eventPrice == null || bePaidPrice == null) {
             return res.json({
                 success: false
             })
@@ -272,7 +276,8 @@ const order = {
 
         let insertData = {
             user_id: userId,
-            status: "received",
+            name: name,
+            status: status,
             date: kr_curr,
             receiver: receiver,
             phone: phone,
@@ -301,15 +306,121 @@ const order = {
 
             let values = []
             for (let i = 0; i < products.length; i++) {
-                values.push([orderId, products[i].product_id, products[i].count])
+                values.push([orderId, products[i].product_id, products[i].count, products[i].price])
             }
 
-            query = "INSERT INTO order_product_mapping (order_id, product_id, count) VALUES ?;"
+            query = "INSERT INTO order_product_mapping (order_id, product_id, count, price) VALUES ?;"
             req.app.get("dbConnection").query(query, [values], (err) => {
                 if (err) throw err
 
                 return res.json({
-                    success: true
+                    success: true,
+                    order_id: orderId
+                })
+            })
+        })
+    },
+
+    read: (req, res) => {
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        // request body data
+        let userId = req.query.id || -1
+
+        // 타입체크
+        if (typeof userId !== "number") {
+            userId = Number(userId)
+        }
+
+        // 유저 아이디가 -1인 경우 바로 종료
+        if (userId === -1) {
+            return res.json({
+                success: false
+            })
+        }
+
+
+        // 쿼리 생성 및 디비 요청
+        let query = "SELECT * FROM order_history WHERE user_id = ? ORDER BY order_id DESC;"
+        req.app.get("dbConnection").query(query, userId, (err, results) => {
+            if (err) throw err
+
+            return res.json({
+                success: true,
+                data: results
+            })
+        })
+    }
+}
+
+const products = {
+    read: (req, res) => {
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        // request body data
+        let orderId = req.query.id || -1
+
+        // 타입체크
+        if (typeof orderId !== "number") {
+            orderId = Number(orderId)
+        }
+
+        // 주문 번호가 -1인 경우 바로 종료
+        if (orderId === -1) {
+            return res.json({
+                success: false
+            })
+        }
+
+        // 쿼리 생성 및 디비 요청
+        let query = "SELECT * FROM order_product_mapping WHERE order_id = ?;"
+        req.app.get("dbConnection").query(query, orderId, (err, results) => {
+            if (err) throw err
+
+            if (results.length === 0) {
+                return res.json({
+                    success: false
+                })
+            }
+
+            let productsId = []
+            let mappingResults = results
+
+            for (let i = 0; i < results.length; i++) {
+                productsId.push(results[i].product_id)
+            }
+
+            query = "SELECT * FROM product WHERE product_id IN (?);"
+            req.app.get("dbConnection").query(query, [productsId], (err, results) => {
+                if (err) throw err
+
+                if (results.length === 0) {
+                    return res.json({
+                        success: false
+                    })
+                }
+
+                for (let i = 0; i < results.length; i++) {
+                    for (let j = 0; j < mappingResults.length; j++){
+                        if(results[i].product_id === mappingResults[j].product_id){
+                            results[i].price = mappingResults[j].price
+                            results[i].count = mappingResults[j].count
+                            break
+                        }
+                    }
+                }
+
+                return res.json({
+                    success: true,
+                    data: results
                 })
             })
         })
@@ -321,5 +432,6 @@ module.exports = {
     read,
     update,
     remove,
-    order
+    order,
+    products
 }

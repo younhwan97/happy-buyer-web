@@ -6,14 +6,17 @@ const router = express.Router()
 
 const ctrl = require('./home.ctrl')
 
-router.post('/api', ctrl.order.create)
+router.post("/api", ctrl.order.create)
+
+router.get("/api", ctrl.order.read)
+
+router.get("/api/products", ctrl.products.read)
+
 
 
 
 // View Rendering
 router.get('/', ctrl.view.home)
-
-
 
 // Read Data
 router.get('/api/read/order', ctrl.read.order)

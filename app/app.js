@@ -23,7 +23,8 @@ const connection = mysql.createConnection({
     port: dbConf.port,
     password: dbConf.password,
     database: dbConf.database,
-    multipleStatements: true
+    multipleStatements: true,
+    dateStrings: "date"
 })
 connection.connect()
 // Session
@@ -70,7 +71,6 @@ const wishedRouter = require("./src/routes/wished")
 const eventRouter = require("./src/routes/event")
 const searchRouter = require('./src/routes/search')
 const addressRouter = require("./src/routes/address")
-
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
