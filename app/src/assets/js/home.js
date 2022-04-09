@@ -32,23 +32,21 @@ $(function () {
 })
 
 function createOrderDetailModal(id) {
-    /* 주문 상세 모달에 로딩 스피너를 생성 */
+    // 모달 중앙에 들어갈 로딩 스피너 생성 및 삽입
     const modalBody = document.querySelector("#orderDetail-modalBody")
     modalBody.innerHTML = `<div class="d-flex justify-content-center">
                             <div class="spinner-border avatar-md" role="status"></div>
                            </div>`
 
-    /* 서버에서 주문에 관한 상세 정보를 가져온다 */
+    // 주문 상세 정보 API 요청
     fetch(`/api/detail?id=${id}`)
         .then((res) => {
-            return res.json(); // Promise 반환
+            return res.json()
         })
         .then((json) => {
             if (json.success) {
                 // 주문 상세 정보를 받아오는데 성공
-                if(id === json.order_info.order_id){
-                    createView(json.order_info, json.products)
-                }
+                createView(json.order_info, json.products)
             } else {
                 // 주문 상세 정보를 받아오는데 실패
                 if (json.hasRole) {
@@ -88,8 +86,8 @@ function createOrderDetailModal(id) {
         date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2, 16)
         view = `<span onclick="window.print()" style="cursor:pointer">주문 번호: ${orderInfo.order_id} (${date})</span>`
 
-        const label = document.querySelector('#orderDetail-modalLabel')
-        label.innerHTML = view
+        const modalLabel = document.querySelector('#orderDetail-modalLabel')
+        modalLabel.innerHTML = view
 
         // 모달 중앙에 들어갈 뷰 생성
         view = `<h5>주문 목록</h5><ul class="list-group list-group-flush">`
@@ -157,8 +155,8 @@ function createOrderDetailModal(id) {
                  </li>`
         view += `</ul>`
 
-        const body = document.querySelector("#orderDetail-modalBody")
-        body.innerHTML = view
+        const modalBody = document.querySelector("#orderDetail-modalBody")
+        modalBody.innerHTML = view
 
         // 모달 하단에 들어갈 뷰 생성
         view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal" onclick="deleteOrder(${orderInfo.order_id})">주문 취소</Button>`
@@ -172,28 +170,39 @@ function createOrderDetailModal(id) {
         }
 
         view += `</div>`
-        const footer = document.querySelector("#orderDetail-modalFooter")
-        footer.innerHTML = view
+        const modalFooter = document.querySelector("#orderDetail-modalFooter")
+        modalFooter.innerHTML = view
     }
 }
 
 function updateOrderStatus(id, status) {
+    // 주문 정보 업데이트 API 요청
     fetch(`/api?id=${id}&status=${status}`, {
         method: 'PUT'
     })
         .then((res) => {
-            return res.json(); // Promise 반환
+            return res.json()
         })
         .then((json) => {
             if (json.success) {
                 createView()
             } else {
-
+                $.NotificationApp.send(
+                    "오류!",
+                    "주문 상태를 변경할 수 없습니다.",
+                    "top-right",
+                    "#9EC600",
+                    "error",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
             }
         })
         .catch(err => console.error(err))
 
     function createView() {
+        // 데이터 테이블 업데이트
         let myTable = $('#order-datatable').DataTable()
         let orders = $('.order')
 
@@ -203,6 +212,7 @@ function updateOrderStatus(id, status) {
             if (orderId === id) {
                 if (status === '배달완료') {
                     myTable.row(orders[i]).remove().draw()
+
                     $.NotificationApp.send(
                         "성공",
                         "주문 배달이 완료되었습니다.",
@@ -215,13 +225,14 @@ function updateOrderStatus(id, status) {
                     )
                 } else if (status === '주문확인') {
                     const date = $(orders[i]).children('.order-date').html()
-                    const shipping_address = $(orders[i]).children('.order-shipping-address').text()
+                    const address = $(orders[i]).children('.order-address').text()
                     const name = $(orders[i]).children('.order-name').text()
                     const status = `<i class="mdi mdi-circle text-info"></i> 주문확인`
                     const detail = $(orders[i]).children('.order-detail').html()
 
-                    let newData = [id, date, shipping_address, name, status, detail]
+                    let newData = [id, date, address, name, status, detail]
                     myTable.row(orders[i]).data(newData).draw()
+
                     $.NotificationApp.send(
                         "성공",
                         "주문 상태가 변경되었습니다.",
@@ -239,27 +250,37 @@ function updateOrderStatus(id, status) {
 }
 
 function deleteOrder(id) {
+    // 주문의 상태 속성을 '주문취소'로 변경하는 방식으로 주문취소
+    // 고객의 주문내역에서 갑자기 주문건이 삭제되면 고객이 당황할 수 있기 때문에
+    let status = "주문취소"
 
-    const fd = new FormData()
-    fd.append('id', id)
-
-    fetch(`/api`, {
-        method: 'DELETE',
-        body: fd
+    // 주문 삭제를 위한 API 요청
+    fetch(`/api?id=${id}&status=${status}`, {
+        method: 'PUT'
     })
         .then((res) => {
-            return res.json(); // Promise 반환
+            return res.json()
         })
         .then((json) => {
             if (json.success) {
                 createView()
             } else {
-
+                $.NotificationApp.send(
+                    "오류!",
+                    "주문 상태를 변경할 수 없습니다.",
+                    "top-right",
+                    "#9EC600",
+                    "error",
+                    "3000",
+                    "ture",
+                    "slide"
+                )
             }
         })
         .catch(err => console.error(err))
 
     function createView() {
+        // 데이터 테이블 업데이트
         let myTable = $('#order-datatable').DataTable()
         let orders = $('.order')
 
@@ -268,6 +289,7 @@ function deleteOrder(id) {
 
             if (orderId === id) {
                 myTable.row(orders[i]).remove().draw()
+
                 $.NotificationApp.send(
                     "성공",
                     "주문이 취소되었습니다.",

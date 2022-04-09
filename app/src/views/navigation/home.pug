@@ -5,7 +5,7 @@
             if options.ds ==="ready"
                 .page-title-right.d-none
             else
-                .page-title-right
+                .page-title-right.d-block
                     div.d-flex
                         .input-group
                             if options.date === ""
@@ -14,10 +14,9 @@
                                 input#order-daterange.form-control.form-control-light(type='text' name="order" value= options.date)
                             span.input-group-text.bg-light.border-light.text-black
                                 i.mdi.mdi-calendar-range.font-13
-                        a.btn.btn-primary.ms-2(href=`/?ds=delivered`)
+                        a.btn.btn-primary.ms-2(href=`?ds=delivered`)
                             i.mdi.mdi-autorenew
             h4.page-title 주문/배달 조회
-// end page title
 .row
     .col-12
         .card
@@ -33,7 +32,7 @@
                                 - temp = "light"
                             button(id="product-status-filter-option-1" value="product-status-filter-option-1" type="button" class=`btn btn-${temp} rounded-pill m-1`)
                                 | 주문 접수 및 배달 준비
-                        a(href="/?ds=delivered")
+                        a(href="?ds=delivered")
                             if options.ds === "delivered"
                                 - temp = "success"
                             else
@@ -51,19 +50,15 @@
                             th(style='width: 125px;') 주문 상세
                     tbody
                         each order in orders
-                            - let price = order.be_paid_price
-                            - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                             - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
                             - let date = new Date(new Date(order.date) - timezoneOffset)
                             - date = date.toISOString().replace(/T/, ' ').replace(/\..+/, '').substring(2,16)
-                            - let orderId = order.order_id
-                            - let name = order.name || "-"
-                            tr.order(data-order-id = orderId)
-                                td.order-id #{orderId}
+                            tr.order(data-order-id = order.order_id)
+                                td.order-id #{order.order_id}
                                 td.order-date
                                     small.text-muted #{date}
-                                td.order-shipping-address #{order.address}
-                                td.order-name #{name}
+                                td.order-address #{order.address}
+                                td.order-name #{order.name}
                                 td.order-status
                                     if order.status === '주문접수'
                                         i.mdi.mdi-circle.text-success
@@ -74,7 +69,7 @@
                                     else if order.status === '배달완료'
                                         |  배달완료
                                 td.order-detail
-                                    button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`createOrderDetailModal(${orderId})`) 주문 상세
+                                    button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`createOrderDetailModal(${order.order_id})`) 주문 상세
 // order detail modal
 #orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
     .modal-dialog

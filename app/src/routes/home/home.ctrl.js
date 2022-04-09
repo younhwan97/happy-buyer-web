@@ -17,7 +17,8 @@ const order = {
         const ds = req.query.ds || "ready"
         const date = req.query.date || ""
 
-        // 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 조건 생성
+        // 쿼리 생성
+        // status = 주문접수 or 주문확인 or 주문취소 or 배달완료
         let query = "SELECT * FROM order_history WHERE status = "
 
         if (ds === "ready") {
@@ -36,7 +37,7 @@ const order = {
 
         query += "ORDER BY order_id DESC;"
 
-        // DB 요청
+        // 디비 요청
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
 
@@ -61,7 +62,7 @@ const order = {
             })
         }
 
-        // request body data
+        // 바디로부터 데이터 추출
         let userId = req.body.user_id || -1
         const name = req.body.name || "-" // not null
         const status = req.body.status || "주문접수" // not null
@@ -165,7 +166,7 @@ const order = {
             })
         }
 
-        // request body data
+        // 바디로부터 데이터 추출
         let userId = req.query.id || -1
         let pageNum = req.query.page || 1
 
@@ -214,6 +215,13 @@ const order = {
         // 쿼리로부터 데이터 추출
         const orderId = req.query.id
         const status = req.query.status
+
+        // 변경할 주문 상태가 잘못된 경우 바로 종료
+        if(status !== "주문확인" && status !== "배달완료" && status !== "주문취소"){
+            return res.json({
+                success: false
+            })
+        }
 
         // 쿼리 생성 및 디비 요청
         const query = "UPDATE order_history SET status = ? WHERE order_id = ?;"
