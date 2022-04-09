@@ -39,14 +39,16 @@ function openOrderDetailModal(id){
     const orderId = id
 
     /* 서버에서 주문에 관한 상세 정보를 가져온다. */
-    fetch(`/api/read/order?id=${orderId}`)
+    fetch(`/order-detail?id=${orderId}`)
         .then((res) => {
             return res.json(); // Promise 반환
         })
         .then((json) => {
-            if(json.success){ // 주문 상세 정보를 받아오는데 성공
-                createView(json.data, json.user) // 주문 상세 뷰 생성
-            } else { // 주문 상세 정보를 받아오는데 실패
+            if(json.success){
+                // 주문 상세 정보를 받아오는데 성공
+                createView(json.data, json.user)
+            } else {
+                // 주문 상세 정보를 받아오는데 실패
                 if(json.hasRole){
                     $.NotificationApp.send(
                         "오류!",
@@ -92,7 +94,6 @@ function openOrderDetailModal(id){
             let price = data[i].price
             let countedPrice = price * data[i].count
             totalPrice += (data[i].price * data[i].count)
-            price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             countedPrice = countedPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
             view += `<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -111,13 +112,13 @@ function openOrderDetailModal(id){
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fw-bold">이름</div>
-                        ${user.name}
+                        ${user.receiver}
                     </div>
                  </li>`
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fw-bold">배달 주소</div>
-                        ${user.shippingAddress}
+                        ${user.address}
                     </div>
                  </li>`
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
@@ -129,13 +130,13 @@ function openOrderDetailModal(id){
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fw-bold">포인트 번호</div>
-                        ${user.pointNumber}
+                        ${user.point}
                     </div>
                  </li>`
         view += `<li class="list-group-item d-flex justify-content-between align-items-center">
                     <div>
                         <div class="fw-bold">요청 사항</div>
-                        ${user.request}
+                        ${user.requirement}
                     </div>
                  </li>`
         view += `</ul>`
@@ -144,14 +145,14 @@ function openOrderDetailModal(id){
         body.innerHTML = view
 
         /* create footer view */
-        view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal" onclick="removeOrder(${orderId})">주문 취소</Button>`
+        view = `<Button class="btn btn-danger" type="button" data-bs-dismiss="modal" onclick="deleteOrder(${orderId})">주문 취소</Button>`
         view += `<div class="p-0 m-0">`
 
-        if (user.ds === "received"){
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'delivered')">배달 완료</Button>`
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'confirmed')">배달 준비</Button>`
-        } else if (user.ds === 'confirmed'){
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId},'delivered')">배달 완료</Button>`
+        if (user.ds === "주문접수"){
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId}, '배달완료')">배달완료</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId}, '주문확인')">주문확인</Button>`
+        } else if (user.ds === "주문확인"){
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderId}, '배달완료')">배달완료</Button>`
         }
 
         view += `</div>`
@@ -161,7 +162,9 @@ function openOrderDetailModal(id){
 }
 
 function updateOrderStatus(id, status){
-    fetch(`/api/update/order?id=${id}&status=${status}`)
+    fetch(`/api?id=${id}&status=${status}`, {
+        method: 'PUT'
+    })
         .then((res) => {
             return res.json(); // Promise 반환
         })
@@ -182,7 +185,7 @@ function updateOrderStatus(id, status){
             const orderId = Number($(orders[i]).attr('data-order-id'))
 
             if(orderId === id){
-                if(status === 'delivered'){
+                if(status === '배달완료'){
                     myTable.row(orders[i]).remove().draw()
                     $.NotificationApp.send(
                         "성공",
@@ -194,11 +197,11 @@ function updateOrderStatus(id, status){
                         "ture",
                         "slide"
                     )
-                } else if(status === 'confirmed'){
+                } else if(status === '주문확인'){
                     const date = $(orders[i]).children('.order-date').html()
                     const shipping_address = $(orders[i]).children('.order-shipping-address').text()
                     const name = $(orders[i]).children('.order-name').text()
-                    const status = `<i class="mdi mdi-circle text-info"></i> 배달 준비`
+                    const status = `<i class="mdi mdi-circle text-info"></i> 주문확인`
                     const detail = $(orders[i]).children('.order-detail').html()
 
                     let newData = [id, date, shipping_address, name, status, detail]
@@ -219,12 +222,12 @@ function updateOrderStatus(id, status){
     }
 }
 
-function removeOrder(id){
+function deleteOrder(id){
 
     const fd = new FormData()
-    fd.append('order', id)
+    fd.append('id', id)
 
-    fetch(`/api/remove/order`,{
+    fetch(`/api`,{
         method: 'DELETE',
         body: fd
     })

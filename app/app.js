@@ -72,8 +72,8 @@ const eventRouter = require("./src/routes/event")
 const searchRouter = require('./src/routes/search')
 const addressRouter = require("./src/routes/address")
 
-var delay = require("express-delay")
-app.use(delay(1000));
+// var delay = require("express-delay")
+// app.use(delay(1000));
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)

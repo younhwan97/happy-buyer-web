@@ -1,221 +1,59 @@
 "use strict";
 
+const order = {
+    view: (req, res) => {
+        // 세션 및 유저 정보 확인
+        if (!req.session || Object.keys(req.session).length === 0 || !req.session.is_logined) {
+            return res.redirect('/auth/login')
+        }
 
-const view = {
-    home: (req, res) => {
-        if (!req.session.is_logined) return res.redirect('/auth/login')
-        const login = {
+        const loginInfo = {
             nickname: req.session.nickname,
             role: req.session.role
         }
 
-        /* 쿼리스트링 값을 추출 */
+        // 쿼리로부터 데이터 추출
+        // ds(delivery_status) = ready(주문접수, 주문확인), delivered(배달완료)
         const ds = req.query.ds || "ready"
         const date = req.query.date || ""
 
-        /* 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 조건 생성 */
-        // delivery_status = received  -> 주문 접수
-        // delivery_status = confirmed -> 배달 준비
-        // delivery_status = delivered -> 배달 완료
-        let status
-        let query
+        // 쿼리스트링에 따라 order_history 테이블을 조회하는 쿼리 조건 생성
+        let query = "SELECT * FROM order_history WHERE status = "
 
-        if (ds === "ready") { // delivery_status === (received || confirmed)
-            status = ["received", "confirmed"]
-            query = 'SELECT * FROM (order_history) WHERE status = ? OR status = ? ORDER BY order_id DESC;'
-        } else if (ds === "delivered") { // 배달 완료 상태의 데이터 조회
-            if (date === "") { // 오늘 날짜로 배달 완료 상태의 데이터 조회
-                status = ["delivered"]
-                query = 'SELECT * FROM (order_history) WHERE status = ? AND DATE(date) = DATE(DATE_ADD(NOW(), INTERVAL 9 HOUR)) ORDER BY order_id DESC;'
-            } else {        // 선택된 날짜로 배달 완료 상태의 데이터 조회
-                status = ["delivered", date]
-                query = 'SELECT * FROM (order_history) WHERE status = ? AND DATE(date) = ? ORDER BY order_id DESC;'
+        if (ds === "ready") {
+            query += req.app.get('mysql').escape("주문접수")
+            query += "OR status = "
+            query += req.app.get('mysql').escape("주문확인")
+        } else {
+            query += req.app.get('mysql').escape("배달완료")
+
+            if (date === "") {
+                query += "AND DATE(date) = DATE(DATE_ADD(NOW(), INTERVAL 9 HOUR))"
+            } else {
+                query += "AND DATE(date) = " + req.app.get('mysql').escape(date)
             }
         }
 
-        /* order_history 테이블 조회 */
-        req.app.get('dbConnection').query(query, status, (err, results, fields) => {
+        query += "ORDER BY order_id DESC;"
+
+        // DB 요청
+        req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
-
-            let orders = [] // 주문 목록
-
-            if (results.length !== 0) {
-                for (let i = 0; i < results.length; i++) {
-                    orders.push(results[i])
-                }
-            }
 
             return res.render('app',
                 {
                     page: "home",
-                    login: login,
+                    login: loginInfo,
                     options: {
                         ds: ds,
                         date: date
                     },
-                    orders: orders,
+                    orders: results,
                 }
             )
         })
     },
-}
 
-const read = {
-    order: (req, res) => {
-        if (req.session.is_logined && req.session.role === "guest") { // 사용자 권한을 확인
-            return res.json({
-                success: false,
-                hasRole: false
-            })
-        }
-
-        let orderId
-
-        if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
-            return res.json({
-                success: false
-            })
-        }
-
-        orderId = req.query.id // http://happybuyer.co.kr/api/read/order?id=orderId
-
-        /* order ID 를 이용해 order_history 테이블에서 주문 정보를 확인한다. */
-        let query = 'SELECT * FROM (order_history) WHERE order_id = ?;'
-        req.app.get('dbConnection').query(query, orderId, (err, results, fields) => {
-            if (err) throw err;
-
-            const userInfo = { // 고객 정보를 저장
-                name: results[0].name || "-",
-                shippingAddress: results[0].shipping_adress, // not null
-                pointNumber: results[0].point_number || "-",
-                ds: results[0].status,
-                date: results[0].date,
-                payment: results[0].payment,
-                request: results[0].request || '-',
-            }
-
-            /* order ID 를 이용해 order_product_mapping 테이블에서 productID, count 를 확인한다. */
-            query = 'SELECT product_id, count FROM (order_product_mapping) WHERE order_id = ?;'
-            req.app.get('dbConnection').query(query, orderId, (err, results, fields) => {
-                if (err) throw err;
-
-                let mapping = []
-
-                for (let i = 0; i < results.length; i++) {
-                    mapping.push({
-                        productId: results[i].product_id,
-                        count: results[i].count
-                    })
-                }
-
-                let query = ""
-                mapping.map(it =>
-                    query += req.app.get('mysql').format('SELECT * FROM (product) WHERE product_id = ?;', it.productId)
-                )
-
-                req.app.get('dbConnection').query(query, (err, results, fields) => {
-                    if (err) throw err;
-
-                    let data = []
-
-                    if (results.length === mapping.length && results) { // 검색한 상품의 갯수와 결과의 갯수가 일치할 때
-                        if (results.length === 1) { // 상품을 1개만 주문했을 때
-                            if (mapping[0].productId === results[0].product_id) {
-                                results[0].count = mapping[0].count
-                                data.push(results[0])
-                            } else {
-                                return res.json({
-                                    success: false
-                                })
-                            }
-                        } else { // 상품을 여러개 주문했을 때
-                            for (let i = 0; i < results.length; i++) {
-                                let isMatched = false // 검색한 상품이 검색 결과에 포함되어 있으면 true, 그렇지 않으면 false
-
-                                for (let j = 0; j < mapping.length; j++) {
-                                    if (mapping[j].productId === results[i][0].product_id) {
-                                        isMatched = true
-                                        results[i][0].count = mapping[j].count
-                                        data.push(results[i][0])
-                                        break;
-                                    }
-                                }
-
-                                if (!isMatched) {
-                                    return res.json({
-                                        success: false
-                                    })
-                                }
-                            }
-                        }
-                    } else { // 특정 상품 or 검색 결과가 존재하지 않을 때
-                        return res.json({
-                            success: false
-                        })
-                    }
-
-                    return res.json({
-                        success: true,
-                        data: data,
-                        user: userInfo
-                    })
-                })
-            })
-        })
-    },
-}
-
-const remove = {
-    order: (req, res) => {
-        let orderId // 제거할 orderId
-
-        if (!req.body || Object.keys(req.body).length === 0) { // orderId 가 없을 때
-            return res.json({
-                success: false
-            })
-        }
-
-        orderId = req.body.order
-        let query = req.app.get('mysql').format('DELETE FROM order_product_mapping WHERE order_id = ?;', orderId)
-        query += req.app.get('mysql').format('DELETE FROM order_history WHERE order_id = ?;', orderId)
-
-        req.app.get('dbConnection').query(query, (err, results, fields) => {
-            if (err) throw err
-
-            return res.json({
-                success: true
-            })
-        })
-    }
-}
-
-const update = {
-    order: (req, res) => {
-        let orderId // 업데이트할 orderId
-        let status
-
-        if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
-            return res.json({
-                success: false
-            })
-        }
-
-        orderId = req.query.id
-        status = req.query.status
-        const query = 'UPDATE order_history SET status = ? WHERE order_id = ?;'
-
-        req.app.get('dbConnection').query(query, [status, orderId], (err, results, fields) => {
-            if (err) throw err
-
-            return res.json({
-                success: true
-            })
-        })
-    }
-}
-
-
-const order = {
     create: (req, res) => {
         if (!req.body || Object.keys(req.body).length === 0) {
             return res.json({
@@ -364,7 +202,123 @@ const order = {
                 data: results
             })
         })
+    },
+
+    update: (req, res) => {
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        // 쿼리로부터 데이터 추출
+        const orderId = req.query.id
+        const status = req.query.status
+
+        // 쿼리 생성 및 디비 요청
+        const query = "UPDATE order_history SET status = ? WHERE order_id = ?;"
+        req.app.get('dbConnection').query(query, [status, orderId], (err) => {
+            if (err) throw err
+
+            return res.json({
+                success: true
+            })
+        })
+    },
+
+    delete: (req, res) => {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        const orderId = req.body.id
+
+        // 쿼리 생성 및 디비 요청
+        let query = req.app.get('mysql').format('DELETE FROM order_product_mapping WHERE order_id = ?;', orderId)
+        query += req.app.get('mysql').format('DELETE FROM order_history WHERE order_id = ?;', orderId)
+        req.app.get('dbConnection').query(query, (err) => {
+            if (err) throw err
+
+            return res.json({
+                success: true
+            })
+        })
     }
+}
+
+const order_detail = {
+    view: (req, res) => {
+        if (req.session.is_logined && req.session.role === "guest") { // 사용자 권한을 확인
+            return res.json({
+                success: false,
+                hasRole: false
+            })
+        }
+
+        if (!req.query || Object.keys(req.query).length === 0) { // orderId 가 없을 때
+            return res.json({
+                success: false
+            })
+        }
+
+        const orderId = req.query.id
+
+        // 쿼리 생성 및 디비 요청
+        let query = "SELECT * FROM (order_history) WHERE order_id = ?;"
+        req.app.get('dbConnection').query(query, orderId, (err, results) => {
+            if (err) throw err;
+
+            const orderInfo = {
+                name: results[0].name || "-",
+                status: results[0].status,
+                date: results[0].date,
+                receiver: results[0].receiver, // not null
+                address: results[0].address, // not null
+                phone: results[0].phone, // not null
+                requirement: results[0].requirement || "-",
+                point: results[0].point || "-",
+                detective_handling_method: results[0].detective_handling_method,
+                payment: results[0].payment,
+                original_price: results[0].original_price,
+                event_price: results[0].event_price,
+                be_paid_price: results[0].be_paid_price
+            }
+
+            query = "SELECT product_id, count, price FROM (order_product_mapping) WHERE order_id = ?;"
+            req.app.get('dbConnection').query(query, orderId, (err, results) => {
+                if (err) throw err;
+
+                let productId = []
+                let products = results
+
+                for (let i = 0; i < results.length; i++) {
+                    productId.push(results[i].product_id)
+                }
+
+                query = "SELECT * FROM product WHERE product_id IN (?);"
+                req.app.get("dbConnection").query(query, [productId], (err, results) => {
+                    if (err) throw err
+
+                    for (let i = 0; i < results.length; i++) {
+                        for (let j = 0; j < products.length; j++) {
+                            if (results[i].product_id === products[j].product_id) {
+                                products[j].name = results[i].name
+                                break
+                            }
+                        }
+                    }
+
+                    return res.json({
+                        success: true,
+                        data: products,
+                        user: orderInfo
+                    })
+                })
+            })
+        })
+    },
 }
 
 const products = {
@@ -438,10 +392,7 @@ const products = {
 }
 
 module.exports = {
-    view,
-    read,
-    update,
-    remove,
     order,
+    order_detail,
     products
 }

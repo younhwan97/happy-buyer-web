@@ -46,12 +46,12 @@
                             th(style="width: 65px;") 주문 번호
                             th(style="width: 90px;") 날짜
                             th 배달 주소
-                            th 이름
+                            th 상품
                             th 배달 상태
                             th(style='width: 125px;') 주문 상세
                     tbody
                         each order in orders
-                            - let price = order.price
+                            - let price = order.be_paid_price
                             - price = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                             - let timezoneOffset = new Date().getTimezoneOffset() * 60000;
                             - let date = new Date(new Date(order.date) - timezoneOffset)
@@ -62,17 +62,17 @@
                                 td.order-id #{orderId}
                                 td.order-date
                                     small.text-muted #{date}
-                                td.order-shipping-address #{order.shipping_adress}
+                                td.order-shipping-address #{order.address}
                                 td.order-name #{name}
                                 td.order-status
-                                    if order.status === 'received'
+                                    if order.status === '주문접수'
                                         i.mdi.mdi-circle.text-success
-                                        |  주문 접수
-                                    else if order.status === 'confirmed'
+                                        |  주문접수
+                                    else if order.status === '주문확인'
                                         i.mdi.mdi-circle.text-info
-                                        |  배달 준비
-                                    else if order.status === 'delivered'
-                                        |  배달 완료
+                                        |  주문확인
+                                    else if order.status === '배달완료'
+                                        |  배달완료
                                 td.order-detail
                                     button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
 // order detail modal
