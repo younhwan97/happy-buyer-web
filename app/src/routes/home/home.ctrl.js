@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 const view = {
     home: (req, res) => {
         if (!req.session.is_logined) return res.redirect('/auth/login')
@@ -330,10 +329,15 @@ const order = {
 
         // request body data
         let userId = req.query.id || -1
+        let pageNum = req.query.page || 1
 
         // 타입체크
         if (typeof userId !== "number") {
             userId = Number(userId)
+        }
+
+        if (typeof pageNum !== "number") {
+            pageNum = Number(pageNum)
         }
 
         // 유저 아이디가 -1인 경우 바로 종료
@@ -343,10 +347,16 @@ const order = {
             })
         }
 
+        // 페이저 번호가 1보다 작은 경우 바로 종료
+        if (pageNum < 1) {
+            return res.json({
+                success: false
+            })
+        }
 
         // 쿼리 생성 및 디비 요청
-        let query = "SELECT * FROM order_history WHERE user_id = ? ORDER BY order_id DESC;"
-        req.app.get("dbConnection").query(query, userId, (err, results) => {
+        let query = "SELECT * FROM order_history WHERE user_id = ? ORDER BY order_id DESC LIMIT ?, 10;"
+        req.app.get("dbConnection").query(query, [userId, (pageNum - 1) * 10], (err, results) => {
             if (err) throw err
 
             return res.json({
@@ -409,8 +419,8 @@ const products = {
                 }
 
                 for (let i = 0; i < results.length; i++) {
-                    for (let j = 0; j < mappingResults.length; j++){
-                        if(results[i].product_id === mappingResults[j].product_id){
+                    for (let j = 0; j < mappingResults.length; j++) {
+                        if (results[i].product_id === mappingResults[j].product_id) {
                             results[i].price = mappingResults[j].price
                             results[i].count = mappingResults[j].count
                             break

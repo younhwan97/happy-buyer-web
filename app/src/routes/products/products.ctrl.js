@@ -124,6 +124,14 @@ const read = {
 
         category = req.query.category
         keyword = req.query.keyword
+        let pageNum = req.query.page || 1
+
+        if (pageNum < 1) {
+            return res.json({
+                success: false
+            })
+        }
+
 
         let except_status = '삭제됨'
         query = 'SELECT * FROM product WHERE status <> ' + req.app.get('mysql').escape(except_status)
@@ -136,7 +144,8 @@ const read = {
             query += ' AND name LIKE ' + req.app.get('mysql').escape('%'+keyword+'%')
         }
 
-        query += ';'
+        query += " LIMIT " + req.app.get('mysql').escape((pageNum-1) * 8)
+        query += ", 8;"
 
         req.app.get('dbConnection').query(query, (err, results) => {
             if(err) throw err
@@ -172,42 +181,6 @@ const read = {
                 })
             })
         })
-
-
-        // if(category === "total"){
-        //     if(sort === "popular"){
-        //         if(keyword === "null"){
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? ORDER BY sales DESC limit 6;', '삭제됨')
-        //         } else {
-        //             query =
-        //                 req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ? ORDER BY sales DESC limit 6;', ['삭제됨', '%'+keyword+'%'])
-        //         }
-        //     } else if(sort === "basic"){
-        //         if(keyword === "null"){
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ?;', '삭제됨')
-        //         } else {
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE status <> ? AND name LIKE ?;', ['삭제됨', '%'+keyword+'%'])
-        //         }
-        //     }
-        // } else {
-        //     if(sort === "popular"){
-        //         if(keyword === "null") {
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? ORDER BY sales DESC limit 6', [category, '삭제됨'])
-        //         } else {
-        //             query =
-        //                 req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ? ORDER BY sales DESC limit 6', [category, '삭제됨', '%'+keyword+'%'])
-        //         }
-        //     } else if(sort === "basic"){
-        //         if(keyword === "null"){
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ?;', [category, '삭제됨'])
-        //         } else {
-        //             query = req.app.get('mysql').format('SELECT * FROM product WHERE category = ? AND status <> ? AND name LIKE ?;', [category, '삭제됨', '%'+keyword+'%'])
-        //         }
-        //     }
-        // }
-        //
-
-
     },
 
 }
