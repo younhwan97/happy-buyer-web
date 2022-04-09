@@ -249,7 +249,7 @@ const order = {
 }
 
 const order_detail = {
-    view: (req, res) => {
+    read: (req, res) => {
         if (req.session.is_logined && req.session.role === "guest") { // 사용자 권한을 확인
             return res.json({
                 success: false,
@@ -271,6 +271,7 @@ const order_detail = {
             if (err) throw err;
 
             const orderInfo = {
+                order_id: results[0].order_id,
                 name: results[0].name || "-",
                 status: results[0].status,
                 date: results[0].date,
@@ -312,8 +313,8 @@ const order_detail = {
 
                     return res.json({
                         success: true,
-                        data: products,
-                        user: orderInfo
+                        products: products,
+                        order_info: orderInfo
                     })
                 })
             })
@@ -321,7 +322,7 @@ const order_detail = {
     },
 }
 
-const products = {
+const order_products = {
     read: (req, res) => {
         if (!req.query || Object.keys(req.query).length === 0) {
             return res.json({
@@ -394,5 +395,5 @@ const products = {
 module.exports = {
     order,
     order_detail,
-    products
+    order_products
 }

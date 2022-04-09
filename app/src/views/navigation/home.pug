@@ -74,7 +74,7 @@
                                     else if order.status === '배달완료'
                                         |  배달완료
                                 td.order-detail
-                                    button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`openOrderDetailModal(${orderId})`) 주문 상세
+                                    button.btn.btn-outline-secondary.rounded-pill(type='button' data-bs-toggle='modal' data-bs-target='#orderDetail-modal' onclick=`createOrderDetailModal(${orderId})`) 주문 상세
 // order detail modal
 #orderDetail-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
     .modal-dialog

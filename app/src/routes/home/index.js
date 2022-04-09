@@ -5,27 +5,20 @@ const express = require("express")
 const router = express.Router()
 const ctrl = require('./home.ctrl')
 
-/* API Level */
-// CREATE, http://happybuyer.co.kr/api
-router.post("/api", ctrl.order.create)
+// Rendering
+router.get('/', ctrl.order.view) // READ, http://happybuyer.co.kr, USING BY WEB
 
-// READ, http://happybuyer.co.kr/api
-router.get("/api", ctrl.order.read)
+// API
+router.post("/api", ctrl.order.create) // CREATE, http://happybuyer.co.kr/api, USING BY APP
 
-// READ, http://happybuyer.co.kr/api/products
-router.get("/api/products", ctrl.products.read)
+router.get("/api", ctrl.order.read) // READ, http://happybuyer.co.kr/api, USING BY APP
 
-// UPDATE, http://happybuyer.co.kr/api
-router.put('/api', ctrl.order.update)
+router.put('/api', ctrl.order.update) // UPDATE, http://happybuyer.co.kr/api, USING BY WEB
 
-// DELETE, http://happybuyer.co.kr/api
-router.delete('/api', ctrl.order.delete)
+router.delete('/api', ctrl.order.delete) // DELETE, http://happybuyer.co.kr/api, USING BY WEB
 
-/* View Rendering Level */
-// READ, http://happybuyer.co.kr
-router.get('/', ctrl.order.view)
+router.get('/api/detail', ctrl.order_detail.read) // READ, http://happybuyer.co.kr/api/detail, USING BY WEB
 
-// READ, http://happybuyer.co.kr/order-detail
-router.get('/order-detail', ctrl.order_detail.view)
+router.get("/api/products", ctrl.order_products.read) // READ, http://happybuyer.co.kr/api/products, USING BY APP
 
 module.exports = router
