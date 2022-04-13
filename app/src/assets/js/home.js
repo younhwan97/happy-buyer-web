@@ -163,10 +163,10 @@ function createOrderDetailModal(id) {
         view += `<div class="p-0 m-0">`
 
         if (orderInfo.status === "주문접수") {
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '배달완료')">배달완료</Button>`
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '주문확인')">주문확인</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '배달완료')">배달 완료</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '주문확인')">주문 확인</Button>`
         } else if (orderInfo.status === "주문확인") {
-            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '배달완료')">배달완료</Button>`
+            view += `<Button class="btn btn-light mx-1" type="button" data-bs-dismiss="modal" onclick="updateOrderStatus(${orderInfo.order_id}, '배달완료')">배달 완료</Button>`
         }
 
         view += `</div>`

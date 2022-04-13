@@ -60,7 +60,7 @@
                                         button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productUpdate-modal' onclick=`createProductUpdateModal()`)
                                             a.action-icon(href='javascript:void(0);')
                                                 i.mdi.mdi-square-edit-outline
-                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productRemove-modal' onclick=`createProductRemoveModal(${id})`)
+                                        button.btn(type='button' data-bs-toggle='modal' data-bs-target='#productRemove-modal' onclick=`createProductDeleteModal(${id})`)
                                             a.action-icon(href='javascript:void(0);')
                                                 i.mdi.mdi-delete
 
@@ -74,7 +74,7 @@
             .modal-body
                 | 상품을 정말 제거하시겠습니까?
             .modal-footer
-                button.btn.btn-primary(type='button' onclick="removeProduct()" data-bs-dismiss='modal') 확인
+                button.btn.btn-primary(type='button' onclick="deleteProduct()" data-bs-dismiss='modal') 확인
                 button.btn.btn-light(type='button' data-bs-dismiss='modal') 취소
 #productUpdate-modal.modal.fade(tabindex='-1' role='dialog' aria-labelledby='standard-modalLabel' aria-hidden='true')
     .modal-dialog

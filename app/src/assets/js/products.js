@@ -1,4 +1,4 @@
-/* products */
+// products
 function checkProductStatusOption(option){
     const optionValue = option.value
     let myTable = $('#basic-datatable').DataTable();
@@ -80,30 +80,32 @@ function updateProduct(){
 }
 
 
-function createProductRemoveModal(productId){
+function createProductDeleteModal(productId){
     $('#productRemove-modal').attr('data-product-id', productId)
 }
 
-function removeProduct(){
+function deleteProduct(){
     let productId = $('#productRemove-modal').attr('data-product-id')
     productId = Number(productId)
 
-    // send `POST` request
-    fetch(`/products/api/remove`, {
-        method : 'POST',
+    // 상품 삭제를 위한 API 요청
+    fetch(`/products/api`, {
+        method : 'DELETE',
         headers : {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            productId: productId
+            product_id: productId
         })
     })
         .then((res) => {
-            return res.json(); // Promise 반환
+            return res.json()
         })
         .then((json) => {
-            if(json.success){ // 상품 제거 성공
+            if(json.success){
+                // 상품 제거 성공
                 createView(productId)
+
                 $.NotificationApp.send(
                     "성공",
                     "상품이 성공적으로 삭제되었습니다 :)",
@@ -114,10 +116,13 @@ function removeProduct(){
                     "ture",
                     "slide"
                 )
-            } else { // 상품 제거 실패
-                if(json.hasRole){ // 제거할 상품 id가 제대로 전달되지 않은 경우
+            } else {
+                // 상품 제거 실패
+                if(json.hasRole){
+                    // 제거할 상품 id가 제대로 전달되지 않은 경우
 
-                } else { // 상품을 제거할 권한이 없는 경우
+                } else {
+                    // 상품을 제거할 권한이 없는 경우
                     $.NotificationApp.send(
                         "에러",
                         "상품을 제거할 권한이 없습니다 :(",
@@ -134,13 +139,14 @@ function removeProduct(){
         .catch(err => console.error(err))
 
     function createView(productId){
-
+        // 데이터 테이블 업데이트
         let myTable = $('#basic-datatable').DataTable();
         let productList = $('.product')
 
         for(let i = 0; i< productList.length; i++){
             let id = $(productList[i]).children('.product-id').text()
             id = Number(id)
+
             if (id === productId){
                 myTable.row(productList[i]).remove().draw()
             }
@@ -148,7 +154,7 @@ function removeProduct(){
     }
 }
 
-/* add product */
+// add-products
 function uploadFile(){
     const image = document.querySelector('#product-image').files[0] // 업르드할 상품 이미지
 

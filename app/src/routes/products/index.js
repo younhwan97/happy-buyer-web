@@ -1,23 +1,25 @@
 "use strict";
 
-/* Module */
+// Module
 const express = require("express")
 const router = express.Router()
-
 const ctrl = require('./products.ctrl')
 
-// View Rendering
-router.get('/', ctrl.view.products)
-router.get('/add', ctrl.view.addProduct) // http://happybuyer.co.kr/products/add
+// Rendering
+router.get('/', ctrl.products.view) // READ, http://happybuyer.co.kr/products, USING BY WEB
+
+router.get('/add', ctrl.add_products.view)
+
+// API
+router.get('/api', ctrl.products.read)
+
+router.delete('/api', ctrl.products.delete)
+
+
 
 // Create&Upload Data
-router.post('/api/upload', ctrl.create.s3) // http://happybuyer.co.kr/products/api/upload
-router.post('/api/add', ctrl.create.product) // http://happybuyer.co.kr/products/api/add
+router.post('/api/upload', ctrl.create.s3)
+router.post('/api/add', ctrl.create.product)
 
-// Read Data
-router.get('/api', ctrl.read.productsByApp)
-
-// Remove Data
-router.post('/api/remove', ctrl.remove.product) // http://happybuyer.co.kr/products/api/remove
 
 module.exports = router
