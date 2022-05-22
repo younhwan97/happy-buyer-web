@@ -162,7 +162,7 @@ function uploadFile(){
     fd.append('file', image)
 
     // send `POST` request
-    fetch('/products/api/upload', {
+    fetch('/products/api/s3', {
         method: 'POST',
         body: fd
     })
@@ -210,7 +210,7 @@ function addProduct(uploadFileUrl){
     const price = $('#product-price').val() // 상품 가격
 
     // send `POST` request
-    fetch(`/products/api/add`, {
+    fetch(`/products/api`, {
         method : 'POST',
         headers : {
             'Content-Type': 'application/json'

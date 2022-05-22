@@ -11,15 +11,12 @@ router.get('/', ctrl.products.view) // READ, http://happybuyer.co.kr/products, U
 router.get('/add', ctrl.add_products.view)
 
 // API
+router.post('/api', ctrl.products.create)
+
+router.post('/api/s3', ctrl.s3.create)
+
 router.get('/api', ctrl.products.read)
 
 router.delete('/api', ctrl.products.delete)
-
-
-
-// Create&Upload Data
-router.post('/api/upload', ctrl.create.s3)
-router.post('/api/add', ctrl.create.product)
-
 
 module.exports = router

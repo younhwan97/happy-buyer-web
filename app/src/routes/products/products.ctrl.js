@@ -30,7 +30,35 @@ const products = {
     },
 
     create: (req, res) => {
+        if (!req.body || Object.keys(req.body).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
 
+        const status = req.body.status
+        const category = req.body.category
+        const name = req.body.name
+        const price = req.body.price
+        const url = req.body.url
+
+        if ((status !== "판매중" && status !== "품절") || category === undefined || name === undefined || price === undefined || url === undefined) {
+            return res.json({
+                success: false
+            })
+        }
+
+        const data = [status, category, name, price, url]
+
+        // 쿼리 생성 및 디비 요청
+        const query = 'INSERT INTO product (status, category, name, price, image_url) VALUES (?, ?, ?, ?, ?)'
+        req.app.get('dbConnection').query(query, data, (err) => {
+            if (err) throw err
+
+            return res.json({
+                success: true
+            })
+        })
     },
 
     read: (req, res) => {
@@ -54,7 +82,7 @@ const products = {
         let except_status = '삭제됨'
         let query = 'SELECT * FROM product WHERE status <> ' + req.app.get('mysql').escape(except_status)
 
-        if (category !== "total") {
+        if (category !== "전체") {
             query += ' AND category = ' + req.app.get('mysql').escape(category)
         }
 
@@ -63,11 +91,11 @@ const products = {
         }
 
         if (sortBy) {
-            if(sortBy === "판매순"){
+            if (sortBy === "판매순") {
                 query += " ORDER BY sales DESC"
-            } else if(sortBy === "낮은 가격순"){
+            } else if (sortBy === "낮은 가격순") {
                 query += " ORDER BY price"
-            } else if(sortBy === "높은 가격순"){
+            } else if (sortBy === "높은 가격순") {
                 query += " ORDER BY price DESC"
             }
         }
@@ -75,6 +103,8 @@ const products = {
         query += " LIMIT " + req.app.get('mysql').escape((pageNum - 1) * 30)
         query += ", 30;"
 
+
+        console.log(query)
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
 
@@ -164,15 +194,15 @@ const add_products = {
 
         return res.render('app',
             {
-                page: "addproduct",
+                page: "add_product",
                 login: login,
             }
         )
     }
 }
 
-const create = {
-    s3: (req, res) => {
+const s3 = {
+    create: (req, res) => {
         if (req.session.role === 'guest') { // 게스트 로그인
             return res.json({
                 success: false,
@@ -207,33 +237,11 @@ const create = {
                 url: data.Location
             })
         })
-    },
-
-    product: (req, res) => {
-        let query // 상품 추가를 위한 쿼리
-        let data // 상품 데이터
-
-        if (!req.body || Object.keys(req.body).length === 0) { // 상품 데이터가 없을 때
-            return res.json({
-                success: false
-            })
-        }
-
-        query = 'INSERT INTO product (status, category, name, price, image_url) VALUES (?, ?, ?, ?, ?)'
-        data = [req.body.status, req.body.category, req.body.name, req.body.price, req.body.url]
-
-        req.app.get('dbConnection').query(query, data, (err, results, fields) => {
-            if (err) throw err
-
-            return res.json({
-                success: true
-            })
-        })
     }
 }
 
 module.exports = {
     products,
     add_products,
-    create
+    s3
 }

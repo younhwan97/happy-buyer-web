@@ -2,6 +2,21 @@
 
 const event = {
     read: (req, res) => {
+        if (!req.query || Object.keys(req.query).length === 0) {
+            return res.json({
+                success: false
+            })
+        }
+
+        const pageNum = req.query.page || 1
+        const sortBy = req.query.sort
+        console.log(sortBy)
+        if (pageNum < 1) {
+            return res.json({
+                success: false
+            })
+        }
+
         // 쿼리 생성 및 디비 요청
         let query = "SELECT * FROM event_product;"
         req.app.get('dbConnection').query(query, (err, results) => {
@@ -20,8 +35,24 @@ const event = {
                 eventProductId.push(eventProduct[i].product_id)
             }
 
-            query = "SELECT * FROM product WHERE status <> ? AND product_id IN (?);" // 상품의 아이디를 이용해 나머지 정보를 조회
-            req.app.get('dbConnection').query(query, ['삭제됨', eventProductId], (err, results) => {
+            // 쿼리 생성
+            query = "SELECT * FROM product WHERE status <> " + req.app.get('mysql').escape('삭제됨')
+            query += " AND product_id IN (" + req.app.get('mysql').escape(eventProductId) + ")"
+
+            if (sortBy) {
+                if (sortBy === "판매순") {
+                    query += " ORDER BY sales DESC"
+                } else if (sortBy === "낮은 가격순") {
+                    query += " ORDER BY price"
+                } else if (sortBy === "높은 가격순") {
+                    query += " ORDER BY price DESC"
+                }
+            }
+
+            query += " LIMIT " + req.app.get('mysql').escape((pageNum - 1) * 10)
+            query += ", 10;"
+
+            req.app.get('dbConnection').query(query, (err, results) => {
                 if (err) throw err
 
                 for (let i = 0; i < results.length; i++) {
