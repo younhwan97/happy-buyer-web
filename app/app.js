@@ -15,11 +15,8 @@ const io = socketIO(server)
 const AWS = require('aws-sdk')
 const mysql = require('mysql')
 const s3 = new AWS.S3()
-AWS.config.update({
-    accessKeyId: process.env.S3_ACCESS_KEY_ID, // .env
-    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY, //.env
-    region: 'ap-northeast-2'
-})
+AWS.config.loadFromPath('./config.json')
+console.log("env, ", process.env.AWS_CONFIG)
 const dbConf = JSON.parse(fs.readFileSync('./src/config/database.json', 'utf-8'))
 const connection = mysql.createConnection({
     host: dbConf.host,
