@@ -100,11 +100,9 @@ const products = {
             }
         }
 
-        query += " LIMIT " + req.app.get('mysql').escape((pageNum - 1) * 30)
-        query += ", 30;"
+        query += " LIMIT " + req.app.get('mysql').escape((pageNum - 1) * 15)
+        query += ", 15;"
 
-
-        console.log(query)
         req.app.get('dbConnection').query(query, (err, results) => {
             if (err) throw err
 
