@@ -48,7 +48,7 @@ app.set('s3', s3) // aws s3 connect
 app.set('mysql', mysql)
 app.use(express.static(`${__dirname}/src/assets`))
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
+app.use(express.urlencoded({extended: true}))
 app.use(fileUpload({
     useTempFiles: true,
     tempFileDir: '/tmp/'
@@ -71,9 +71,7 @@ const wishedRouter = require("./src/routes/wished")
 const eventRouter = require("./src/routes/event")
 const searchRouter = require('./src/routes/search')
 const addressRouter = require("./src/routes/address")
-
-// var delay = require("express-delay")
-// app.use(delay(1000));
+const policyRouter = require("./src/routes/policy")
 
 app.use("/", homeRouter)
 app.use("/auth", authRouter)
@@ -84,5 +82,6 @@ app.use("/wished", wishedRouter)
 app.use("/event", eventRouter)
 app.use("/search", searchRouter)
 app.use("/address", addressRouter)
+app.use("/policy", policyRouter)
 
 module.exports = server
